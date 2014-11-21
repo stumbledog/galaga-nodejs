@@ -3,10 +3,14 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  res.render('index', { title: 'Express' });
+  res.render('home', { title: 'Express Shooting Game'});
 });
 
-/* GET Hello World page. */
+router.get('/game', function(req, res) {
+  res.render('game', { title: 'Express Shooting Game'});
+});
+
+/*
 router.get('/helloworld', function(req, res) {
   res.render('helloworld', { title: 'Hello, World!' })
 });
@@ -44,5 +48,5 @@ router.post('/adduser', function(req, res) {
     }
   })
 });
-
+*/
 module.exports = router;

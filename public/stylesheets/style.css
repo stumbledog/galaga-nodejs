@@ -1,8 +1,20 @@
 body {
-  padding: 50px;
+  margin: 0px;
+  padding: 0px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+.container{
+  max-width: 980px;
+}
+
+canvas#gameCanvas{
+  width:100%;
+  background:url("../assets/images/BG.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 }
