@@ -30,17 +30,17 @@ function Bullet(stage, loader){
 
   this.tick = function(stage){
     if(bullets.length){
+      var visible_bullets = [];
       bullets.forEach(function(bullet){
         bullet.y -= bullet.speed;
         if(bullet.y<0){
-          bullet.remove = true;
           stage.removeChild(bullet);
+          delete bullet;
+        }else{
+          visible_bullets.push(bullet);
         }
       });
-
-      bullets = bullets.filter(function(bullet){
-        return !bullet.remove;
-      });
+      bullets = visible_bullets;
     }
   }
 }
