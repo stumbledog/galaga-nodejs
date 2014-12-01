@@ -6,7 +6,7 @@ function Ship(stage, image_loader, width, height){
     init(image_loader, width, height);
 
     function init(image_loader, width, height){
-        firearm = new Firearm(stage, image_loader, 10, 1, 10, 2, 1);
+        firearm = new Firearm(stage, image_loader, 10, 1, 10, 5, 1);
         shape = new createjs.Shape();
         shape.graphics.bf(image_loader.getResult("components")).drawRect(58,113,14,28);
         shape.regX = 65;

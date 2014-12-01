@@ -15,12 +15,6 @@ function Firearm(stage, image_loader, magazine_size, reload_speed, bullet_speed,
 
     this.fire = function(x, y){
         bullet.spawn(x, y, this.bullet_speed);
-        /*
-        if(remaining_bullet > 0){
-          bullet.spawn(x,y,this.bullet_speed);
-        }else{
-
-        }*/
     }
 
     this.getFireRate = function(){

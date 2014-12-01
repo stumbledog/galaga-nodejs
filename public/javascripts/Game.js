@@ -60,19 +60,6 @@ function Game(id){
         });
         stars = visible_stars;
 
-/*
-var visible_bullets = [];
-bullets.forEach(function(bullet){
-bullet.y -= bullet.speed;
-if(bullet.y<0){
-stage.removeChild(bullet);
-delete bullet;
-}else{
-visible_bullets.push(bullet);
-}
-});
-bullets = visible_bullets;
-*/
         if(enermies.length){
             var bullets = ship.getBullets();
             if(bullets.getBulletShape().length){
@@ -86,18 +73,6 @@ bullets = visible_bullets;
                     }
                 });
             }
-            /*
-            enermies.forEach(function(enermy){
-                bullets.forEach(function(bullet){
-                    var hit = enermy.isHit(bullet);
-                    if(hit){
-                        var index = bullets.indexOf(bullet);
-                        bullets.splice(index, 1);
-                        stage.removeChild(bullet);
-                        delete bullet;
-                    }
-                });
-            });*/
         }
 
         spawnEnermies();
@@ -107,6 +82,11 @@ bullets = visible_bullets;
     }
 
     function spawnEnermies(){
+        if(time%60 == 0){
+            var enermy = new Enermy(stage, image_loader, 1, 1);
+            enermies.push(enermy);
+        }
+        /*
         switch(time){
             case 0:
             case 30:
@@ -115,6 +95,6 @@ bullets = visible_bullets;
                 var enermy = new Enermy(stage, image_loader, 1, 1);
                 enermies.push(enermy);
             return false;
-        }
+        }*/
     }
 }
