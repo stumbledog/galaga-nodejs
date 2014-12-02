@@ -17,6 +17,8 @@ canvas#gameCanvas{
   background:url("../assets/images/BG.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
+  margin-left:auto;
+  margin-right:auto;
 }
 
 canvas#game{

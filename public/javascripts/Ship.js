@@ -3,6 +3,7 @@ function Ship(stage, image_loader, width, height){
     var shape, firearm;
     var move_right = move_left = move_up = move_down = trigger = false;
     var counter = 0;
+    var exp = 0;
     init(image_loader, width, height);
 
     function init(image_loader, width, height){
@@ -16,16 +17,11 @@ function Ship(stage, image_loader, width, height){
         shape.width = 14;
         shape.height = 28;
         stage.addChild(shape);
-        createjs.Tween.get(shape).to({y:stage.canvas.height - 100},2000).call(initEventHandler);
+        createjs.Tween.get(shape).to({y:stage.canvas.height - 100},2000);
     }
 
-    function initEventHandler(){
-        document.onkeydown = handleKeyDown;
-        document.onkeyup = handleKeyUp;
-    }
-
-    function handleKeyDown(event) {
-        switch(event.keyCode) {
+    this.keyDown = function(key){
+        switch(key) {
             case 87:
                 move_up = true; return false;
             case 68:
@@ -39,8 +35,8 @@ function Ship(stage, image_loader, width, height){
         }
     }
 
-    function handleKeyUp(event) {
-        switch(event.keyCode) {
+    this.keyUp = function(key){
+        switch(key) {
             case 87:
                 move_up = false; return false;
             case 83:

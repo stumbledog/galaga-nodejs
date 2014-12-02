@@ -1,11 +1,13 @@
 function Enermy(stage, image_loader, type, path){
     var ALIVE = true;
     var DESTROYED = false;
+    var NORMAL = 1;
 
     var container;
     var health, health_bar, health_max;
     var x_min, x_max, y_min, y_max, width, height;
     var self = this;
+    var exp, gold, rating;
     init(image_loader);
 
     function init(image_loader){
@@ -13,7 +15,6 @@ function Enermy(stage, image_loader, type, path){
         self.container = container;
         self.status = ALIVE;
         setShip(container, type, image_loader);
-        setPath(container, path);
         stage.addChild(container);
         createjs.Tween.get(container).to({y:100},2000);
     }
@@ -21,7 +22,7 @@ function Enermy(stage, image_loader, type, path){
     function setShip(container, type, image_loader){
         switch(type){
             case 1:
-                health_max = health = 5;
+                health_max = health = 3;
                 var body = new createjs.Shape();
                 var left_wing = new createjs.Shape();
                 var right_wing = new createjs.Shape();
@@ -54,40 +55,31 @@ function Enermy(stage, image_loader, type, path){
                 width = 40;
                 height = 40;
 
-                health_bar.graphics.beginFill("#00CC00").drawRect(x_min, y_min-10, width, width/10);
+                health_bar.graphics.beginFill("#CC0000").drawRect(x_min, y_min-10, width, width/10);
 
                 container.addChild(left_wing,right_wing, body, health_bar);
-                container.setBounds(x_min,y_min,x_max-x_min,y_max-y_min);
+                container.setBounds(x_min,y_min,width,height);
+                container.x = Math.random()*stage.canvas.width;
+                container.y = -100;
+
+                exp = 1;
+                gold = 1;
+                rating = NORMAL;
             return false;
         }
     }
 
-    function setPath(container, path){
-        switch(path){
-            case 1:
-                container.x = Math.random()*stage.canvas.width;
-                container.y = -100;
-                createjs.Tween.get(container)
-                    .to({y:Math.random()*stage.canvas.height/2+50}, 3000);
-/*                .to({rotation:450}, 15000)
-                .to({x:-200}, 6000)*/
+    var destination = Math.random()*stage.canvas.height/2+50;
 
-          /*
-            createjs.Tween.get(container)
-                .to({y:50},2000)
-                .to({x:250,y:200,rotation:-90},3000)
-                .to({x:400,y:400,rotation:0},3000)
-                .to({y:600},4000);
-            break;
-        */
-
-            return false;
+    this.tick = function(stage){
+        if(container.y < destination){
+            container.y += 5;
         }
     }
 
     function damaged(bullet){
         health -= bullet.getDamage();
-        var text = new createjs.Text(bullet.getDamage(), "14px Arial", "#ffffff");
+        var text = new createjs.Text(bullet.getDamage(), "bold 16px Arial", "#CC0000");
         text.x = container.x;
         text.y = container.y;
         text.textBaseline = "alphabetic";
@@ -96,13 +88,23 @@ function Enermy(stage, image_loader, type, path){
         .to({x:text.x-10, y:text.y-20, alpha:0}, 1000).call(function(item){
             stage.removeChild(item.target);
         });
-        health_bar.graphics.beginFill("#CC0000").drawRect(width/health_max*health+x_min, y_min-10, width*(health_max-health)/health_max, width/10);
+        health_bar.graphics.beginFill("#666666").drawRect(width/health_max*health+x_min, y_min-10, width*(health_max-health)/health_max, width/10);
         if(health <= 0){
-            destroyed();
+            destroyed(bullet);
         }
     }
 
-    function destroyed(){
+    function destroyed(bullet){
+        var text = new createjs.Text("+"+gold, "bold 16px Arial", "#FFD34E");
+        text.x = container.x;
+        text.y = container.y;
+        text.textBaseline = "alphabetic";
+        stage.addChild(text);
+        createjs.Tween.get(text)
+        .to({x:text.x+10, y:text.y-20, alpha:0}, 1000).call(function(item){
+            stage.removeChild(item.target);
+        });
+
         self.status = DESTROYED;
     }
 
@@ -113,7 +115,8 @@ function Enermy(stage, image_loader, type, path){
     this.isHit = function(bullets){
         var bullet_shapes = bullets.getBulletShape();
         bullet_shapes.forEach(function(bullet_shape){
-            if(Math.pow(container.x-bullet_shape.x,2) + Math.pow(container.y-bullet_shape.y,2) < 400){
+            if(bullet_shape.x >= container.x - width/2 && bullet_shape.x <= container.x+width/2
+                && bullet_shape.y >= container.y - height/2 && bullet_shape.y <= container.y+height/2){
                 var bullet = bullet_shape.getbullet();
                 damaged(bullet);
                 bullet.hit(bullet_shape);
