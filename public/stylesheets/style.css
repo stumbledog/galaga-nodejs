@@ -1,7 +1,7 @@
-body {
+html, body{
   margin: 0px;
   padding: 0px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  height:100%;
 }
 
 a {
@@ -21,6 +21,16 @@ canvas#gameCanvas{
   margin-right:auto;
 }
 
+canvas#hangar{
+    border: 1px solid #000;
+    background-color: black;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
 canvas#game{
-  background-color: black;
+    background-color: black;
+    width:100%;
+    height:100%;
 }

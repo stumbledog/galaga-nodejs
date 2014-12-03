@@ -10,6 +10,11 @@ router.get('/game', function(req, res) {
   res.render('game', { title: 'Express Shooting Game'});
 });
 
+router.get('/hangar', function(req, res) {
+    res.render('hangar', { title: 'Express Shooting Game'});
+});
+
+
 /*
 router.get('/helloworld', function(req, res) {
   res.render('helloworld', { title: 'Hello, World!' })

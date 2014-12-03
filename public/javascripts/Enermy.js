@@ -8,6 +8,7 @@ function Enermy(stage, image_loader, type, path){
     var x_min, x_max, y_min, y_max, width, height;
     var self = this;
     var exp, gold, rating;
+    var ticks =0;
     init(image_loader);
 
     function init(image_loader){
@@ -61,19 +62,10 @@ function Enermy(stage, image_loader, type, path){
                 container.setBounds(x_min,y_min,width,height);
                 container.x = Math.random()*stage.canvas.width;
                 container.y = -100;
-
                 exp = 1;
                 gold = 1;
                 rating = NORMAL;
             return false;
-        }
-    }
-
-    var destination = Math.random()*stage.canvas.height/2+50;
-
-    this.tick = function(stage){
-        if(container.y < destination){
-            container.y += 5;
         }
     }
 
@@ -106,6 +98,25 @@ function Enermy(stage, image_loader, type, path){
         });
 
         self.status = DESTROYED;
+    }
+
+    this.tick = function(stage){
+        var angle = (Math.random()-.5)*2;
+        container.rotation += angle;
+        health_bar.rotation -= angle;
+        container.y += 2*Math.cos(container.rotation*Math.PI/180);
+        container.x -= 2*Math.sin(container.rotation*Math.PI/180);
+
+        if(container.x < -width/2){
+            container.x = stage.canvas.width + width/2;
+        }
+        if(container.x > stage.canvas.width + width/2){
+            container.x = -width/2;
+        }
+        if(container.y > stage.canvas.height + height/2){
+            container.y = -height/2;
+        }
+        ticks++;
     }
 
     this.getContainer = function(){
