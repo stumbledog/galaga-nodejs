@@ -37,13 +37,13 @@ function Button(image_loader, type, size){
 	function initEventListener(){
 		button.addEventListener("rollover", function(event){
 			this.scaleX = this.scaleY = this.scale*1.2;
-			createjs.Tween.get(tooltip).to({"scaleY":1}, 400);
-			createjs.Tween.get(button).to({"scaleX":1.2,"scaleY":1.2}, 400);
+			createjs.Tween.get(tooltip).to({"scaleY":1}, 200);
+			createjs.Tween.get(button).to({"scaleX":1.2,"scaleY":1.2}, 200);
 		});
 		button.addEventListener("rollout", function(event){
 			this.scaleX = this.scaleY = this.scale;
-			createjs.Tween.get(tooltip).to({"scaleY":0}, 400);
-			createjs.Tween.get(button).to({"scaleX":1,"scaleY":1}, 400);
+			createjs.Tween.get(tooltip).to({"scaleY":0}, 200);
+			createjs.Tween.get(button).to({"scaleX":1,"scaleY":1}, 200);
 		});
 	}
 
