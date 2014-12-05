@@ -3,17 +3,16 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  res.render('home', { title: 'Express Shooting Game'});
+	res.render('menu', { title: 'Express Shooting Game'});
 });
 
 router.get('/game', function(req, res) {
-  res.render('game', { title: 'Express Shooting Game'});
+	res.render('game', { title: 'Express Shooting Game'});
 });
 
 router.get('/hangar', function(req, res) {
-    res.render('hangar', { title: 'Express Shooting Game'});
+	res.render('hangar', { title: 'Express Shooting Game'});
 });
-
 
 /*
 router.get('/helloworld', function(req, res) {

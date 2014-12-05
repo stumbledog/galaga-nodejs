@@ -12,6 +12,9 @@ var db = monk('localhost:27017/darknight');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
+var mongoose = require('mongoose');
+var fs = require('fs');
+
 var app = express();
 
 // view engine setup
@@ -55,6 +58,20 @@ if (app.get('env') === 'development') {
     });
 }
 
+mongoose.connect('mongodb://localhost/mongo');
+
+var db = mongoose.connection;
+
+db.on("error", console.error.bind(console, 'connection error:'));
+db.on("open", function(){
+    console.log("db connect opens!");
+    fs.readdirSync(__dirname + '/models').forEach(function(filename){
+        if(~filename.indexOf('.js')) require(__dirname+'/models/'+filename);
+    });
+});
+
+
+
 // production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
@@ -65,5 +82,12 @@ app.use(function(err, req, res, next) {
     });
 });
 
+
+app.get('/users', function(req, res){
+    res.send('aa');
+    mongoose.model('users').find(function(err, users){
+        res.send(users);
+    });
+});
 
 module.exports = app;

@@ -86,7 +86,7 @@ function Jarvis(){
 				.s("#EBAF3C").ss(tick*2.3).arc(320, 320, 70+tick*1.15, angle8-0.2, angle8-0.1)
 				.s("#E9662C").ss(tick*2.3).arc(320, 320, 70+tick*1.15, angle9-0.2, angle9-0.1);
 
-			arc6.graphics.s("#00AC65").ss(10)
+			arc6.graphics.s("#00a9f6").ss(10)
 				.arc(320, 320, 60, angle6, angle6+0.06);
 
 
