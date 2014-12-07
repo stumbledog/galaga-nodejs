@@ -1,7 +1,8 @@
 var mongoose = require('mongoose');
 
 var UsersSchema = mongoose.Schema({
-	name: String
+	name: String,
+	cookie_ID: String
 });
 
 UsersSchema.methods.greet = function(){
