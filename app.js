@@ -7,13 +7,12 @@ var bodyParser = require('body-parser');
 
 var mongo = require('mongodb');
 var monk = require('monk');
-var db = monk('localhost:27017/darknight');
+
+//var db = monk('localhost:27017/darknight');
+
+require('./db');
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
-
-var mongoose = require('mongoose');
-var fs = require('fs');
 
 var app = express();
 
@@ -28,14 +27,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+/*
 app.use(function(req,res,next){
     req.db = db;
     next();
 });
+*/
 
 app.use('/', routes);
-app.use('/users', users);
+//app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -58,20 +58,6 @@ if (app.get('env') === 'development') {
     });
 }
 
-mongoose.connect('mongodb://localhost/mongo');
-
-var db = mongoose.connection;
-
-db.on("error", console.error.bind(console, 'connection error:'));
-db.on("open", function(){
-    console.log("db connect opens!");
-    fs.readdirSync(__dirname + '/models').forEach(function(filename){
-        if(~filename.indexOf('.js')) require(__dirname+'/models/'+filename);
-    });
-});
-
-
-
 // production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
@@ -79,14 +65,6 @@ app.use(function(err, req, res, next) {
     res.render('error', {
         message: err.message,
         error: {}
-    });
-});
-
-
-app.get('/users', function(req, res){
-    res.send('aa');
-    mongoose.model('users').find(function(err, users){
-        res.send(users);
     });
 });
 
