@@ -8,6 +8,8 @@ var bodyParser = require('body-parser');
 var mongo = require('mongodb');
 var monk = require('monk');
 
+var session = require('express-session');
+
 //var db = monk('localhost:27017/darknight');
 
 require('./db');
@@ -15,10 +17,10 @@ require('./db');
 var routes = require('./routes/index');
 
 var app = express();
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));

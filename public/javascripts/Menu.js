@@ -25,7 +25,6 @@ function Menu(id){
 		stage.addChild(campaign_container, button_container);
 
 		jarvis = new Jarvis();
-
 		jarvis.addTo(stage);
 
 		image_loader = new createjs.LoadQueue(false);

@@ -2,9 +2,14 @@ var express = require('express');
 var router = express.Router();
 var User = require('../controllers/User');
 
+
+var user_session;
+
 /* GET home page. */
 router.get('/', function(req, res) {
-	res.render('menu', { title: 'Express Shooting Game'});
+  //user_session = req.session;
+  user_session = {name:"edward", email:"stumbledog@gmail.com"};
+	res.render('home', { title: 'Express Shooting Game', session:user_session});
 });
 
 router.get('/game', function(req, res) {

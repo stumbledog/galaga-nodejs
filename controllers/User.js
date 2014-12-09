@@ -64,8 +64,13 @@ exports.getList = function (req, res){
         email: "stumbledog@gmail.com"
     });
 
-    user.setPassword("qwer1234");
-    console.log(user.authentication("qwer1234"));
+    user.hashPassword("qwer1234");
+    //console.log(user.authentication("qwer1234"));
+    user.emailAuthentication();
 
-    console.log(user);
+    //console.log(user);
 };
+
+exports.sendAuthenticationEmail = function(req, res){
+
+}

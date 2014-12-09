@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
 var crypto = require('crypto');
 
+var mailer = require('../config/mailer');
+
 var Schema = mongoose.Schema;
 
 /**
@@ -76,13 +78,30 @@ UserSchema.methods = {
 		}
 	},
 
-	setPassword: function(password){
+	hashPassword: function(password){
 		var hashed_password = this.encryptPassword(password);
 		this.hashed_password = hashed_password;
 	},
 
 	skipValidation: function(){
 		return false;
+	},
+
+	emailAuthentication: function(){
+		var smtp_transport = mailer.getSmtpTransport();
+		console.log("send mail");
+		smtp_transport.sendMail({
+			from: "Edward <stumbledog@gmail.com>",
+			to: "ed <stumbledog@gmail.com>",
+			subject: "Hello ✔",
+			text: "Hello world ✔"
+		}, function(error, response){
+			if(error){
+				console.log(error);
+			}else{
+				console.log("Message sent: " + response.message);
+			}
+		});
 	}
 };
 
