@@ -33,13 +33,8 @@ exports.create = function (req, res) {
 };
 
 exports.insert = function (req, res){
-    var user = new User({
-        name: "edward",
-        email: "stumbledog@gmail.com",
-        password: "qwer1234"
-    });
+    var user = new User();
     user.save(function(err){
-        console.log(err);
         if(err){
             return res.render('users',{
                 //error:utils.errors(err.errors),
@@ -47,30 +42,41 @@ exports.insert = function (req, res){
                 title: 'Sign up'
             });
         }
-        console.log("user saved");
     });
+    return user;
 };
 
 exports.getList = function (req, res){
-    /*
     User.find({}, function(err, users){
         users.forEach(function(user){
-            console.log(user.password);
+            console.log(user);
         });
-    });*/
-
-    var user = new User({
-        name: "edward",
-        email: "stumbledog@gmail.com"
     });
+};
 
-    user.hashPassword("qwer1234");
-    //console.log(user.authentication("qwer1234"));
-    user.emailAuthentication();
-
-    //console.log(user);
+exports.getUser = function(id, callback){
+    User.findById(id, function(err, user){
+        callback(user);
+    });
 };
 
 exports.sendAuthenticationEmail = function(req, res){
 
+};
+
+exports.authenticate = function(req, res){
+    var user;
+
+    if(req.cookies.user_id){
+        console.log("load game");
+        User.findById(req.cookies.user_id, function(err, user){
+            user.greeting();
+//            res.render('home',{title:title});
+        });
+    }else{
+        console.log("new game");
+        user = User.insert();
+        res.cookie('user_id', user._id, {maxAge: 10*365*24*60*60*1000, httpOnly: true });
+//        res.render('home',{title:title});
+    }
 }

@@ -1,5 +1,6 @@
 (function Home(){
 	var image_loader, stage, jarvis, campaign_container, button_container;
+
 	init();
 
 	function init(){
@@ -16,7 +17,15 @@
 	}
 
 	function handleLoadComplete(){
-		console.log("loading completed");
+		var title = new createjs.Text("Galaga JS", "bold 20px Arial", "#ffffff");
+		title.textAlign = "center";
+		title.x = stage.canvas.width/2;
+		stage.addChild(title);
+		stage.update();
+	}
+
+	function loginForm(){
+		stage.canvas.innerHTML = "<form method = ";
 	}
 
 })();
