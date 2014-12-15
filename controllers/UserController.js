@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
+var Ship = mongoose.model('Ship');
 
 exports.load = function (req, res, next, id) {
     var options = {
@@ -70,13 +71,14 @@ exports.authenticate = function(req, res, callback){
     if(req.cookies.user_id){
         console.log("load game");
         User.findById(req.cookies.user_id, function(err, user){
-            user.greeting();
             callback();
         });
     }else{
         console.log("new game");
         user = new User();
-        user.save();
+        user.save(function(){
+
+        });
         res.cookie('user_id', user._id, {maxAge: 10*365*24*60*60*1000, httpOnly: true });
         callback();
     }
