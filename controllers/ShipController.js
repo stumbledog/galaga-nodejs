@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var ShipModel = mongoose.model('Ship');
+var ShapeModel = mongoose.model('Shape');
 
 exports.init = function(callback){
 	ShipModel.remove().exec();
@@ -27,3 +28,22 @@ exports.insert = function (req, res){
     });
     return ship;
 };
+
+exports.create = function(user, shapeName, callback){
+	ShapeModel.findOne({"name":shapeName}, function(err, shape){
+		var ship = new ShipModel({
+			"name": "Aries",
+			"speed": 5,
+			"_user": user._id,
+			"_shape": shape._id
+		});
+		ship.save(function(){
+			console.log("ship is saved");
+			callback();
+		});
+    });
+}
+
+exports.findByUser = function(user, callback){
+	ShipModel.find({"user":user._id}, callback);
+}

@@ -6,10 +6,9 @@ var ShipController = require('../controllers/ShipController');
 var title = "Galaga JS";
 
 router.get('/', function(req, res) {
-	UserController.authenticate(req, res, function(){
-		ShipController.init(function(user, ship){
-	        res.render('home',{title:title});
-		});
+	UserController.authenticate(req, res, function(user){
+		console.log("callback");
+		res.render('home',{title:title, user:user});
 	});
 });
 

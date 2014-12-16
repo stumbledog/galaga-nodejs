@@ -14,17 +14,23 @@ connection.once("open", function(){
 		require(models_path+'/'+file);
 	});
 	
-	var User = mongoose.model('User');
 	var Shape = mongoose.model('Shape');
-	var Ship = mongoose.model('Ship');
+	var Map = mongoose.model('Map');
 
-	var user = new User({});
-	var shape = new Shape({name:"Aries", components:[{x:58,y:113,width:14,height:28}]});
-
-	user.save(function(){
-		shape.save(function(){
-			var ship = new Ship({"user":user._id,"shape":shape._id});
-			ship.save();
-		});
+	var shape = new Shape({
+		"name": "Aries", 
+		"components": [{x:58,y:113,width:14,height:28}]
 	});
+	shape.save();
+
+	var map1 = new Map({_id:1,name:"star1",x:100,y:100});
+	map1.save();
+
+	var map2 = new Map({_id:2,name:"star2",x:200,y:200, _next:[1]});
+	map2.save(function(){
+		Map.find().populate("_next").exec(function(err, maps){console.log(maps)});
+	});
+
+
+
 });

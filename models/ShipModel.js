@@ -2,8 +2,13 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var ShipSchema = new Schema({
-	user:{type:Schema.Types.ObjectId, ref:'User'},
-	shape:{type:Schema.Types.ObjectId, ref:'Shape'},
+	name: String,
+	level: {type: Number, default: 1},
+	exp: {type: Number, default: 0},
+	speed: Number,
+	_user: {type: Schema.Types.ObjectId, ref: 'User'},
+	_shape: {type: Schema.Types.ObjectId, ref: 'Shape'},
+	created_at: {type: Date, default: Date.now},
 });
 
 mongoose.model('Ship', ShipSchema);

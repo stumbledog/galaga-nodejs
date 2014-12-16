@@ -5,8 +5,8 @@
 
 	function init(){
 		var manifest = [
-		{src:"./assets/images/Button64.png", id:"button"},
-		{src:"./assets/images/Ships64.png", id:"ship"},
+			{src:"./assets/images/Button64.png", id:"button"},
+			{src:"./assets/images/Ships64.png", id:"ship"},
 		];
 		stage = new createjs.Stage("home");
 		stage.enableMouseOver(10);
@@ -22,10 +22,6 @@
 		title.x = stage.canvas.width/2;
 		stage.addChild(title);
 		stage.update();
-	}
-
-	function loginForm(){
-		stage.canvas.innerHTML = "<form method = ";
 	}
 
 })();

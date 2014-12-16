@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var Ship = mongoose.model('Ship');
+var ShipController = require('../controllers/ShipController');
 
 exports.load = function (req, res, next, id) {
     var options = {
@@ -66,20 +67,33 @@ exports.sendAuthenticationEmail = function(req, res){
 };
 
 exports.authenticate = function(req, res, callback){
-    var user;
-
     if(req.cookies.user_id){
-        console.log("load game");
+        var self = this;
         User.findById(req.cookies.user_id, function(err, user){
-            callback();
+            if(user){
+                Ship
+                .find({"_user":user._id})
+                .populate("_shape")
+                .exec(function(err, ships){
+                    callback(user);
+                });
+            }else{
+                self.createUser(req, res, callback);
+            }
         });
     }else{
-        console.log("new game");
-        user = new User();
-        user.save(function(){
-
-        });
-        res.cookie('user_id', user._id, {maxAge: 10*365*24*60*60*1000, httpOnly: true });
-        callback();
+        this.createUser(req, res, callback);
     }
+}
+
+exports.createUser = function(req, res, callback){
+    console.log("new user");
+    var user = new User();
+    user.save(function(){
+        ShipController.create(user, "Aries", function(){
+            res.cookie('user_id', user._id, {maxAge: 10*365*24*60*60*1000, httpOnly: true });
+            callback(user);
+        });
+    });
+
 }
