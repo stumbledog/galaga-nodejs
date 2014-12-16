@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var Ship = mongoose.model('Ship');
+var Process = mongoose.model('Process');
+
 var ShipController = require('../controllers/ShipController');
 
 exports.load = function (req, res, next, id) {
@@ -75,6 +77,7 @@ exports.authenticate = function(req, res, callback){
                 .find({"_user":user._id})
                 .populate("_shape")
                 .exec(function(err, ships){
+                    req.session.user_id = user._id;
                     callback(user);
                 });
             }else{
@@ -87,13 +90,17 @@ exports.authenticate = function(req, res, callback){
 }
 
 exports.createUser = function(req, res, callback){
-    console.log("new user");
     var user = new User();
     user.save(function(){
-        ShipController.create(user, "Aries", function(){
-            res.cookie('user_id', user._id, {maxAge: 10*365*24*60*60*1000, httpOnly: true });
-            callback(user);
+        var process = new Process({_user:user._id, _star:1});
+        process.save(function(){
+            ShipController.create(user, "Aries", function(){
+                req.session.user_id = user._id;
+                res.cookie('user_id', user._id, {maxAge: 10*365*24*60*60*1000, httpOnly: true });
+                callback(user);
+            });
         });
+
     });
 
 }
