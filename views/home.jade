@@ -8,6 +8,9 @@ html(lang="en")
 		script(type='text/javascript' src='/javascripts/Button.js')
 	body
 		canvas#home(width=640,height=640)
+		form#game(method="POST", action="/game")
+			input#star(name="star",type="hidden")
+			input#difficulty(name="difficulty",type="hidden")
 		script.
 			var user = !{JSON.stringify(user)};
 			console.log(user);

@@ -13,8 +13,8 @@ function Firearm(stage, image_loader, magazine_size, reload_speed, bullet_speed,
         bullet = new Bullet(stage, image_loader, damage);
     }
 
-    this.fire = function(x, y){
-        bullet.spawn(x, y, this.bullet_speed);
+    this.fire = function(x, y, degree){
+        bullet.spawn(x, y, this.bullet_speed, degree);
     }
 
     this.getFireRate = function(){

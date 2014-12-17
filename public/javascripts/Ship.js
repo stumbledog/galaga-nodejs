@@ -4,6 +4,8 @@ function Ship(stage, image_loader, width, height){
     var move_right = move_left = move_up = move_down = trigger = false;
     var counter = 0;
     var exp = 0;
+    var last_mouse_position = {x:0, y:0};
+
     init(image_loader, width, height);
 
     function init(image_loader, width, height){
@@ -35,6 +37,14 @@ function Ship(stage, image_loader, width, height){
         }
     }
 
+    this.mouseDown = function(){
+        trigger = true;
+    }
+
+    this.mouseUp = function(){
+        trigger = false;
+    }
+
     this.keyUp = function(key){
         switch(key) {
             case 87:
@@ -50,12 +60,24 @@ function Ship(stage, image_loader, width, height){
         }
     }
 
+    this.mouseMove = function(event){
+        last_mouse_position.x = event.stageX;
+        last_mouse_position.y = event.stageY;
+    }
+
     this.getBullets = function(){
         return firearm.getBullets();
     }
 
     this.tick = function(stage) {
         counter++;
+
+        var dx = last_mouse_position.x - shape.x;
+        var dy = last_mouse_position.y - shape.y;
+        var degree = -Math.atan2(dx,dy) * 180 / Math.PI + 180;
+
+        shape.rotation = degree;
+
         if(move_up && shape.y > 100){
             shape.y -= VERTICAL_SPEED;
         }else if(move_down && shape.y < stage.canvas.height - shape.height){
@@ -69,7 +91,7 @@ function Ship(stage, image_loader, width, height){
         }
 
         if(trigger && counter >= firearm.getFireRate()){
-            firearm.fire(shape.x, shape.y - shape.height);
+            firearm.fire(shape.x, shape.y, degree);
             counter = 0;
         }
 

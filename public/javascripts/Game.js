@@ -1,5 +1,6 @@
-function Game(id){
-    var stage = new createjs.Stage(id);
+function Game(star_input){
+    console.log(star_input);
+    var stage = new createjs.Stage("game");
     var ship, image_loader, stars = [], enermies = [];
     var gold, exp, lvl;
     var pause_text;
@@ -32,6 +33,15 @@ function Game(id){
     function initEventHandler(){
         document.onkeydown = handleKeyDown;
         document.onkeyup = handleKeyUp;
+        stage.on("stagemousemove", function(event){
+            ship.mouseMove(event);
+        });
+        stage.on("stagemousedown", function(event){
+            ship.mouseDown(event);
+        });
+        stage.on("stagemouseup", function(event){
+            ship.mouseUp(event);
+        });
     }
 
     function handleKeyDown(event){
