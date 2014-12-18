@@ -4,4 +4,5 @@ block content
 	canvas#game(width=640, height=640)
 	script(type='text/javascript').
 		var star = !{JSON.stringify(star)};
-		var game = new Game(star);
+		var ship = !{JSON.stringify(ship)};
+		var game = new Game(star, ship);

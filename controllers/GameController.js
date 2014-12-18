@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var ShipModel = mongoose.model('Ship');
+var ShapeModel = mongoose.model('Shape');
 var StarModel = mongoose.model('Star');
 var EnermyModel = mongoose.model('Enermy');
 

@@ -73,11 +73,9 @@ exports.authenticate = function(req, res, callback){
         var self = this;
         User.findById(req.cookies.user_id, function(err, user){
             if(user){
-                Ship
-                .find({"_user":user._id})
-                .populate("_shape")
-                .exec(function(err, ships){
-                    req.session.user_id = user._id;
+                req.session.user = user;
+                ShipController.selectShip(user._selected_ship, function(ship){
+                    req.session.ship = ship;
                     callback(user);
                 });
             }else{
@@ -94,13 +92,15 @@ exports.createUser = function(req, res, callback){
     user.save(function(){
         var process = new Process({_user:user._id, _star:1});
         process.save(function(){
-            ShipController.create(user, "Aries", function(){
-                req.session.user_id = user._id;
-                res.cookie('user_id', user._id, {maxAge: 10*365*24*60*60*1000, httpOnly: true });
-                callback(user);
+            ShipController.create(user, "Aries", function(ship){
+                user._selected_ship = ship._id;
+                user.save(function(){
+                    req.session.user = user;
+                    req.session.ship = ship;
+                    res.cookie('user_id', user._id, {maxAge: 10*365*24*60*60*1000, httpOnly: true });
+                    callback(user);
+                })
             });
         });
-
     });
-
 }

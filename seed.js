@@ -15,17 +15,48 @@ connection.once("open", function(){
 	});
 
 	var Shape = mongoose.model('Shape');
+	var Firearm = mongoose.model('Firearm');
+	var Ship = mongoose.model('Ship');
 	var Star = mongoose.model('Star');
 	var Enermy = mongoose.model('Enermy');
 	var Wave = mongoose.model('Wave');
 
-
 	var shape = new Shape({
-		"name": "Aries", 
-		"components": [{x:58,y:113,width:14,height:28}]
+		name: "Aries", 
+		width: 14,
+		height: 28,
+		components: [{x:58,y:113,width:14,height:28}]
 	});
 
-	shape.save();
+	var ship = new Ship({
+		name: "Aries",
+		health: 10,
+		speed: 3,		
+	});
+
+	var firearm = new Firearm({
+		name:"aa",
+		rarity: 1,
+		cost: 1,
+		damage: 1,
+		firerate: 20,
+		accuracy: 50,
+		speed: 10,
+		critical_rate:10,
+		critical_damage:2,
+		bonus:{
+			damage:0,
+			firerate:0,
+			accuracy:0,
+			critical_rate:0,
+			critical_damage:0,
+		}
+	});
+
+	shape.save(function(){
+		ship._shape = shape._id;
+		ship.save();
+	});
 
 	var star1 = new Star({_id:1,name:"Elnath",x:320,y:320,radius:6,_next:[2], _wave:[1]});
 	var star2 = new Star({_id:2,name:"Decrux",x:280,y:380,radius:8,_next:[3]});
@@ -43,6 +74,8 @@ connection.once("open", function(){
 		gold:1,
 		speed:5,
 		range:200,
+		width:40,
+		height:21,
 		components:[
 			{x:243,y:113,width:12,height:24},
 			{x:171,y:76,width:23,height:21},
@@ -56,7 +89,8 @@ connection.once("open", function(){
 	wave.save(function(){
 		Wave.find({}).populate('enermies._enermy').exec(function(err, waves){
 			console.log(waves);
-		})
+			process.exit();
+		});
 	});
 
 });

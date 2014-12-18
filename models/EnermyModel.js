@@ -9,6 +9,8 @@ var EnermySchema = new Schema({
 	gold:Number,
 	speed:Number,
 	range:Number,
+	width:Number,
+	height:Number,
 	components:[{
 		x:Number,
 		y:Number,

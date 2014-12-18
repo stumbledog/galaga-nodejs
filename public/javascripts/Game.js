@@ -1,5 +1,6 @@
-function Game(star_input){
-    console.log(star_input);
+function Game(star_input, ship_input){
+    //console.log(star_input);
+    //console.log(ship_input);
     var stage = new createjs.Stage("game");
     var ship, image_loader, stars = [], enermies = [];
     var gold, exp, lvl;
@@ -24,7 +25,7 @@ function Game(star_input){
     }
 
     function handleLoadComplete(){
-        ship = new Ship(stage, image_loader, stage.canvas.width, stage.canvas.height);
+        ship = new Ship(stage, image_loader, stage.canvas.width, stage.canvas.height, ship_input);
         createjs.Ticker.addEventListener("tick", tick);
         createjs.Ticker.setFPS(30);
         initEventHandler();

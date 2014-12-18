@@ -1,25 +1,35 @@
-function Ship(stage, image_loader, width, height){
-    var VERTICAL_SPEED = HORIZONTAL_SPEED = 4;
-    var shape, firearm;
+function Ship(stage, image_loader, width, height, ship_input){
+    var container, shape, firearm;
     var move_right = move_left = move_up = move_down = trigger = false;
     var counter = 0;
     var exp = 0;
+    var speed;
     var last_mouse_position = {x:0, y:0};
 
-    init(image_loader, width, height);
+    init(image_loader, width, height, ship_input);
 
-    function init(image_loader, width, height){
+    function init(image_loader, width, height, ship_input){
+        speed = ship_input.speed;
+        container = new createjs.Container();
+        console.log(ship_input);
+        ship_input._shape.components.forEach(function(component){
+            var shape = new createjs.Shape();
+            shape.graphics.bf(image_loader.getResult("components")).drawRect(component.x,component.y,component.width,component.height);
+            shape.regX = component.x + component.width / 2;
+            shape.regY = component.y + component.height / 2;
+            container.addChild(shape);
+        });
+        container.x = container.y = 320;
+        container.width = ship_input.width;
+        container.height = ship_input.height;
+        stage.addChild(container);
+
+        initFirearm();
+    }
+
+    function initFirearm(){
+        console.log("init Firearm");
         firearm = new Firearm(stage, image_loader, 10, 1, 10, 5, 1);
-        shape = new createjs.Shape();
-        shape.graphics.bf(image_loader.getResult("components")).drawRect(58,113,14,28);
-        shape.regX = 65;
-        shape.regY = 127;
-        shape.x = width/2;
-        shape.y = height + 100;
-        shape.width = 14;
-        shape.height = 28;
-        stage.addChild(shape);
-        createjs.Tween.get(shape).to({y:stage.canvas.height - 100},2000);
     }
 
     this.keyDown = function(key){
@@ -72,26 +82,26 @@ function Ship(stage, image_loader, width, height){
     this.tick = function(stage) {
         counter++;
 
-        var dx = last_mouse_position.x - shape.x;
-        var dy = last_mouse_position.y - shape.y;
+        var dx = last_mouse_position.x - container.x;
+        var dy = last_mouse_position.y - container.y;
         var degree = -Math.atan2(dx,dy) * 180 / Math.PI + 180;
 
-        shape.rotation = degree;
+        container.rotation = degree;
 
-        if(move_up && shape.y > 100){
-            shape.y -= VERTICAL_SPEED;
-        }else if(move_down && shape.y < stage.canvas.height - shape.height){
-            shape.y += VERTICAL_SPEED;
+        if(move_up && container.y > 0){
+            container.y -= speed;
+        }else if(move_down && container.y < 640){
+            container.y += speed;
         }
 
-        if(move_right && shape.x < stage.canvas.width - shape.width){
-            shape.x += VERTICAL_SPEED;
-        }else if(move_left && shape.x >= shape.width){
-            shape.x -= VERTICAL_SPEED;
+        if(move_right && container.x < 640){
+            container.x += speed;
+        }else if(move_left && container.x > 0){
+            container.x -= speed;
         }
 
         if(trigger && counter >= firearm.getFireRate()){
-            firearm.fire(shape.x, shape.y, degree);
+            firearm.fire(container.x, container.y, degree);
             counter = 0;
         }
 
