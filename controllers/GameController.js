@@ -11,3 +11,7 @@ exports.init = function(req, res, callback){
 		});
 	});
 }
+
+exports.getEnermies = function(){
+
+}

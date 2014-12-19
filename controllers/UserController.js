@@ -4,7 +4,7 @@ var Ship = mongoose.model('Ship');
 var Process = mongoose.model('Process');
 
 var ShipController = require('../controllers/ShipController');
-
+/*
 exports.load = function (req, res, next, id) {
     var options = {
         criteria: { _id : id }
@@ -67,7 +67,7 @@ exports.getUser = function(id, callback){
 exports.sendAuthenticationEmail = function(req, res){
 
 };
-
+*/
 exports.authenticate = function(req, res, callback){
     if(req.cookies.user_id){
         var self = this;

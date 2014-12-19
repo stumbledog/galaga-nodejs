@@ -99,16 +99,18 @@ function Game(star_input, ship_input){
                     enermy.tick(stage);
                 });
                 var bullets = ship.getBullets();
-                if(bullets.getBulletShape().length){
-                    enermies.forEach(function(enermy){
-                        if(enermy.status){
-                            enermy.isHit(bullets);
-                            if(!enermy.status){
-                                stage.removeChild(enermy.getContainer());
+                bullets.forEach(function(bullet){
+                    if(bullet.getBulletShape().length){
+                        enermies.forEach(function(enermy){
+                            if(enermy.status){
+                                enermy.isHit(bullet);
+                                if(!enermy.status){
+                                    stage.removeChild(enermy.getContainer());
+                                }
                             }
-                        }
-                    });
-                }
+                        });
+                    }
+                });
             }
 
             spawnEnermies(ticks);

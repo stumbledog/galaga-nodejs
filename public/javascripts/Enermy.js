@@ -70,8 +70,10 @@ function Enermy(stage, image_loader, type, path){
     }
 
     function damaged(bullet){
-        health -= bullet.getDamage();
-        var text = new createjs.Text(bullet.getDamage(), "bold 16px Arial", "#CC0000");
+        var damage = bullet.getDamage();
+        health -= damage.amount;
+        var font_size = damage.critical?"16":"12";
+        var text = new createjs.Text(damage.amount, font_size+"px Arial", damage.critical?"#F6D605":"#F5F4FE");
         text.x = container.x;
         text.y = container.y;
         text.textBaseline = "alphabetic";
@@ -87,6 +89,7 @@ function Enermy(stage, image_loader, type, path){
     }
 
     function destroyed(bullet){
+        /*
         var text = new createjs.Text("+"+gold, "bold 16px Arial", "#FFD34E");
         text.x = container.x;
         text.y = container.y;
@@ -96,7 +99,7 @@ function Enermy(stage, image_loader, type, path){
         .to({x:text.x+10, y:text.y-20, alpha:0}, 1000).call(function(item){
             stage.removeChild(item.target);
         });
-
+        */
         self.status = DESTROYED;
     }
 

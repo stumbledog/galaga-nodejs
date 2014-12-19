@@ -35,14 +35,14 @@ connection.once("open", function(){
 	});
 
 	var firearm = new Firearm({
-		name:"aa",
+		name:"gun",
 		rarity: 1,
 		cost: 1,
 		damage: 1,
 		firerate: 20,
 		accuracy: 50,
 		speed: 10,
-		critical_rate:10,
+		critical_rate:0.1,
 		critical_damage:2,
 		bonus:{
 			damage:0,
@@ -54,8 +54,11 @@ connection.once("open", function(){
 	});
 
 	shape.save(function(){
-		ship._shape = shape._id;
-		ship.save();
+		firearm.save(function(){
+			ship._shape = shape._id;
+			ship._firearm.push(firearm._id);
+			ship.save();
+		});
 	});
 
 	var star1 = new Star({_id:1,name:"Elnath",x:320,y:320,radius:6,_next:[2], _wave:[1]});

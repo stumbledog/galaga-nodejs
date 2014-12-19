@@ -1,18 +1,22 @@
-function Bullet(stage, loader, damage){
+function Bullet(stage, image_loader, speed, damage, critical_rate, critical_damage){
     this.stage = stage;
+    this.speed = speed;
     this.damage = damage;
+    this.critical_rate = critical_rate;
+    this.critical_damage = critical_damage;
+
     var self = this;
     var shape;
     var bullets = [];
 
-    init(loader);
+    init(image_loader);
 
-    function init(loader){
+    function init(image_loader){
         createjs.Shape.prototype.getbullet = function(){
             return self;
         }
         shape = new createjs.Shape();
-        shape.graphics.bf(loader.getResult("items")).drawRect(124,231,10,4);
+        shape.graphics.bf(image_loader.getResult("items")).drawRect(124,231,10,4);
         //shape.cache(0,0,0,0);
         shape.cache(124,231,10,4);
         shape.regX = 129;
@@ -21,7 +25,10 @@ function Bullet(stage, loader, damage){
     }
 
     this.getDamage = function(){
-        return this.damage;
+        if(Math.random() <= critical_rate){
+            return {critical:true, amount:this.damage * this.critical_damage};
+        }
+        return {critical:false, amount:this.damage};
     }
 
     this.getBulletShape = function(){
@@ -35,12 +42,12 @@ function Bullet(stage, loader, damage){
         delete bullet;
     }
 
-    this.spawn = function(x, y, speed, degree){
+    this.spawn = function(x, y, degree){
         var bullet_clone = shape.clone();
         bullet_clone.x = x;
         bullet_clone.y = y;
         bullet_clone.rotation = degree + 90;
-        bullet_clone.speed = speed;
+        bullet_clone.speed = this.speed;
         bullets.push(bullet_clone);
         this.stage.addChild(bullet_clone);
     }

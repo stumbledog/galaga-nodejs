@@ -8,6 +8,7 @@ var ShipSchema = new Schema({
 	health: Number,
 	speed: Number,
 	_user: {type: Schema.Types.ObjectId, ref: 'User'},
+	_firearm: [{type: Schema.Types.ObjectId, ref: 'Firearm'}],
 	_shape: {type: Schema.Types.ObjectId, ref: 'Shape'},
 	created_at: {type: Date, default: Date.now},
 });

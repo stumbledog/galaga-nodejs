@@ -1,20 +1,20 @@
-function Firearm(stage, image_loader, magazine_size, reload_speed, bullet_speed,
-    fire_rate, damage){
-    this.remaining_bullet = this.margazine = magazine_size;
-    this.reload_speed = reload_speed;
-    this.bullet_speed = bullet_speed;
-    this.fire_rate = fire_rate;
+function Firearm(stage, image_loader, speed, firerate, damage, critical_rate, critical_damage){
+    this.firerate = firerate;
 
     var bullet;
+    var ticks = 0;
 
-    init(stage, image_loader, damage);
+    init(stage, image_loader, speed, damage, critical_rate, critical_damage);
 
-    function init(stage, image_loader, damage){
-        bullet = new Bullet(stage, image_loader, damage);
+    function init(stage, image_loader, speed, damage, critical_rate, critical_damage){
+        bullet = new Bullet(stage, image_loader, speed, damage, critical_rate, critical_damage);
     }
 
     this.fire = function(x, y, degree){
-        bullet.spawn(x, y, this.bullet_speed, degree);
+        if(ticks >= this.firerate){            
+            ticks = 0;
+            bullet.spawn(x, y, degree);
+        }
     }
 
     this.getFireRate = function(){
@@ -30,6 +30,7 @@ function Firearm(stage, image_loader, magazine_size, reload_speed, bullet_speed,
     }
 
     this.tick = function(stage){
+        ticks++;
         bullet.tick(stage);
     }
 }
