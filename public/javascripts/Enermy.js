@@ -1,4 +1,6 @@
-function Enermy(stage, image_loader, type, path){
+function Enermy(image_loader, type, path){
+    console.log(Loader);
+    var stage = Stage.getInstance();
     var ALIVE = true;
     var DESTROYED = false;
     var NORMAL = 1;
@@ -103,7 +105,7 @@ function Enermy(stage, image_loader, type, path){
         self.status = DESTROYED;
     }
 
-    this.tick = function(stage){
+    this.tick = function(){
         var angle = (Math.random()-.5)*2;
         container.rotation += angle;
         health_bar.rotation -= angle;

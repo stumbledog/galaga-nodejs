@@ -11,7 +11,6 @@ function Ship(stage, image_loader, width, height, ship_input){
 	function init(image_loader, width, height, ship_input){
 		speed = ship_input.speed;
 		container = new createjs.Container();
-		console.log(ship_input);
 		ship_input._shape.components.forEach(function(component){
 			var shape = new createjs.Shape();
 			shape.graphics.bf(image_loader.getResult("components")).drawRect(component.x,component.y,component.width,component.height);

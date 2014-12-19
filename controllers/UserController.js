@@ -74,7 +74,7 @@ exports.authenticate = function(req, res, callback){
         User.findById(req.cookies.user_id, function(err, user){
             if(user){
                 req.session.user = user;
-                ShipController.selectShip(user._selected_ship, function(ship){
+                ShipController.select(user._selected_ship, function(ship){
                     req.session.ship = ship;
                     callback(user);
                 });

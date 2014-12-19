@@ -17,16 +17,13 @@ exports.init = function(callback){
 }
 */
 exports.create = function(user, shipName, callback){
+	var self = this;
 	ShipModel.findOne({name:shipName, _user:null}, function(err, model){
 		var ship = new ShipModel(model);
 		ship._id = mongoose.Types.ObjectId();
 		ship._user = user._id;
 		ship.save(function(){
-			ShapeModel.populate(ship, {path:'_shape'}, function(err, ship){
-				FirearmModel.populate(ship, {path:'_firearm'}, function(err, ship){
-					callback(ship);
-				});
-			});
+			self.populateShip(ship, callback);
 		});
 	});
 }
@@ -42,8 +39,17 @@ exports.getShips = function(user, callback){
 }
 
 exports.select = function(ship_id, callback){
+	var self = this;
 	ShipModel.findById(ship_id, function(err, ship){
-		callback(ship);
+		self.populateShip(ship, callback);
+	});
+}
+
+exports.populateShip = function(ship, callback){
+	ShapeModel.populate(ship, {path:'_shape'}, function(err, ship){
+		FirearmModel.populate(ship, {path:'_firearm'}, function(err, ship){
+			callback(ship);
+		});
 	});
 }
 
