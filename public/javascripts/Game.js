@@ -1,24 +1,20 @@
 function Game(star_input, ship_input){
-    var stage = Stage.getInstance();
-    Loader;
-    var ship, image_loader, stars = [], waves = [], enermies = [];
+    var ship, stars = [], waves = [], enermies = [];
     var gold, exp, lvl;
     var pause_text;
 
     init();
 
-
     function init(){
+        stage = new createjs.Stage("game");
         var manifest = [
             {src:"./assets/images/Components64.png", id:"components"},
             {src:"./assets/images/Items64.png", id:"items"}
         ];
 
-        image_loader = new createjs.LoadQueue(false);
-        image_loader.addEventListener("complete", handleLoadComplete);
-        image_loader.loadManifest(manifest);
-        
-        Loader = image_loader;
+        loader = new createjs.LoadQueue(false);
+        loader.addEventListener("complete", handleLoadComplete);
+        loader.loadManifest(manifest);
 
         pause_text = new createjs.Text("PAUSED\nPress 'P' to resume", "bold 24px Arial", "#FFFFFF");
         pause_text.x = stage.canvas.width/2;
@@ -28,9 +24,9 @@ function Game(star_input, ship_input){
     }
 
     function handleLoadComplete(){
-        ship = new Ship(stage, image_loader, stage.canvas.width, stage.canvas.height, ship_input);
+        ship = new Ship(ship_input);
         star_input._wave.forEach(function(wave_property){
-            var wave = new Wave(stage, image_loader, wave_property);
+            var wave = new Wave(wave_property);
             waves.push(wave);
         });
         createjs.Ticker.addEventListener("tick", tick);
@@ -129,7 +125,7 @@ function Game(star_input, ship_input){
 
     function spawnEnermies(ticks){
         if(ticks%60 == 0){
-            var enermy = new Enermy(image_loader, 1, 1);
+            var enermy = new Enermy(1, 1);
             enermies.push(enermy);
         }
         /*
@@ -138,7 +134,7 @@ function Game(star_input, ship_input){
             case 30:
             case 60:
             case 90:
-                var enermy = new Enermy(stage, image_loader, 1, 1);
+                var enermy = new Enermy(stage, loader, 1, 1);
                 enermies.push(enermy);
             return false;
         }*/

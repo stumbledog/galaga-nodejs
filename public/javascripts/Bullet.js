@@ -1,22 +1,21 @@
-function Bullet(stage, image_loader, speed, damage, critical_rate, critical_damage){
-    this.stage = stage;
-    this.speed = speed;
-    this.damage = damage;
-    this.critical_rate = critical_rate;
-    this.critical_damage = critical_damage;
+function Bullet(speed, damage, critical_rate, critical_damage){
+	this.speed = speed;
+	this.damage = damage;
+	this.critical_rate = critical_rate;
+	this.critical_damage = critical_damage;
 
-    var self = this;
-    var shape;
-    var bullets = [];
+	var self = this;
+	var shape;
+	var bullets = [];
 
-    init(image_loader);
+    init();
 
-    function init(image_loader){
+    function init(){
         createjs.Shape.prototype.getbullet = function(){
             return self;
         }
         shape = new createjs.Shape();
-        shape.graphics.bf(image_loader.getResult("items")).drawRect(124,231,10,4);
+        shape.graphics.bf(loader.getResult("items")).drawRect(124,231,10,4);
         //shape.cache(0,0,0,0);
         shape.cache(124,231,10,4);
         shape.regX = 129;
@@ -49,21 +48,20 @@ function Bullet(stage, image_loader, speed, damage, critical_rate, critical_dama
         bullet_clone.rotation = degree + 90;
         bullet_clone.speed = this.speed;
         bullets.push(bullet_clone);
-        this.stage.addChild(bullet_clone);
+        stage.addChild(bullet_clone);
     }
 
     this.setStage = function(newStage){
         stage = newStage;
     }
 
-    this.tick = function(stage){
+    this.tick = function(){
         if(bullets.length){
             var visible_bullets = [];
             bullets.forEach(function(bullet){
-
                 bullet.x -= bullet.speed * Math.cos(bullet.rotation/180*Math.PI);
                 bullet.y -= bullet.speed * Math.sin(bullet.rotation/180*Math.PI);
-                if(bullet.y<0 || bullet.y>640 || bullet.x<0 || bullet.x>640){
+                if(bullet.y < -20 || bullet.y > 660 || bullet.x < -20 || bullet.x > 660){
                     stage.removeChild(bullet);
                     delete bullet;
                 }else{

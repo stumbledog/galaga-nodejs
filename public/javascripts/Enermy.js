@@ -1,6 +1,4 @@
-function Enermy(image_loader, type, path){
-    console.log(Loader);
-    var stage = Stage.getInstance();
+function Enermy(type, path){
     var ALIVE = true;
     var DESTROYED = false;
     var NORMAL = 1;
@@ -11,18 +9,18 @@ function Enermy(image_loader, type, path){
     var self = this;
     var exp, gold, rating;
     var ticks =0;
-    init(image_loader);
+    init();
 
-    function init(image_loader){
+    function init(){
         container = new createjs.Container();
         self.container = container;
         self.status = ALIVE;
-        setShip(container, type, image_loader);
+        setShip(container, type);
         stage.addChild(container);
         createjs.Tween.get(container).to({y:100},2000);
     }
 
-    function setShip(container, type, image_loader){
+    function setShip(container, type){
         switch(type){
             case 1:
                 health_max = health = 3;
@@ -30,13 +28,13 @@ function Enermy(image_loader, type, path){
                 var left_wing = new createjs.Shape();
                 var right_wing = new createjs.Shape();
                 health_bar = new createjs.Shape();
-                body.graphics.bf(image_loader.getResult("components")).dr(243,113,12,24);
+                body.graphics.bf(loader.getResult("components")).dr(243,113,12,24);
                 body.width = 12;
                 body.height = 24;
                 body.regX = 243 + body.width/2;
                 body.regY = 113 + body.height/2;
                 body.rotation = 180;
-                left_wing.graphics.bf(image_loader.getResult("components")).dr(171,76,23,21);
+                left_wing.graphics.bf(loader.getResult("components")).dr(171,76,23,21);
                 left_wing.x = 12;
                 left_wing.y = -8;
                 left_wing.width = 23;
@@ -44,7 +42,7 @@ function Enermy(image_loader, type, path){
                 left_wing.regX = 171 + left_wing.width/2;
                 left_wing.regY = 76 + left_wing.height/2;
                 left_wing.rotation = 180;
-                right_wing.graphics.bf(image_loader.getResult("components")).dr(208,76,23,21);
+                right_wing.graphics.bf(loader.getResult("components")).dr(208,76,23,21);
                 right_wing.x = -12;
                 right_wing.y = -8;
                 right_wing.width = 23;

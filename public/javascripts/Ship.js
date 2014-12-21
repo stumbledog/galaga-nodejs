@@ -1,19 +1,21 @@
-function Ship(stage, image_loader, width, height, ship_input){
+function Ship(ship_input){
 	var container, shape, firearms = [];
 	var move_right = move_left = move_up = move_down = trigger = false;
 	var counter = 0;
 	var exp = 0;
 	var speed;
 	var last_mouse_position = {x:0, y:0};
+	
+	init(ship_input);
 
-	init(image_loader, width, height, ship_input);
-
-	function init(image_loader, width, height, ship_input){
+	function init(ship_input){
+		var width = stage.canvas.width;
+		var height = stage.canvas.height;
 		speed = ship_input.speed;
 		container = new createjs.Container();
 		ship_input._shape.components.forEach(function(component){
 			var shape = new createjs.Shape();
-			shape.graphics.bf(image_loader.getResult("components")).drawRect(component.x,component.y,component.width,component.height);
+			shape.graphics.bf(loader.getResult("components")).drawRect(component.x,component.y,component.width,component.height);
 			shape.regX = component.x + component.width / 2;
 			shape.regY = component.y + component.height / 2;
 			container.addChild(shape);
@@ -27,7 +29,7 @@ function Ship(stage, image_loader, width, height, ship_input){
 
 	function initFirearm(firearm_property_array){
 		firearm_property_array.forEach(function(firearm_property){
-			var firearm = new Firearm(stage, image_loader, firearm_property.firerate, firearm_property.speed, firearm_property.damage, firearm_property.critical_rate, firearm_property.critical_damage);
+			var firearm = new Firearm(firearm_property.firerate, firearm_property.speed, firearm_property.damage, firearm_property.critical_rate, firearm_property.critical_damage);
 			firearms.push(firearm);
 		});
 	}
@@ -83,7 +85,7 @@ function Ship(stage, image_loader, width, height, ship_input){
         return bullets;
     }
 
-    this.tick = function(stage) {
+    this.tick = function() {
         var dx = last_mouse_position.x - container.x;
         var dy = last_mouse_position.y - container.y;
         var degree = -Math.atan2(dx,dy) * 180 / Math.PI + 180;
@@ -106,7 +108,7 @@ function Ship(stage, image_loader, width, height, ship_input){
             if(trigger){
                 firearm.fire(container.x, container.y, degree);
             }
-            firearm.tick(stage);
+            firearm.tick();
         });
     }
 };

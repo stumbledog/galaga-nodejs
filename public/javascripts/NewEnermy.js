@@ -1,11 +1,10 @@
-function NewEnermy(stage, image_loader, property){
+function NewEnermy(property){
 	var ALIVE = true;
 	var DESTROYED = false;
 	var NORMAL = 1;
 
 	var container;
 	var stage = stage;
-	var image_loader = image_loader;
 
 	var width, height;
 
@@ -15,7 +14,6 @@ function NewEnermy(stage, image_loader, property){
 
 	function init(property){
 		container = new createjs.Container();
-		this.status = ALIVE
 
 		width = property.width;
 		height = property.height;
@@ -26,7 +24,7 @@ function NewEnermy(stage, image_loader, property){
 	function renderShape(components){
 		components.forEach(function(component){
 			var shape = new createjs.Shape();
-			shape.graphics.bf(image_loader.getResult("components")).dr(component.x,component.y,component.width,component.height);
+			shape.graphics.bf(loader.getResult("components")).dr(component.x,component.y,component.width,component.height);
 			shape.regX = component.x + component.width / 2;
 			shape.regY = component.y + component.height / 2;
 			container.addChild(shape);

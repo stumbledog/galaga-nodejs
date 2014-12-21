@@ -16,6 +16,7 @@ router.get('/', function(req, res) {
 
 router.post('/game', function(req, res) {
 	if(!req.body.star || !req.session.user || !req.session.ship){
+		console.log("redirect");
 		res.redirect("/");
 	}else{
 		GameController.init(req, res, function(star){
