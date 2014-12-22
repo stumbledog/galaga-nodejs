@@ -4,11 +4,8 @@ function NewEnermy(property){
 	var NORMAL = 1;
 
 	var container;
-	var stage = stage;
 
 	var width, height;
-
-	console.log(property);
 
 	init(property);
 
@@ -24,10 +21,14 @@ function NewEnermy(property){
 	function renderShape(components){
 		components.forEach(function(component){
 			var shape = new createjs.Shape();
-			shape.graphics.bf(loader.getResult("components")).dr(component.x,component.y,component.width,component.height);
-			shape.regX = component.x + component.width / 2;
-			shape.regY = component.y + component.height / 2;
+			shape.graphics.bf(loader.getResult("components")).dr(component.crop_x,component.crop_y,component.width,component.height);
+			shape.regX = component.crop_x + component.width / 2;
+			shape.regY = component.crop_y + component.height / 2;
+			shape.x = component.x;
+			shape.y = component.y;
 			container.addChild(shape);
 		});
+		container.x =container.y = 320;
+		stage.addChild(container);
 	}
 }

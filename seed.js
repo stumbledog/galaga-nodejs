@@ -80,9 +80,9 @@ connection.once("open", function(){
 		width:40,
 		height:21,
 		components:[
-			{x:243,y:113,width:12,height:24},
-			{x:171,y:76,width:23,height:21},
-			{x:208,y:76,width:23,height:21},
+			{x:-12,y:8,crop_x:171,crop_y:76,width:23,height:21},
+			{x:+12,y:8,crop_x:208,crop_y:76,width:23,height:21},
+			{crop_x:243,crop_y:113,width:12,height:24},
 		]		
 	});
 

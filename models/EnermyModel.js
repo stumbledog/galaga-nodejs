@@ -12,8 +12,10 @@ var EnermySchema = new Schema({
 	width:Number,
 	height:Number,
 	components:[{
-		x:Number,
-		y:Number,
+		x:{type:Number,default:0},
+		y:{type:Number,default:0},
+		crop_x:Number,
+		crop_y:Number,
 		width:Number,
 		height:Number
 	}]
