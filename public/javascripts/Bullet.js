@@ -1,4 +1,5 @@
-function Bullet(x, y, degree, speed, damage, critical_rate, critical_damage){
+function Bullet(firearm, x, y, degree, speed, damage, critical_rate, critical_damage){
+	this.firearm = firearm;
 	this.x = x;
 	this.y = y;
 	this.degree = degree;
@@ -22,41 +23,16 @@ function Bullet(x, y, degree, speed, damage, critical_rate, critical_damage){
 		this.shape.speed = this.speed;
 		stage.addChild(this.shape);
 	}
-    /*
-    this.getDamage = function(){
-        if(Math.random() <= critical_rate){
-            return {critical:true, amount:this.damage * this.critical_damage};
-        }
-        return {critical:false, amount:this.damage};
-    }*/
 }
 
-
-/*
-Bullet.prototype.spawn = function(x, y, degree){
-	var bullet_clone = this.shape.clone();
-	bullet_clone.x = x;
-	bullet_clone.y = y;
-	bullet_clone.rotation = degree + 90;
-	bullet_clone.speed = this.speed;
-	this.bullets.push(bullet_clone);
-	stage.addChild(bullet_clone);
-}
-*/
 Bullet.prototype.getDamage = function(){
-	return {critical:true, amount:this.damage * ((Math.random() <= this.critical_rate) ? this.critical_damage : 1)};
-	/*
-	if(Math.random() <= critical_rate){
-		return {critical:true, amount:this.damage * this.critical_damage};
-	}
-	return {critical:false, amount:this.damage};*/
+	var critical = Math.random() <= this.critical_rate;
+	return {critical:critical, amount:this.damage * (critical ? this.critical_damage : 1)};
 }
 
 Bullet.prototype.hit = function(bullet){
-	var index = this.bullets.indexOf(bullet);
-	this.bullets.splice(index, 1);
-	stage.removeChild(bullet);
-	delete bullet;
+	stage.removeChild(this.shape);
+	this.firearm.removeBullet(this);
 }
 
 Bullet.prototype.tick = function(){
@@ -69,29 +45,10 @@ Bullet.prototype.tick = function(){
 		wave.enermies.forEach(function(enermy){
 			if(enermy.status){
 				if(enermy.isHit(this.shape)){
+					this.hit();
 					enermy.damaged(this);
-				}				
+				}
 			}
 		}, this);
-		//visible_bullets.push(bullet);
 	}
-		/*	
-	var visible_bullets = [];
-
-	this.bullets.forEach(function(bullet){
-		bullet.x -= bullet.speed * Math.cos(bullet.rotation/180*Math.PI);
-		bullet.y -= bullet.speed * Math.sin(bullet.rotation/180*Math.PI);
-		if(bullet.y < -100 || bullet.y > 740 || bullet.x < -100 || bullet.x > 740){
-			stage.removeChild(bullet);
-			delete bullet;
-		}else{
-			wave.enermies.forEach(function(enermy){
-				if(enermy.isHit(bullet)){
-					enermy.damaged(bullet);
-				}
-			}, this);
-			visible_bullets.push(bullet);
-		}
-	});
-	bullets = visible_bullets;*/
 }

@@ -76,9 +76,9 @@ connection.once("open", function(){
 		exp:1,
 		gold:1,
 		speed:.5,
-		range:300,
+		range:200,
 		width:40,
-		height:21,
+		height:40,
 		firearm:{
 			damage:1,
 			firerate:60,
@@ -93,7 +93,7 @@ connection.once("open", function(){
 
 	enermy.save();
 
-	var wave1 = new Wave({_id:1,enermies:[{count:80,_enermy:1}]});
+	var wave1 = new Wave({_id:1,enermies:[{count:8,_enermy:1}]});
 	var wave2 = new Wave({_id:2,enermies:[{count:16,_enermy:1}]});
 	var wave3 = new Wave({_id:3,enermies:[{count:32,_enermy:1}]});
 	wave1.save();

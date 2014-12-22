@@ -93,48 +93,10 @@ function Game(star_input, ship_input){
                 }
             });
             stars = visible_stars;
-/*
-            if(enermies.length){
-                enermies.forEach(function(enermy){
-                    enermy.tick();
-                });
-                var bullets = ship.getBullets();
-                bullets.forEach(function(bullet){
-                    if(bullet.getBulletShape().length){
-                        enermies.forEach(function(enermy){
-                            if(enermy.status){
-                                enermy.isHit(bullet);
-                                if(!enermy.status){
-                                    stage.removeChild(enermy.getContainer());
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-
-            spawnEnermies(ticks);*/
             ship.tick();
             wave.tick();
             ticks++;
         }
         stage.update();
-    }
-
-    function spawnEnermies(ticks){
-        if(ticks%60 == 0){
-            var enermy = new Enermy(1, 1);
-            enermies.push(enermy);
-        }
-        /*
-        switch(time){
-            case 0:
-            case 30:
-            case 60:
-            case 90:
-                var enermy = new Enermy(stage, loader, 1, 1);
-                enermies.push(enermy);
-            return false;
-        }*/
     }
 }

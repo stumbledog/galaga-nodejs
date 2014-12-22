@@ -1,142 +1,124 @@
-function Enermy(type, path){
-    var ALIVE = true;
-    var DESTROYED = false;
-    var NORMAL = 1;
+function Enermy(wave, property){
+	var ALIVE = true;
+	var DESTROYED = false;
+	var NORMAL = 1;
 
-    var container;
-    var health, health_bar, health_max;
-    var x_min, x_max, y_min, y_max, width, height;
-    var self = this;
-    var exp, gold, rating;
-    var ticks =0;
-    init();
+	this.wave = wave;
+	this.stats = property;
 
-    function init(){
-        container = new createjs.Container();
-        self.container = container;
-        self.status = ALIVE;
-        setShip(container, type);
-        stage.addChild(container);
-        createjs.Tween.get(container).to({y:100},2000);
-    }
+	init.call(this);
 
-    function setShip(container, type){
-        switch(type){
-            case 1:
-                health_max = health = 3;
-                var body = new createjs.Shape();
-                var left_wing = new createjs.Shape();
-                var right_wing = new createjs.Shape();
-                health_bar = new createjs.Shape();
-                body.graphics.bf(loader.getResult("components")).dr(243,113,12,24);
-                body.width = 12;
-                body.height = 24;
-                body.regX = 243 + body.width/2;
-                body.regY = 113 + body.height/2;
-                body.rotation = 180;
-                left_wing.graphics.bf(loader.getResult("components")).dr(171,76,23,21);
-                left_wing.x = 12;
-                left_wing.y = -8;
-                left_wing.width = 23;
-                left_wing.height = 21;
-                left_wing.regX = 171 + left_wing.width/2;
-                left_wing.regY = 76 + left_wing.height/2;
-                left_wing.rotation = 180;
-                right_wing.graphics.bf(loader.getResult("components")).dr(208,76,23,21);
-                right_wing.x = -12;
-                right_wing.y = -8;
-                right_wing.width = 23;
-                right_wing.height = 21;
-                right_wing.regX = 208 + right_wing.width/2;
-                right_wing.regY = 76 + right_wing.height/2;
-                right_wing.rotation = 180;
+	function init(){
+		this.bullets = [];
+		this.health = this.stats.health;
+		this.health_max = this.stats.health;
+		this.status = true;
+		this.ticks = 0;
 
-                x_min = y_min = -20;
-                x_max = y_max = 20;
-                width = 40;
-                height = 40;
+		this.renderShip();
+		this.renderHealthBar();
+	}
+}
 
-                health_bar.graphics.beginFill("#CC0000").drawRect(x_min, y_min-10, width, width/10);
+Enermy.prototype.renderShip = function(){
+	this.container = new createjs.Container();
+	this.stats.components.forEach(function(component){
+		var shape = new createjs.Shape();
+		shape.graphics.bf(loader.getResult("components")).dr(component.crop_x, component.crop_y, component.width, component.height);
+		shape.regX = component.crop_x + component.width / 2;
+		shape.regY = component.crop_y + component.height / 2;
+		shape.x = component.x;
+		shape.y = component.y;
+		this.container.addChild(shape);
+	}, this);
+	this.container.x = Math.random()*640;
+	this.container.y = Math.random()*640;
+	stage.addChild(this.container);
+}
 
-                container.addChild(left_wing,right_wing, body, health_bar);
-                container.setBounds(x_min,y_min,width,height);
-                container.x = Math.random()*stage.canvas.width;
-                container.y = -100;
-                exp = 1;
-                gold = 1;
-                rating = NORMAL;
-            return false;
-        }
-    }
+Enermy.prototype.renderHealthBar = function(){
+	this.health_bar = new createjs.Shape();
+	this.health_bar.graphics.beginFill("#CC0000").drawRect( -this.stats.width/2, -this.stats.height / 2 - 15, this.stats.width, this.stats.width/10);	
+	this.container.addChild(this.health_bar);
+}
 
-    function damaged(bullet){
-        var damage = bullet.getDamage();
-        health -= damage.amount;
-        var font_size = damage.critical?"16":"12";
-        var text = new createjs.Text(damage.amount, font_size+"px Arial", damage.critical?"#F6D605":"#F5F4FE");
-        text.x = container.x;
-        text.y = container.y;
-        text.textBaseline = "alphabetic";
-        stage.addChild(text);
-        createjs.Tween.get(text)
-        .to({x:text.x-10, y:text.y-20, alpha:0}, 1000).call(function(item){
-            stage.removeChild(item.target);
-        });
+Enermy.prototype.damaged = function(bullet){
+	var damage = bullet.getDamage();
+	this.health -= damage.amount;
+	var font_size = damage.critical?"16":"12";
+	var text = new createjs.Text(damage.amount, font_size+"px Arial", damage.critical?"#F6D605":"#F5F4FE");
+	text.x = this.container.x;
+	text.y = this.container.y;
+	text.textBaseline = "alphabetic";
+	stage.addChild(text);
+	createjs.Tween.get(text)
+	.to({x:text.x-10, y:text.y-20, alpha:0}, 1000).call(function(item){
+		stage.removeChild(item.target);
+	});
+	this.health_bar.graphics.beginFill("#666666").drawRect(this.stats.width / this.health_max * this.health - this.stats.width/2, -this.stats.height/2 - 15, this.stats.width * (this.health_max - this.health) / this.health_max, this.stats.width/10);
+	if(this.health <= 0){
+		this.destroyed(bullet);
+	}
+}
 
-        health_bar.graphics.beginFill("#666666").drawRect(width/health_max*health+x_min, y_min-10, width*(health_max-health)/health_max, width/10);
+Enermy.prototype.destroyed = function(bullet){
+	this.wave.enermyDestroyed();
+	this.status = false;
+	stage.removeChild(this.container);
+	stage.removeChild(this.health_bar);
+}
 
-        if(health <= 0){
-            destroyed(bullet);
-        }
-    }
+Enermy.prototype.isHit = function(bullet){
+	return (bullet.x >= this.container.x - this.stats.width / 2 && bullet.x <= this.container.x + this.stats.width / 2
+		&& bullet.y >= this.container.y - this.stats.height / 2 && bullet.y <= this.container.y + this.stats.height/2);
+}
 
-    function destroyed(bullet){
-        /*
-        var text = new createjs.Text("+"+gold, "bold 16px Arial", "#FFD34E");
-        text.x = container.x;
-        text.y = container.y;
-        text.textBaseline = "alphabetic";
-        stage.addChild(text);
-        createjs.Tween.get(text)
-        .to({x:text.x+10, y:text.y-20, alpha:0}, 1000).call(function(item){
-            stage.removeChild(item.target);
-        });
-        */
-        self.status = DESTROYED;
-    }
+Enermy.prototype.fire = function(){
+	var shape = new createjs.Shape();
+	shape.graphics.bf(loader.getResult("items")).drawRect(124,231,10,4);
+	shape.cache(124,231,10,4);
+	shape.regX = 129;
+	shape.regY = 233;
+	shape.rotation = this.container.rotation - 90;
+	shape.radian = Math.PI*(shape.rotation)/180;
+	shape.x = this.container.x;
+	shape.y = this.container.y;
+	this.bullets.push(shape);
+	stage.addChild(shape);
+}
 
-    this.tick = function(){
-        var angle = (Math.random()-.5)*2;
-        container.rotation += angle;
-        health_bar.rotation -= angle;
-        container.y += 2*Math.cos(container.rotation*Math.PI/180);
-        container.x -= 2*Math.sin(container.rotation*Math.PI/180);
+Enermy.prototype.tick = function(){
+	if(this.status){
+		var dx = ship.container.x - this.container.x;
+		var dy = ship.container.y - this.container.y;
+		var degree = -Math.atan2(dx,dy) * 180 / Math.PI + 180;
+		var radian = Math.PI*(degree-90)/180;
+		this.container.rotation = degree;
+		this.health_bar.rotation = -degree;
+		var distance = Math.sqrt(Math.pow(dx,2)+Math.pow(dy,2));
+		if(distance > this.stats.range){
+			this.container.x += this.stats.speed * Math.cos(radian);
+			this.container.y += this.stats.speed * Math.sin(radian);
+		}
 
-        if(container.x < -width/2){
-            container.x = stage.canvas.width + width/2;
-        }
-        if(container.x > stage.canvas.width + width/2){
-            container.x = -width/2;
-        }
-        if(container.y > stage.canvas.height + height/2){
-            container.y = -height/2;
-        }
-        ticks++;
-    }
+		if(this.ticks > this.stats.firearm.firerate){
+			this.fire();
+			this.ticks = 0;
+		}
+		this.ticks++;
+	}
 
-    this.getContainer = function(){
-        return container;
-    }
+	var visible_bullets = [];
+	this.bullets.forEach(function(bullet){
+		if(bullet.x < -100 || bullet.x > 740 || bullet.y < -100 || bullet.y > 740){
+			stage.removeChild(bullet);
+			delete bullet;
+		}else{
+			bullet.x += this.stats.firearm.speed * Math.cos(bullet.radian);
+			bullet.y += this.stats.firearm.speed * Math.sin(bullet.radian);
+			visible_bullets.push(bullet);
+		}
+	}, this);
 
-    this.isHit = function(bullets){
-        var bullet_shapes = bullets.getBulletShape();
-        bullet_shapes.forEach(function(bullet_shape){
-            if(bullet_shape.x >= container.x - width/2 && bullet_shape.x <= container.x+width/2
-                && bullet_shape.y >= container.y - height/2 && bullet_shape.y <= container.y+height/2){
-                var bullet = bullet_shape.getbullet();
-                damaged(bullet);
-                bullet.hit(bullet_shape);
-            }
-        });
-    }
+	this.bullets = visible_bullets;
 }
