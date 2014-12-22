@@ -61,7 +61,7 @@ connection.once("open", function(){
 		});
 	});
 
-	var star1 = new Star({_id:1,name:"Elnath",x:320,y:320,radius:6,_next:[2], _wave:[1]});
+	var star1 = new Star({_id:1,name:"Elnath",x:320,y:320,radius:6,_next:[2], _wave:[1, 2, 3]});
 	var star2 = new Star({_id:2,name:"Decrux",x:280,y:380,radius:8,_next:[3]});
 	var star3 = new Star({_id:3,name:"Wezen",x:240,y:340,radius:7});
 
@@ -75,10 +75,15 @@ connection.once("open", function(){
 		health:5,
 		exp:1,
 		gold:1,
-		speed:5,
-		range:200,
+		speed:.5,
+		range:300,
 		width:40,
 		height:21,
+		firearm:{
+			damage:1,
+			firerate:60,
+			speed:3
+		},
 		components:[
 			{x:-12,y:8,crop_x:171,crop_y:76,width:23,height:21},
 			{x:+12,y:8,crop_x:208,crop_y:76,width:23,height:21},
@@ -88,12 +93,13 @@ connection.once("open", function(){
 
 	enermy.save();
 
-	var wave = new Wave({_id:1,enermies:[{count:10,_enermy:1}]});
-	wave.save(function(){
-		Wave.find({}).populate('enermies._enermy').exec(function(err, waves){
-			console.log(waves);
-			process.exit();
-		});
+	var wave1 = new Wave({_id:1,enermies:[{count:80,_enermy:1}]});
+	var wave2 = new Wave({_id:2,enermies:[{count:16,_enermy:1}]});
+	var wave3 = new Wave({_id:3,enermies:[{count:32,_enermy:1}]});
+	wave1.save();
+	wave2.save();
+	wave3.save(function(){
+		//process.exit();
 	});
 
 });

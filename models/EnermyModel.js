@@ -11,6 +11,11 @@ var EnermySchema = new Schema({
 	range:Number,
 	width:Number,
 	height:Number,
+	firearm:{
+		damage:Number,
+		firerate:Number,
+		speed:Number
+	},
 	components:[{
 		x:{type:Number,default:0},
 		y:{type:Number,default:0},

@@ -82,7 +82,9 @@ function Enermy(type, path){
         .to({x:text.x-10, y:text.y-20, alpha:0}, 1000).call(function(item){
             stage.removeChild(item.target);
         });
+
         health_bar.graphics.beginFill("#666666").drawRect(width/health_max*health+x_min, y_min-10, width*(health_max-health)/health_max, width/10);
+
         if(health <= 0){
             destroyed(bullet);
         }

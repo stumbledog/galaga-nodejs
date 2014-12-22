@@ -1,5 +1,5 @@
 function Game(star_input, ship_input){
-    var ship, stars = [], waves = [], enermies = [];
+    var stars = [], enermies = [];
     var gold, exp, lvl;
     var pause_text;
 
@@ -25,10 +25,7 @@ function Game(star_input, ship_input){
 
     function handleLoadComplete(){
         ship = new Ship(ship_input);
-        star_input._wave.forEach(function(wave_property){
-            var wave = new Wave(wave_property);
-            waves.push(wave);
-        });
+        wave = new Wave(star_input._wave);
         createjs.Ticker.addEventListener("tick", tick);
         createjs.Ticker.setFPS(30);
         initEventHandler();
@@ -96,7 +93,7 @@ function Game(star_input, ship_input){
                 }
             });
             stars = visible_stars;
-
+/*
             if(enermies.length){
                 enermies.forEach(function(enermy){
                     enermy.tick();
@@ -116,8 +113,9 @@ function Game(star_input, ship_input){
                 });
             }
 
-            spawnEnermies(ticks);
-            ship.tick(stage);
+            spawnEnermies(ticks);*/
+            ship.tick();
+            wave.tick();
             ticks++;
         }
         stage.update();
