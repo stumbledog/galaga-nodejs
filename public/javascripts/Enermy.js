@@ -23,16 +23,19 @@ function Enermy(wave, property){
 Enermy.prototype.renderShip = function(){
 	this.container = new createjs.Container();
 	this.stats.components.forEach(function(component){
-		var shape = new createjs.Shape();
-		shape.graphics.bf(loader.getResult("components")).dr(component.crop_x, component.crop_y, component.width, component.height);
-		shape.regX = component.crop_x + component.width / 2;
-		shape.regY = component.crop_y + component.height / 2;
-		shape.x = component.x;
-		shape.y = component.y;
-		this.container.addChild(shape);
+		this.shape = new createjs.Shape();
+		this.shape.graphics.bf(loader.getResult("components")).dr(component.crop_x, component.crop_y, component.width, component.height);
+		this.shape.regX = component.crop_x + component.width / 2;
+		this.shape.regY = component.crop_y + component.height / 2;
+		this.shape.x = component.x;
+		this.shape.y = component.y;
+		this.container.addChild(this.shape);
 	}, this);
-	this.container.x = Math.random()*640;
-	this.container.y = Math.random()*640;
+
+	var radian = Math.PI * Math.random() * 2;
+	this.container.x = Math.cos(radian) * 400 + 320;
+	this.container.y = Math.sin(radian) * 400 + 320;
+
 	stage.addChild(this.container);
 }
 
@@ -43,6 +46,7 @@ Enermy.prototype.renderHealthBar = function(){
 }
 
 Enermy.prototype.damaged = function(bullet){
+	console.log(this.shape);
 	var damage = bullet.getDamage();
 	this.health -= damage.amount;
 	var font_size = damage.critical?"16":"12";
@@ -62,10 +66,10 @@ Enermy.prototype.damaged = function(bullet){
 }
 
 Enermy.prototype.destroyed = function(bullet){
-	this.wave.enermyDestroyed();
 	this.status = false;
 	stage.removeChild(this.container);
 	stage.removeChild(this.health_bar);
+	this.wave.enermyDestroyed();
 }
 
 Enermy.prototype.isHit = function(bullet){
@@ -96,12 +100,10 @@ Enermy.prototype.tick = function(){
 		this.container.rotation = degree;
 		this.health_bar.rotation = -degree;
 		var distance = Math.sqrt(Math.pow(dx,2)+Math.pow(dy,2));
-		if(distance > this.stats.range){
+		if(distance > this.stats.range || this.container.x < this.stats.radius * 2 || this.container.x > 640 - this.stats.radius * 2 || this.container.y < this.stats.radius * 2 || this.container.y > 640 - this.stats.radius * 2){
 			this.container.x += this.stats.speed * Math.cos(radian);
 			this.container.y += this.stats.speed * Math.sin(radian);
-		}
-
-		if(this.ticks > this.stats.firearm.firerate){
+		}else if(this.ticks > this.stats.firearm.firerate){
 			this.fire();
 			this.ticks = 0;
 		}
@@ -112,7 +114,6 @@ Enermy.prototype.tick = function(){
 	this.bullets.forEach(function(bullet){
 		if(bullet.x < -100 || bullet.x > 740 || bullet.y < -100 || bullet.y > 740){
 			stage.removeChild(bullet);
-			delete bullet;
 		}else{
 			bullet.x += this.stats.firearm.speed * Math.cos(bullet.radian);
 			bullet.y += this.stats.firearm.speed * Math.sin(bullet.radian);

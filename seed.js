@@ -79,6 +79,7 @@ connection.once("open", function(){
 		range:200,
 		width:40,
 		height:40,
+		radius:20,
 		firearm:{
 			damage:1,
 			firerate:60,

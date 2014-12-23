@@ -8,6 +8,7 @@ function Bullet(firearm, x, y, degree, speed, damage, critical_rate, critical_da
 	this.critical_rate = critical_rate;
 	this.critical_damage = critical_damage;
 	this.bullets = [];
+	this.isHit = false;
 
 	init.call(this);
 
@@ -30,7 +31,9 @@ Bullet.prototype.getDamage = function(){
 	return {critical:critical, amount:this.damage * (critical ? this.critical_damage : 1)};
 }
 
-Bullet.prototype.hit = function(bullet){
+Bullet.prototype.hit = function(){
+	console.log(this.shape.x, this.shape.y);
+	effect.hit(this.shape.x, this.shape.y);
 	stage.removeChild(this.shape);
 	this.firearm.removeBullet(this);
 }
@@ -43,11 +46,12 @@ Bullet.prototype.tick = function(){
 		delete this;
 	}else{
 		wave.enermies.forEach(function(enermy){
-			if(enermy.status){
+			if(!this.isHit && enermy.status){
 				if(enermy.isHit(this.shape)){
 					this.hit();
 					enermy.damaged(this);
-				}
+					this.isHit = true;
+				}				
 			}
 		}, this);
 	}
