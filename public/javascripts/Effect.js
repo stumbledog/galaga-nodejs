@@ -14,7 +14,6 @@ function Effect(){
 				frames:[0,1,2,3,4,5],
 				next:false
 			}
-
 		}
 	});
 }
@@ -26,11 +25,23 @@ Effect.prototype.hit = function(x, y){
 	animation.y = y;
 	animation.scaleX = animation.scaleY = 0.5;
 	stage.addChild(animation);
+
 	animation.on("animationend", function(event){
 		stage.removeChild(this);
 	});
+}
 
+Effect.prototype.destroy = function(x, y, scale){
+	var animation = new createjs.Sprite(this.sprite_sheet, "hit");
+	animation.play();
+	animation.x = x;
+	animation.y = y;
+	animation.scaleX = animation.scaleY = scale;
+	stage.addChild(animation);
 
+	animation.on("animationend", function(event){
+		stage.removeChild(this);
+	});	
 }
 
 Effect.prototype.tick = function(){

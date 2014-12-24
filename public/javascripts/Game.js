@@ -2,7 +2,7 @@ function Game(star_input, ship_input){
     var stars = [], enermies = [];
     var gold, exp, lvl;
     var pause_text;
-
+    game = this;
     init();
 
     function init(){
@@ -100,4 +100,8 @@ function Game(star_input, ship_input){
         }
         stage.update();
     }
+}
+
+Game.prototype.submit = function(){
+    
 }

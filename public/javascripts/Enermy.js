@@ -33,8 +33,8 @@ Enermy.prototype.renderShip = function(){
 	}, this);
 
 	var radian = Math.PI * Math.random() * 2;
-	this.container.x = Math.cos(radian) * 400 + 320;
-	this.container.y = Math.sin(radian) * 400 + 320;
+	this.container.x = Math.cos(radian) * 500 + 320;
+	this.container.y = Math.sin(radian) * 500 + 320;
 
 	stage.addChild(this.container);
 }
@@ -46,7 +46,6 @@ Enermy.prototype.renderHealthBar = function(){
 }
 
 Enermy.prototype.damaged = function(bullet){
-	console.log(this.shape);
 	var damage = bullet.getDamage();
 	this.health -= damage.amount;
 	var font_size = damage.critical?"16":"12";
@@ -67,14 +66,16 @@ Enermy.prototype.damaged = function(bullet){
 
 Enermy.prototype.destroyed = function(bullet){
 	this.status = false;
+	ship.getExp(this.stats.exp);
+	ship.getGold(this.stats.gold);
+	effect.destroy(bullet.shape.x,bullet.shape.y,this.stats.radius / 20);
 	stage.removeChild(this.container);
 	stage.removeChild(this.health_bar);
 	this.wave.enermyDestroyed();
 }
 
 Enermy.prototype.isHit = function(bullet){
-	return (bullet.x >= this.container.x - this.stats.width / 2 && bullet.x <= this.container.x + this.stats.width / 2
-		&& bullet.y >= this.container.y - this.stats.height / 2 && bullet.y <= this.container.y + this.stats.height/2);
+	return (Math.pow(bullet.x - this.container.x, 2) + Math.pow(bullet.y - this.container.y, 2) < Math.pow(this.stats.radius, 2));
 }
 
 Enermy.prototype.fire = function(){
@@ -87,6 +88,7 @@ Enermy.prototype.fire = function(){
 	shape.radian = Math.PI*(shape.rotation)/180;
 	shape.x = this.container.x;
 	shape.y = this.container.y;
+	shape.damage = this.stats.firearm.damage;
 	this.bullets.push(shape);
 	stage.addChild(shape);
 }
@@ -115,9 +117,15 @@ Enermy.prototype.tick = function(){
 		if(bullet.x < -100 || bullet.x > 740 || bullet.y < -100 || bullet.y > 740){
 			stage.removeChild(bullet);
 		}else{
-			bullet.x += this.stats.firearm.speed * Math.cos(bullet.radian);
-			bullet.y += this.stats.firearm.speed * Math.sin(bullet.radian);
-			visible_bullets.push(bullet);
+			if(ship.isHit(bullet)){
+				ship.damaged(bullet);
+				effect.hit(bullet.x, bullet.y);
+				stage.removeChild(bullet);
+			}else{
+				bullet.x += this.stats.firearm.speed * Math.cos(bullet.radian);
+				bullet.y += this.stats.firearm.speed * Math.sin(bullet.radian);
+				visible_bullets.push(bullet);
+			}
 		}
 	}, this);
 

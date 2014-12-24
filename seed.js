@@ -25,13 +25,14 @@ connection.once("open", function(){
 		name: "Aries", 
 		width: 14,
 		height: 28,
+		radius: 14,
 		components: [{x:58,y:113,width:14,height:28}]
 	});
 
 	var ship = new Ship({
 		name: "Aries",
 		health: 10,
-		speed: 3,		
+		speed: 3,
 	});
 
 	var firearm = new Firearm({
@@ -72,10 +73,10 @@ connection.once("open", function(){
 	var enermy = new Enermy({
 		_id:1,
 		name:"MK",
-		health:5,
+		health:3,
 		exp:1,
 		gold:1,
-		speed:.5,
+		speed:1,
 		range:200,
 		width:40,
 		height:40,

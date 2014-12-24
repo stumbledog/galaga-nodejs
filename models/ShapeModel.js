@@ -5,6 +5,7 @@ var ShapeSchema = new Schema({
 	name: String,
 	width: Number,
 	height: Number,
+	radius: Number,
 	components:[{
 		x: Number,
 		y: Number,

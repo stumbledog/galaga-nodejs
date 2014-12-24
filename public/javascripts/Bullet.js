@@ -32,7 +32,6 @@ Bullet.prototype.getDamage = function(){
 }
 
 Bullet.prototype.hit = function(){
-	console.log(this.shape.x, this.shape.y);
 	effect.hit(this.shape.x, this.shape.y);
 	stage.removeChild(this.shape);
 	this.firearm.removeBullet(this);
