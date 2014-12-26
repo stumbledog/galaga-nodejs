@@ -1,7 +1,6 @@
 function Wave(waves){
 	this.waves = waves;
 	this.wave_count = waves.length;
-	this.wave_count = 1;
 	this.current_wave = 0;
 
 	this.enermies = [];

@@ -153,7 +153,6 @@ Ship.prototype.destroyed = function(){
 
 Ship.prototype.getExp = function(exp){
 	this.ship.exp += exp;
-	this.
 }
 
 Ship.prototype.getGold = function(gold){
