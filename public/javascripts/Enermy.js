@@ -55,7 +55,7 @@ Enermy.prototype.damaged = function(bullet){
 	text.textBaseline = "alphabetic";
 	stage.addChild(text);
 	createjs.Tween.get(text)
-	.to({x:text.x-10, y:text.y-20, alpha:0}, 1000).call(function(item){
+	.to({x:text.x-20, y:text.y-20, alpha:0}, 2000).call(function(item){
 		stage.removeChild(item.target);
 	});
 	this.health_bar.graphics.beginFill("#666666").drawRect(this.stats.width / this.health_max * this.health - this.stats.width/2, -this.stats.height/2 - 15, this.stats.width * (this.health_max - this.health) / this.health_max, this.stats.width/10);
@@ -66,6 +66,15 @@ Enermy.prototype.damaged = function(bullet){
 
 Enermy.prototype.destroyed = function(bullet){
 	this.status = false;
+	var text = new createjs.Text(this.stats.exp+" exp", "12px Arial", "#fff");
+	text.x = this.container.x;
+	text.y = this.container.y;
+	text.textBaseline = "alphabetic";
+	stage.addChild(text);
+	createjs.Tween.get(text)
+	.to({x:text.x+20, y:text.y-20, alpha:0}, 2000).call(function(item){
+		stage.removeChild(item.target);
+	});	
 	ship.getExp(this.stats.exp);
 	ship.getGold(this.stats.gold);
 	effect.destroy(bullet.shape.x,bullet.shape.y,this.stats.radius / 20);

@@ -153,6 +153,9 @@ Ship.prototype.destroyed = function(){
 
 Ship.prototype.getExp = function(exp){
 	this.ship.exp += exp;
+	if(this.ship.exp >= this.ship.level * 2){
+		this.levelUp();
+	}
 }
 
 Ship.prototype.getGold = function(gold){
@@ -160,5 +163,7 @@ Ship.prototype.getGold = function(gold){
 }
 
 Ship.prototype.levelUp = function(){
-
+	this.ship.exp -= this.ship.level * 2;
+	this.ship.level++;
+	console.log("level up");
 }
