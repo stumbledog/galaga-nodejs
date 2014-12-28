@@ -27,6 +27,7 @@ function Game(star_input, ship_input){
         effect = new Effect();
         ship = new Ship(ship_input);
         wave = new Wave(star_input._wave);
+        game_interface = new GameInterface();
         createjs.Ticker.addEventListener("tick", tick);
         createjs.Ticker.setFPS(30);
         initEventHandler();

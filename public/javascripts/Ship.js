@@ -9,7 +9,7 @@ function Ship(ship_input){
 	function init(){
 		this.health = this.ship.health;
 		this.health_max = this.ship.health;
-
+		this.ship.exp_cap = this.ship.level * 2;
 		this.renderShip();
 		this.renderHealthBar();
 		initFirearm(this.ship._firearm);
@@ -156,6 +156,7 @@ Ship.prototype.getExp = function(exp){
 	if(this.ship.exp >= this.ship.level * 2){
 		this.levelUp();
 	}
+	game_interface.renderExpBar();
 }
 
 Ship.prototype.getGold = function(gold){
@@ -165,5 +166,6 @@ Ship.prototype.getGold = function(gold){
 Ship.prototype.levelUp = function(){
 	this.ship.exp -= this.ship.level * 2;
 	this.ship.level++;
+	this.ship.exp_cap = this.ship.level * 2;
 	console.log("level up");
 }
