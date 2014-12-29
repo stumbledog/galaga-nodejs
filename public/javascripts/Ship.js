@@ -167,5 +167,13 @@ Ship.prototype.levelUp = function(){
 	this.ship.exp -= this.ship.level * 2;
 	this.ship.level++;
 	this.ship.exp_cap = this.ship.level * 2;
-	console.log("level up");
+	var level_up_text = new createjs.Text("Level Up", "20px Arial", "#fff");
+
+	level_up_text.x= level_up_text.y = 320;
+	level_up_text.regX = level_up_text.getMeasuredWidth()/2;
+	console.log(level_up_text);
+	//level_up_text.regX = level_up_text.
+	stage.addChild(level_up_text);
+	createjs.Tween.get(level_up_text)
+	.to({scaleX:-1}, 500).to({scaleX:1}, 500).wait(1000);
 }
