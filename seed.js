@@ -40,9 +40,9 @@ connection.once("open", function(){
 		rarity: 1,
 		cost: 1,
 		damage: 1,
-		firerate: 20,
-		accuracy: 50,
-		speed: 10,
+		firerate: 5,
+		accuracy: 80,
+		speed: 20,
 		critical_rate:0.1,
 		critical_damage:2,
 		bonus:{
@@ -82,6 +82,7 @@ connection.once("open", function(){
 		height:40,
 		radius:20,
 		firearm:{
+			accuracy:70,
 			damage:1,
 			firerate:60,
 			speed:3

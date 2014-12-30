@@ -93,8 +93,8 @@ Enermy.prototype.fire = function(){
 	shape.cache(124,231,10,4);
 	shape.regX = 129;
 	shape.regY = 233;
-	shape.rotation = this.container.rotation - 90;
-	shape.radian = Math.PI*(shape.rotation)/180;
+	shape.rotation = this.container.rotation - 90 + 180 * (Math.random()-0.5) * (100 - this.stats.firearm.accuracy) / 100;
+	shape.radian = Math.PI * (shape.rotation) / 180;
 	shape.x = this.container.x;
 	shape.y = this.container.y;
 	shape.damage = this.stats.firearm.damage;

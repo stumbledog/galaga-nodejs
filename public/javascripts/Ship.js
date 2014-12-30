@@ -17,7 +17,7 @@ function Ship(ship_input){
 
 	function initFirearm(firearm_property_array){
 		firearm_property_array.forEach(function(firearm_property){
-			var firearm = new Firearm(firearm_property.firerate, firearm_property.speed, firearm_property.damage, firearm_property.critical_rate, firearm_property.critical_damage);
+			var firearm = new Firearm(firearm_property.accuracy, firearm_property.firerate, firearm_property.speed, firearm_property.damage, firearm_property.critical_rate, firearm_property.critical_damage);
 			firearms.push(firearm);
 		});
 	}
@@ -171,9 +171,9 @@ Ship.prototype.levelUp = function(){
 
 	level_up_text.x= level_up_text.y = 320;
 	level_up_text.regX = level_up_text.getMeasuredWidth()/2;
-	console.log(level_up_text);
-	//level_up_text.regX = level_up_text.
 	stage.addChild(level_up_text);
 	createjs.Tween.get(level_up_text)
-	.to({scaleX:-1}, 500).to({scaleX:1}, 500).wait(1000);
+	.to({scaleX:-1}, 500).to({scaleX:1}, 500).wait(1000).call(function(){
+		stage.removeChild(level_up_text);
+	});
 }

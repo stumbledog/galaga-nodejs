@@ -13,6 +13,7 @@ var EnermySchema = new Schema({
 	height:Number,
 	radius:Number,
 	firearm:{
+		accuracy:Number,
 		damage:Number,
 		firerate:Number,
 		speed:Number
