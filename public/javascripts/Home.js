@@ -24,13 +24,11 @@
 
 	function loadGalaxy(){
 		$.get("/galaxy", function(res){
-			res.processes.forEach(function(process){
+			var process = res.process;
+			process._selectable.forEach(function(star){
 
-				console.log(process);
+				var wave_count = star._wave.length;
 
-				var wave_count = process._star._wave.length;
-
-				var star = process._star;
 				var container = new createjs.Container();
 				container.x = star.x;
 				container.y = star.y;
@@ -43,7 +41,7 @@
 				star_shape.cursor = "pointer";
 
 				var text = new createjs.Text(star.name, "14px Arial", "#ffffff");
-				text.x = radius+5;
+				text.x = radius + 5;
 
 				if(process.clear){
 					star._next.forEach(function(path){
@@ -86,6 +84,7 @@
 					stage.update();
 				});
 			});
+
 			stage.update();
 		});
 	}

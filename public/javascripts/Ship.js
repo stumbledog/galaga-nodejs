@@ -1,8 +1,8 @@
-function Ship(ship_input){
+function Ship(ship){
 	var shape, firearms = [];
 	var move_right = move_left = move_up = move_down = trigger = false;
 	var last_mouse_position = {x:0, y:0};
-	this.ship = ship_input;
+	this.ship = ship;
 
 	init.call(this);
 
@@ -10,8 +10,10 @@ function Ship(ship_input){
 		this.health = this.ship.health;
 		this.health_max = this.ship.health;
 		this.ship.exp_cap = this.ship.level * 2;
+		this.ship.level = 
 		this.renderShip();
 		this.renderHealthBar();
+		this.renderText();
 		initFirearm(this.ship._firearm);
 	}
 
@@ -80,6 +82,8 @@ function Ship(ship_input){
 
         this.container.rotation = degree;
 		this.health_bar.rotation = -degree;
+		this.damage_bar.rotation = -degree;
+		this.level_up_text.rotation = -degree;
 
         if(move_up && this.container.y > 0){
             this.container.y -= this.ship.speed;
@@ -119,8 +123,18 @@ Ship.prototype.renderShip = function(){
 
 Ship.prototype.renderHealthBar = function(){
 	this.health_bar = new createjs.Shape();
+	this.damage_bar = new createjs.Shape();
 	this.health_bar.graphics.beginFill("#00CC00").drawRect( -this.ship._shape.radius, -this.ship._shape.radius * 2, this.ship._shape.radius * 2, this.ship._shape.radius/5);
-	this.container.addChild(this.health_bar);
+	this.damage_bar.graphics.beginFill("#CC0000").drawRect(this.ship._shape.radius * 2 / this.health_max * this.health - this.ship._shape.radius, -this.ship._shape.radius * 2, this.ship._shape.radius * 2 * (this.health_max - this.health) / this.health_max, this.ship._shape.radius / 5);
+	this.container.addChild(this.health_bar, this.damage_bar);
+}
+
+Ship.prototype.renderText = function(){
+	this.level_up_text = new createjs.Text("Level Up", "12px Arial", "#fff");
+	this.level_up_text.regY = this.ship._shape.radius * 2;
+	this.level_up_text.regX = this.level_up_text.getMeasuredWidth()/2;
+	this.container.addChild(this.level_up_text);
+	this.level_up_text.visible = false;
 }
 
 Ship.prototype.isHit = function(bullet){
@@ -140,40 +154,17 @@ Ship.prototype.damaged = function(bullet){
 		stage.removeChild(item.target);
 	});
 	
-	this.health_bar.graphics.beginFill("#CC0000").drawRect(this.ship._shape.radius * 2 / this.health_max * this.health - this.ship._shape.radius, -this.ship._shape.radius * 2, this.ship._shape.radius * 2 * (this.health_max - this.health) / this.health_max, this.ship._shape.radius / 5);	
+	this.damage_bar.graphics.c().beginFill("#CC0000").drawRect(this.ship._shape.radius * 2 / this.health_max * this.health - this.ship._shape.radius, -this.ship._shape.radius * 2, this.ship._shape.radius * 2 * (this.health_max - this.health) / this.health_max, this.ship._shape.radius / 5);	
 	if(this.health <= 0){
 		this.destroyed(bullet);
 	}
+
+	game.total_damage_taken += damage;
+	game.largest_damage_taken = damage > game.largest_damage_taken ? damage : game.largest_damage_taken;
 }
 
 Ship.prototype.destroyed = function(){
 	effect.destroy(this.container.x,this.container.y, 1);
-	stage.removeChild(this.container);	
-}
-
-Ship.prototype.getExp = function(exp){
-	this.ship.exp += exp;
-	if(this.ship.exp >= this.ship.level * 2){
-		this.levelUp();
-	}
-	game_interface.renderExpBar();
-}
-
-Ship.prototype.getGold = function(gold){
-	this.gold += gold;
-}
-
-Ship.prototype.levelUp = function(){
-	this.ship.exp -= this.ship.level * 2;
-	this.ship.level++;
-	this.ship.exp_cap = this.ship.level * 2;
-	var level_up_text = new createjs.Text("Level Up", "20px Arial", "#fff");
-
-	level_up_text.x= level_up_text.y = 320;
-	level_up_text.regX = level_up_text.getMeasuredWidth()/2;
-	stage.addChild(level_up_text);
-	createjs.Tween.get(level_up_text)
-	.to({scaleX:-1}, 500).to({scaleX:1}, 500).wait(1000).call(function(){
-		stage.removeChild(level_up_text);
-	});
+	stage.removeChild(this.container);
+	game.pause();
 }

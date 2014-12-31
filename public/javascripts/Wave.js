@@ -58,21 +58,21 @@ Wave.prototype.enermyDestroyed = function(){
 Wave.prototype.nextWave = function(){
 	this.current_wave++;
 	if(this.current_wave === this.wave_count){
-		this.victory();
+		game.victory();
 	}else{
 		this.queueEnermies();
 	}
 }
-
+/*
 Wave.prototype.victory = function(){
 	this.clear = true;
 	var text = this.displayText("Victory");
 	createjs.Tween.get(text).to({x:320},1000, createjs.Ease.backInOut).wait(1000).call(this.submit);
 }
-
 Wave.prototype.submit = function(){
 	console.log("submit");
 }
+*/
 
 Wave.prototype.tick = function(){
 	if(!this.clear){

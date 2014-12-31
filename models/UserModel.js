@@ -15,4 +15,8 @@ UserSchema.methods = {
 	
 };
 
+UserSchema.virtual("exp_cap").get(function(){
+	return this.level * 10;
+})
+
 mongoose.model('User', UserSchema);

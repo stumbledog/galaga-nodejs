@@ -62,6 +62,9 @@ Enermy.prototype.damaged = function(bullet){
 	if(this.health <= 0){
 		this.destroyed(bullet);
 	}
+
+	game.total_damage_dealt += damage.amount;
+	game.largest_damage_dealt = damage.amount > game.largest_damage_dealt ? damage.amount : game.largest_damage_dealt;
 }
 
 Enermy.prototype.destroyed = function(bullet){
@@ -75,11 +78,13 @@ Enermy.prototype.destroyed = function(bullet){
 	.to({x:text.x+20, y:text.y-20, alpha:0}, 2000).call(function(item){
 		stage.removeChild(item.target);
 	});	
-	ship.getExp(this.stats.exp);
-	ship.getGold(this.stats.gold);
+	user.getExp(this.stats.exp);
+	user.getGold(this.stats.gold);
 	effect.destroy(bullet.shape.x,bullet.shape.y,this.stats.radius / 20);
 	stage.removeChild(this.container);
 	stage.removeChild(this.health_bar);
+
+	game.enermy_destoryed++;
 	this.wave.enermyDestroyed();
 }
 

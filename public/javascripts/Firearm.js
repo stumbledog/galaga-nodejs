@@ -17,7 +17,6 @@ Firearm.prototype.removeBullet = function(target){
 
 Firearm.prototype.fire = function(x, y, degree){
     if(this.ticks >= this.firerate){
-        console.log(this.speed);
         degree += 180 * (Math.random()-0.5) * (100 - this.accuracy) / 100;
         var bullet = new Bullet(this, x, y, degree, this.speed, this.damage, this.critical_rate, this.critical_damage);
         this.bullets.push(bullet);

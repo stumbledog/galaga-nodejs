@@ -74,7 +74,7 @@ connection.once("open", function(){
 		_id:1,
 		name:"MK",
 		health:3,
-		exp:1,
+		exp:7,
 		gold:1,
 		speed:1,
 		range:200,
@@ -91,7 +91,7 @@ connection.once("open", function(){
 			{x:-12,y:8,crop_x:171,crop_y:76,width:23,height:21},
 			{x:+12,y:8,crop_x:208,crop_y:76,width:23,height:21},
 			{crop_x:243,crop_y:113,width:12,height:24},
-		]		
+		]
 	});
 
 	enermy.save();

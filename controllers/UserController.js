@@ -2,8 +2,10 @@ var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var Ship = mongoose.model('Ship');
 var Process = mongoose.model('Process');
+var Star = mongoose.model('Star');
 
 var ShipController = require('../controllers/ShipController');
+var StarController = require('../controllers/StarController');
 /*
 exports.load = function (req, res, next, id) {
     var options = {
@@ -68,39 +70,67 @@ exports.sendAuthenticationEmail = function(req, res){
 
 };
 */
-exports.authenticate = function(req, res, callback){
-    if(req.cookies.user_id){
-        var self = this;
-        User.findById(req.cookies.user_id, function(err, user){
-            if(user){
-                req.session.user = user;
-                ShipController.select(user._selected_ship, function(ship){
-                    req.session.ship = ship;
-                    callback(user);
+
+
+
+exports.stageClear = function(req, res, callback){
+    User.findById(req.session.user._id, function(err, user){
+        user.level = req.body.level;
+        user.exp = req.body.exp;
+        user.gold = req.body.gold;        
+        user.save(function(){
+            Process.findOne({_user:user._id}, function(err, process){
+                Star.findById(req.body.star, function(err, star){
+                    star._next.forEach(function(next){
+                        if(process._selectable.indexOf(next) === -1){
+                            process._selectable.push(next);
+                        }
+                        if(process._cleared.indexOf(req.body.star) === -1){
+                            process._cleared.push(req.body.star);
+                        }
+                        process.save(function(){
+                            callback(process);
+                        });
+                    });
                 });
-            }else{
-                self.createUser(req, res, callback);
-            }
+            });
         });
-    }else{
-        this.createUser(req, res, callback);
-    }
+    })
+}
+
+exports.authenticate = function(req, res, callback){
+	if(req.cookies.user_id){
+		var self = this;
+		User.findById(req.cookies.user_id, function(err, user){
+			if(user){
+				req.session.user = user;
+				ShipController.select(user._selected_ship, function(ship){
+					req.session.ship = ship;
+					callback(user);
+				});
+			}else{
+				self.createUser(req, res, callback);
+			}
+		});
+	}else{
+		this.createUser(req, res, callback);
+	}
 }
 
 exports.createUser = function(req, res, callback){
-    var user = new User();
-    user.save(function(){
-        var process = new Process({_user:user._id, _star:1});
-        process.save(function(){
-            ShipController.create(user, "Aries", function(ship){
-                user._selected_ship = ship._id;
-                user.save(function(){
-                    req.session.user = user;
-                    req.session.ship = ship;
-                    res.cookie('user_id', user._id, {maxAge: 10*365*24*60*60*1000, httpOnly: true });
-                    callback(user);
-                })
-            });
-        });
-    });
+	var user = new User();
+	user.save(function(){
+		var process = new Process({_user:user._id, _selectable:[1]});
+		process.save(function(){
+			ShipController.create(user, "Aries", function(ship){
+				user._selected_ship = ship._id;
+				user.save(function(){
+					req.session.user = user;
+					req.session.ship = ship;
+					res.cookie('user_id', user._id, {maxAge: 10 * 365 * 24 * 60 * 60 * 1000, httpOnly: true });
+					callback(user);
+				})
+			});
+		});
+	});
 }

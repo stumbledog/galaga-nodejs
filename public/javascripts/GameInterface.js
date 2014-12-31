@@ -12,7 +12,7 @@ function GameInterface(){
 		stage.addChild(exp_bar_border);
 
 		this.exp_bar = new createjs.Shape();
-		this.exp_bar.graphics.beginFill("#FCFFF5").drawRect(169, 561, 298*(ship.ship.exp/ship.ship.exp_cap), 6);
+		this.exp_bar.graphics.beginFill("#FCFFF5").drawRect(169, 561, 298*(user.exp / user.exp_cap), 6);
 		stage.addChild(this.exp_bar);
 	}
 }
@@ -22,6 +22,6 @@ GameInterface.prototype.renderSkillBar = function(){
 }
 
 GameInterface.prototype.renderExpBar = function(){
-	this.exp_bar.graphics.c().beginFill("#FCFFF5").drawRect(169, 561, 298*(ship.ship.exp/ship.ship.exp_cap), 6);
+	this.exp_bar.graphics.c().beginFill("#FCFFF5").drawRect(169, 561, 298*(user.exp / user.exp_cap), 6);
 }
 

@@ -20,15 +20,22 @@ router.post('/game', function(req, res) {
 		res.redirect("/");
 	}else{
 		GameController.init(req, res, function(star){
-			res.render('game', { title:title, star:star , ship:req.session.ship});
+			res.render('game', { title:title, star:star , ship:req.session.ship, user:req.session.user});
 		});
 	}
 });
 
 router.get('/galaxy', function(req, res){
-	StarController.getGalaxy(req, function(processes){
+	StarController.getGalaxy(req, function(process){
 		res.contentType('json');
-		res.send({ processes:processes });
+		res.send({ process:process });
+	});
+});
+
+router.post('/stageClear', function(req, res){
+	UserController.stageClear(req, res, function(process){
+		res.contentType('json');
+		res.send({ process:process });
 	});
 });
 
