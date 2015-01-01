@@ -15,12 +15,13 @@ router.get('/', function(req, res) {
 });
 
 router.post('/game', function(req, res) {
+	console.log(req.body);
 	if(!req.body.star || !req.session.user || !req.session.ship){
 		console.log("redirect");
-		res.redirect("/");
+		res.redirect("/");		
 	}else{
 		GameController.init(req, res, function(star){
-			res.render('game', { title:title, star:star , ship:req.session.ship, user:req.session.user});
+			res.render('game', { title:title, star:star , ship:req.session.ship, user:req.session.user, difficulty:req.body.difficulty, bonus:req.body.bonus});
 		});
 	}
 });

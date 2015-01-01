@@ -6,14 +6,10 @@ html(lang="en")
 		script(type='text/javascript' src='//code.jquery.com/jquery-1.11.1.min.js')
 		script(type='text/javascript' src='//code.createjs.com/createjs-2013.12.12.min.js')
 		script(type='text/javascript' src='/javascripts/Button.js')
+		script(type='text/javascript' src='/javascripts/UI/BalanceController.js')
 	body
 		canvas#home(width=640,height=640)
-		form#game(method="POST", action="/game")
-			input#star(name="star",type="hidden")
-			input#difficulty(name="difficulty",type="hidden")
 		script.
 			var user = !{JSON.stringify(user)};
 			console.log(user);
 		script(type='text/javascript' src='/javascripts/Home.js')
-		
-

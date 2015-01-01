@@ -1,6 +1,5 @@
 function Wave(waves){
 	this.waves = waves;
-	this.wave_count = waves.length;
 	this.current_wave = 0;
 
 	this.enermies = [];
@@ -17,6 +16,17 @@ function Wave(waves){
 	init.call(this);
 
 	function init(){
+		/*
+		var new_waves = [];
+		for(var i = 1; i < game.difficulty[4];i++){
+			this.waves.forEach(function(wave){
+				var new_wave = jQuery.extend({}, wave);
+				wave.enermies.forEach(function(enermy){
+					enermy.count *= (i+1);
+				});
+			});
+		}*/
+		this.wave_count = waves.length;
 		this.queueEnermies();
 	}
 }
@@ -34,9 +44,8 @@ Wave.prototype.displayText = function(msg){
 Wave.prototype.queueEnermies = function(enermies_array){
 	var text = this.displayText("Wave " + (this.current_wave + 1));
 	createjs.Tween.get(text).to({x:320},1000, createjs.Ease.backInOut).wait(1000).to({x:740},1000, createjs.Ease.backInOut);
-
 	this.waves[this.current_wave].enermies.forEach(function(enermy_property){
-		for(var i=0;i<enermy_property.count;i++){
+		for(var i=0;i<enermy_property.count * game.difficulty[0];i++){
 			this.enermy_queue.push(enermy_property._enermy);
 		}
 	}, this);
@@ -63,16 +72,6 @@ Wave.prototype.nextWave = function(){
 		this.queueEnermies();
 	}
 }
-/*
-Wave.prototype.victory = function(){
-	this.clear = true;
-	var text = this.displayText("Victory");
-	createjs.Tween.get(text).to({x:320},1000, createjs.Ease.backInOut).wait(1000).call(this.submit);
-}
-Wave.prototype.submit = function(){
-	console.log("submit");
-}
-*/
 
 Wave.prototype.tick = function(){
 	if(!this.clear){

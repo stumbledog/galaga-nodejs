@@ -1,6 +1,7 @@
 function Ship(ship){
 	var shape, firearms = [];
 	var move_right = move_left = move_up = move_down = trigger = false;
+	trigger = true;
 	var last_mouse_position = {x:0, y:0};
 	this.ship = ship;
 

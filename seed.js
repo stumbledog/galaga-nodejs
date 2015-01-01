@@ -74,7 +74,7 @@ connection.once("open", function(){
 		_id:1,
 		name:"MK",
 		health:3,
-		exp:7,
+		exp:1,
 		gold:1,
 		speed:1,
 		range:200,

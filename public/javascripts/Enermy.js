@@ -1,8 +1,4 @@
 function Enermy(wave, property){
-	var ALIVE = true;
-	var DESTROYED = false;
-	var NORMAL = 1;
-
 	this.wave = wave;
 	this.stats = property;
 
@@ -10,8 +6,7 @@ function Enermy(wave, property){
 
 	function init(){
 		this.bullets = [];
-		this.health = this.stats.health;
-		this.health_max = this.stats.health;
+		this.health_max = this.health = this.stats.health * game.difficulty[1];
 		this.status = true;
 		this.ticks = 0;
 
@@ -69,7 +64,7 @@ Enermy.prototype.damaged = function(bullet){
 
 Enermy.prototype.destroyed = function(bullet){
 	this.status = false;
-	var text = new createjs.Text(this.stats.exp+" exp", "12px Arial", "#fff");
+	var text = new createjs.Text((this.stats.exp * game.bonus).toFixed(0)+" exp", "12px Arial", "#fff");
 	text.x = this.container.x;
 	text.y = this.container.y;
 	text.textBaseline = "alphabetic";
@@ -102,7 +97,7 @@ Enermy.prototype.fire = function(){
 	shape.radian = Math.PI * (shape.rotation) / 180;
 	shape.x = this.container.x;
 	shape.y = this.container.y;
-	shape.damage = this.stats.firearm.damage;
+	shape.damage = this.stats.firearm.damage * game.difficulty[2];
 	this.bullets.push(shape);
 	stage.addChild(shape);
 }
@@ -119,7 +114,7 @@ Enermy.prototype.tick = function(){
 		if(distance > this.stats.range || this.container.x < this.stats.radius * 2 || this.container.x > 640 - this.stats.radius * 2 || this.container.y < this.stats.radius * 2 || this.container.y > 640 - this.stats.radius * 2){
 			this.container.x += this.stats.speed * Math.cos(radian);
 			this.container.y += this.stats.speed * Math.sin(radian);
-		}else if(this.ticks > this.stats.firearm.firerate){
+		}else if(this.ticks > this.stats.firearm.firerate / game.difficulty[3]){
 			this.fire();
 			this.ticks = 0;
 		}
@@ -136,8 +131,8 @@ Enermy.prototype.tick = function(){
 				effect.hit(bullet.x, bullet.y);
 				stage.removeChild(bullet);
 			}else{
-				bullet.x += this.stats.firearm.speed * Math.cos(bullet.radian);
-				bullet.y += this.stats.firearm.speed * Math.sin(bullet.radian);
+				bullet.x += this.stats.firearm.speed * Math.cos(bullet.radian) * game.difficulty[4];
+				bullet.y += this.stats.firearm.speed * Math.sin(bullet.radian) * game.difficulty[4];
 				visible_bullets.push(bullet);
 			}
 		}

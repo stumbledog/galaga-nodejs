@@ -16,7 +16,8 @@ var EnermySchema = new Schema({
 		accuracy:Number,
 		damage:Number,
 		firerate:Number,
-		speed:Number
+		speed:Number,
+		radius:Number,
 	},
 	components:[{
 		x:{type:Number,default:0},

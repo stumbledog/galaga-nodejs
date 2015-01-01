@@ -15,16 +15,17 @@ function User(user){
 }
 
 User.prototype.getExp = function(exp){
+	exp *= game.bonus;
 	this.exp += exp;
 	game.total_exp_gained += exp;
 	if(this.exp >= this.level * 10){
 		this.levelUp();
 	}
-	game_interface.renderExpBar();
-
+	ship_stats.renderExpBar();
 }
 
 User.prototype.getGold = function(gold){
+	gold *= game.bonus;
 	this.gold += gold;
 	game.total_gold_earned += gold;
 }
@@ -40,4 +41,7 @@ User.prototype.levelUp = function(){
 		ship.level_up_text.visible = false;
 	},[],this);
 	ship.damage_bar.graphics.c().beginFill("#CC0000").drawRect(ship.ship._shape.radius * 2 / ship.health_max * ship.health - ship.ship._shape.radius, -ship.ship._shape.radius * 2, ship.ship._shape.radius * 2 * (ship.health_max - ship.health) / ship.health_max, ship.ship._shape.radius / 5);
+	if(this.exp >= this.level * 10){
+		this.levelUp();
+	}
 }

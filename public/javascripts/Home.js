@@ -1,5 +1,5 @@
 (function Home(){
-	var image_loader, stage, game_panel_container, total_exp, selected_star;
+	var game_panel_container, total_exp, selected_star, total, balance_controller;
 	var difficulty = [1,1,1,1,1];
 
 	init();
@@ -12,14 +12,14 @@
 		stage = new createjs.Stage("home");
 		stage.enableMouseOver(10);
 
-		image_loader = new createjs.LoadQueue(false);
-		image_loader.addEventListener("complete", handleLoadComplete);
-		image_loader.loadManifest(manifest);
+		loader = new createjs.LoadQueue(false);
+		loader.addEventListener("complete", handleLoadComplete);
+		loader.loadManifest(manifest);
 	}
 
 	function handleLoadComplete(){
 		loadGalaxy();
-		initGamePanel();
+		balance_controller = new BalanceController();
 	}
 
 	function loadGalaxy(){
@@ -80,7 +80,7 @@
 
 				container.addEventListener("mousedown", function(event){
 					selected_star = star._id;
-					stage.addChild(game_panel_container);
+					balance_controller.selectStar(selected_star);
 					stage.update();
 				});
 			});
@@ -88,98 +88,4 @@
 			stage.update();
 		});
 	}
-
-	function initGamePanel(){
-		game_panel_container = new createjs.Container();
-		var game_panel = new createjs.Shape();
-		var game_start_button = new createjs.Bitmap(image_loader.getResult("button"));	//638,1172 702,1236
-		var game_cancel_button = new createjs.Bitmap(image_loader.getResult("button"));	//638,1094 702,1158
-		total_exp = new createjs.Text("Total exp multiplier: x1","16px Arial","#fff");
-
-		game_start_button.sourceRect = new createjs.Rectangle(638,1172,64,64);
-		game_cancel_button.sourceRect = new createjs.Rectangle(638,1094,64,64);
-
-		game_start_button.regX = game_start_button.regY = game_cancel_button.regX = game_cancel_button.regY = 32
-		game_start_button.y = game_cancel_button.y = 140;
-		game_start_button.x = -64;
-		game_cancel_button.x = 64;
-
-		game_panel.graphics.s("#fff").ss(1).f("#333").rr(-200, -200, 400, 400, 10);
-
-		game_start_button.cursor = game_cancel_button.cursor = "pointer";
-
-		total_exp.x = -20;
-		total_exp.y = 82;
-
-		game_panel_container.addChild(game_panel, game_start_button, game_cancel_button, total_exp);
-		game_panel_container.x = game_panel_container.y = 320;
-
-		game_start_button.addEventListener("mousedown", function(event){
-			gameStart();
-//			stage.removeChild(game_panel_container);
-			stage.update();
-		});
-
-		game_cancel_button.addEventListener("mousedown", function(event){
-			stage.removeChild(game_panel_container);
-			stage.update();
-		});
-
-		createBalaceController("Enermy\nNumber", 0);
-		createBalaceController("Enermy\nHealth", 1);
-		createBalaceController("Enermy\nDamage", 2);
-		createBalaceController("Wave\nNumber", 3);
-		createBalaceController("Nothing", 4);
-	}
-
-	function createBalaceController(title, index){
-		var container = new createjs.Container();
-		var title = new createjs.Text(title,  "16px Arial", "#ffffff");
-		var exp = new createjs.Text("x1",  "16px Arial", "#ffffff");
-
-		y = -120 + 40 * index;
-
-		title.x = -180;
-		title.y = y + 1;
-		exp.x = 120;
-		exp.y = y + 9;
-		
-		container.addChild(title, exp);
-
-		var bars = [];
-		for(var i=0;i<10;i++){
-			var bar = new createjs.Shape();
-			bar.graphics.s("#000").ss(1).f(i == 0 ? "#fff" : "#666").rr(0, 0, 16, 32, 2);
-			bar.x = i * 20 - 100;
-			bar.y = y;
-			bar.index = i;
-			bar.cursor = "pointer";
-			bars.push(bar);
-			container.addChild(bar);
-		}
-
-		bars.forEach(function(bar){
-			bar.addEventListener("mousedown", function(event){
-				for(var i=0;i<10;i++){
-					bars[i].graphics.f(i<=bar.index?"#fff":"#666").rr(0, 0, 16, 32, 2);
-				}
-				exp.text = "x" + (bar.index + 1);
-				difficulty[index] = bar.index + 1;
-				var total = difficulty.reduce(function(previous, current){
-					return previous*current;
-				},1 );
-				total_exp.text = "Total exp multiplier: x"+total;
-				stage.update();
-			});
-		});
-
-		game_panel_container.addChild(container);
-	}
-
-	function gameStart(){
-		$("input#star").val(selected_star);
-		$("input#difficulty").val(difficulty);
-		$("form#game").submit();
-	}
-
 })();

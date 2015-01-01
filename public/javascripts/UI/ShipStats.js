@@ -1,4 +1,5 @@
-function GameInterface(){
+function ShipStats(ship){
+	this.ship = ship;
 
 	init.call(this);
 
@@ -17,11 +18,11 @@ function GameInterface(){
 	}
 }
 
-GameInterface.prototype.renderSkillBar = function(){
+
+ShipStats.prototype.renderSkillBar = function(){
 	
 }
 
-GameInterface.prototype.renderExpBar = function(){
+ShipStats.prototype.renderExpBar = function(){
 	this.exp_bar.graphics.c().beginFill("#FCFFF5").drawRect(169, 561, 298*(user.exp / user.exp_cap), 6);
 }
-
