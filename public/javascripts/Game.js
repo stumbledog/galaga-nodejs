@@ -24,6 +24,7 @@ function Game(star, ship, user, difficulty, bonus){
             {src:"./assets/images/Components64.png", id:"components"},
             {src:"./assets/images/Items64.png", id:"items"},
             {src:"./assets/images/Button64.png", id:"button"},
+            {src:"./assets/images/Ships64.png", id:"ships"},
         ];
 
         loader = new createjs.LoadQueue(false);
@@ -94,12 +95,12 @@ Game.prototype.pause = function(){
 	}
 }
 
-Game.prototype.renderVictoryPanel = function(){
+Game.prototype.renderGameResultPanel = function(title){
 	this.panel_container = new createjs.Container();
 	var panel = new createjs.Shape();
 	var restart_button = new createjs.Bitmap(loader.getResult("button"));
 	var map_button = new createjs.Bitmap(loader.getResult("button"));
-	var text = new createjs.Text("Victory","32px Arial","#fff");
+	var text = new createjs.Text(title,"32px Arial","#fff");
 	var restart_text = new createjs.Text("Restart this stage","16px Arial","#fff");
 	var map_text = new createjs.Text("Return to the map","16px Arial","#fff");
 
@@ -166,17 +167,18 @@ Game.prototype.renderVictoryPanel = function(){
 
 Game.prototype.victory = function(){
 	var data = {level:user.level, exp:user.exp, gold:user.gold, star:this.star._id};
-	console.log(data);
-	$.post("/stageClear", data, function(res){
-		setTimeout(function(){
-			game.pause();
-			game.renderVictoryPanel();
-		}, 000);
+	game.pause();
+	$.post("/victory", data, function(){
+		game.renderGameResultPanel("Victory");
 	});
 }
 
 Game.prototype.defeat = function(){
-
+	var data = {level:user.level, exp:user.exp, gold:user.gold};
+	game.pause();
+	$.post("/defeat", data, function(){
+		game.renderGameResultPanel("Defeat");
+	});
 }
 
 Game.prototype.tick = function(){

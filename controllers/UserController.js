@@ -4,7 +4,7 @@ var Ship = mongoose.model('Ship');
 var Process = mongoose.model('Process');
 var Star = mongoose.model('Star');
 
-var ShipController = require('../controllers/ShipController');
+//var ShipController = require('../controllers/ShipController');
 var StarController = require('../controllers/StarController');
 /*
 exports.load = function (req, res, next, id) {
@@ -71,14 +71,26 @@ exports.sendAuthenticationEmail = function(req, res){
 };
 */
 
-
-
-exports.stageClear = function(req, res, callback){
+exports.defeat = function(req, res, callback){
+    console.log(req.body);
     User.findById(req.session.user._id, function(err, user){
         user.level = req.body.level;
         user.exp = req.body.exp;
         user.gold = req.body.gold;        
         user.save(function(){
+            req.session.user = user;
+            callback();
+        });
+    });
+}
+
+exports.victory = function(req, res, callback){
+    User.findById(req.session.user._id, function(err, user){
+        user.level = req.body.level;
+        user.exp = req.body.exp;
+        user.gold = req.body.gold;        
+        user.save(function(){
+            req.session.user = user;
             Process.findOne({_user:user._id}, function(err, process){
                 Star.findById(req.body.star, function(err, star){
                     star._next.forEach(function(next){
@@ -95,7 +107,7 @@ exports.stageClear = function(req, res, callback){
                 });
             });
         });
-    })
+    });
 }
 
 exports.authenticate = function(req, res, callback){

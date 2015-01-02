@@ -8,8 +8,8 @@ function Ship(ship){
 	init.call(this);
 
 	function init(){
-		this.health = this.ship.health;
-		this.health_max = this.ship.health;
+		this.health_max = this.health = this.ship.health;
+		this.psychic_max = this.psychic = this.ship.psychic;
 		this.ship.exp_cap = this.ship.level * 2;
 		this.ship.level = 
 		this.renderShip();
@@ -139,7 +139,7 @@ Ship.prototype.renderText = function(){
 }
 
 Ship.prototype.isHit = function(bullet){
-	return (Math.pow(bullet.x - this.container.x, 2) + Math.pow(bullet.y - this.container.y, 2) < Math.pow(this.ship._shape.radius, 2));
+	return (Math.pow(bullet.x - this.container.x, 2) + Math.pow(bullet.y - this.container.y, 2) < Math.pow(this.ship._shape.radius + bullet.radius, 2));
 }
 
 Ship.prototype.damaged = function(bullet){
@@ -156,6 +156,7 @@ Ship.prototype.damaged = function(bullet){
 	});
 	
 	this.damage_bar.graphics.c().beginFill("#CC0000").drawRect(this.ship._shape.radius * 2 / this.health_max * this.health - this.ship._shape.radius, -this.ship._shape.radius * 2, this.ship._shape.radius * 2 * (this.health_max - this.health) / this.health_max, this.ship._shape.radius / 5);	
+	ship_stats.renderHealthBar();
 	if(this.health <= 0){
 		this.destroyed(bullet);
 	}
@@ -167,5 +168,5 @@ Ship.prototype.damaged = function(bullet){
 Ship.prototype.destroyed = function(){
 	effect.destroy(this.container.x,this.container.y, 1);
 	stage.removeChild(this.container);
-	game.pause();
+	game.defeat();
 }

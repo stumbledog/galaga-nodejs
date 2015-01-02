@@ -26,9 +26,7 @@
 		$.get("/galaxy", function(res){
 			var process = res.process;
 			process._selectable.forEach(function(star){
-
 				var wave_count = star._wave.length;
-
 				var container = new createjs.Container();
 				container.x = star.x;
 				container.y = star.y;
@@ -41,19 +39,7 @@
 				star_shape.cursor = "pointer";
 
 				var text = new createjs.Text(star.name, "14px Arial", "#ffffff");
-				text.x = radius + 5;
-
-				if(process.clear){
-					star._next.forEach(function(path){
-						var line = new createjs.Shape();
-						line.graphics.s('#fff').mt(star.x, star.y).lt(path.x, path.y);
-						stage.addChild(line);
-					});
-				}else{
-					var over = new createjs.Shape();
-					over.graphics.f("#fff").dc(0, 0 , radius+2);
-					container.addChild(over);
-				}
+				text.x = radius + 5;				
 
 				container.addChild(star_shape, text);
 				stage.addChild(container);
@@ -68,13 +54,13 @@
 
 				container.addEventListener("rollover", function(event){
 					container.scaleX = container.scaleY = 1.2;
-					stage.addChild(tooltip_container);
+					//stage.addChild(tooltip_container);
 					stage.update();
 				});
 
 				container.addEventListener("rollout", function(event){
 					container.scaleX = container.scaleY = 1;
-					stage.removeChild(tooltip_container);
+					//stage.removeChild(tooltip_container);
 					stage.update();
 				});
 

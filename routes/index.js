@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var UserController = require('../controllers/UserController');
-var ShipController = require('../controllers/ShipController');
+ShipController = require('../controllers/ShipController');
 var StarController = require('../controllers/StarController');
 var GameController = require('../controllers/GameController');
 
@@ -15,7 +15,6 @@ router.get('/', function(req, res) {
 });
 
 router.post('/game', function(req, res) {
-	console.log(req.body);
 	if(!req.body.star || !req.session.user || !req.session.ship){
 		console.log("redirect");
 		res.redirect("/");		
@@ -33,15 +32,22 @@ router.get('/galaxy', function(req, res){
 	});
 });
 
-router.post('/stageClear', function(req, res){
-	UserController.stageClear(req, res, function(process){
+router.post('/victory', function(req, res){
+	UserController.victory(req, res, function(process){
 		res.contentType('json');
-		res.send({ process:process });
+		res.send({ save:true });
+	});
+});
+
+router.post('/defeat', function(req, res){
+	UserController.defeat(req, res, function(){
+		res.contentType('json');
+		res.send({ save:true });
 	});
 });
 
 router.get('*', function(req, res){
-  res.redirect("/");
+	res.redirect("/");
 });
 
 module.exports = router;

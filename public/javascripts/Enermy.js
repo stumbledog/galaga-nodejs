@@ -19,7 +19,8 @@ Enermy.prototype.renderShip = function(){
 	this.container = new createjs.Container();
 	this.stats.components.forEach(function(component){
 		this.shape = new createjs.Shape();
-		this.shape.graphics.bf(loader.getResult("components")).dr(component.crop_x, component.crop_y, component.width, component.height);
+		console.log(this.stats.file);
+		this.shape.graphics.bf(loader.getResult(this.stats.file)).dr(component.crop_x, component.crop_y, component.width, component.height);
 		this.shape.regX = component.crop_x + component.width / 2;
 		this.shape.regY = component.crop_y + component.height / 2;
 		this.shape.x = component.x;
@@ -98,6 +99,7 @@ Enermy.prototype.fire = function(){
 	shape.x = this.container.x;
 	shape.y = this.container.y;
 	shape.damage = this.stats.firearm.damage * game.difficulty[2];
+	shape.radius = this.stats.firearm.radius;
 	this.bullets.push(shape);
 	stage.addChild(shape);
 }
