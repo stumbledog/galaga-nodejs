@@ -1,8 +1,10 @@
-(function Home(){
-	var game_panel_container, total_exp, selected_star, total, balance_controller;
+function Home(user){
+	var selected_star, balance_controller, store;
 	var difficulty = [1,1,1,1,1];
+	this.user = new User(user);
+	var home = this;
 
-	init();
+	init.call(this);
 
 	function init(){
 		var manifest = [
@@ -19,6 +21,10 @@
 
 	function handleLoadComplete(){
 		loadGalaxy();
+		home.user.renderGold();
+		home.user.renderLevel();
+		initButtons();
+		store = new Store();
 		balance_controller = new BalanceController();
 	}
 
@@ -53,25 +59,65 @@
 				tooltip_container.addChild(tooltip_text);
 
 				container.addEventListener("rollover", function(event){
-					container.scaleX = container.scaleY = 1.2;
-					//stage.addChild(tooltip_container);
-					stage.update();
+					if(!store.isOpen){
+						container.scaleX = container.scaleY = 1.2;
+						//stage.addChild(tooltip_container);
+						stage.update();
+					}
 				});
 
 				container.addEventListener("rollout", function(event){
-					container.scaleX = container.scaleY = 1;
-					//stage.removeChild(tooltip_container);
-					stage.update();
+					if(!store.isOpen){
+						container.scaleX = container.scaleY = 1;
+						//stage.removeChild(tooltip_container);
+						stage.update();
+					}
 				});
 
 				container.addEventListener("mousedown", function(event){
-					selected_star = star._id;
-					balance_controller.selectStar(selected_star);
-					stage.update();
+					if(!store.isOpen){
+						selected_star = star._id;
+						balance_controller.selectStar(selected_star);
+						stage.update();
+					}
 				});
 			});
 
 			stage.update();
 		});
 	}
-})();
+
+	function initButtons(){
+		var store_button = new createjs.Shape();
+		store_button.graphics.bf(loader.getResult("button")).drawRect(638,630,63,66);
+		store_button.regX = 670;
+		store_button.regY = 663;
+		store_button.x = 320;
+		store_button.y = 600;
+		store_button.cursor = "pointer";
+
+		store_button.addEventListener("rollover", function(event){
+			if(!store.isOpen){
+				store_button.scaleX = store_button.scaleY = 1.2;
+				stage.update();
+			}
+		});
+
+		store_button.addEventListener("rollout", function(event){
+			if(!store.isOpen){
+				store_button.scaleX = store_button.scaleY = 1.0;
+				stage.update();
+			}
+		});
+
+		store_button.addEventListener("mousedown", function(event){
+			if(!store.isOpen){
+				store_button.scaleX = store_button.scaleY = 1.0;
+				store.open();
+				stage.update();
+			}
+		});
+
+		stage.addChild(store_button);
+	}
+}

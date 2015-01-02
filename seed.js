@@ -63,8 +63,8 @@ connection.once("open", function(){
 		});
 	});
 
-	var star1 = new Star({_id:1,name:"Elnath",x:320,y:320,radius:6,_next:[2], _wave:[1, 2, 3, 4]});
-	var star2 = new Star({_id:2,name:"Decrux",x:280,y:380,radius:8,_next:[3]});
+	var star1 = new Star({_id:1,name:"Elnath",x:320,y:320,radius:6,_next:[2], _wave:[1,2,3,4]});
+	var star2 = new Star({_id:2,name:"Decrux",x:280,y:380,radius:8,_next:[3], _wave:[5,6,7,8]});
 	var star3 = new Star({_id:3,name:"Wezen",x:240,y:340,radius:7});
 
 	star1.save();
@@ -147,19 +147,52 @@ connection.once("open", function(){
 		]
 	});
 
+	var enermy4 = new Enermy({
+		_id:4,
+		name:"MK-II",
+		health:200,
+		exp:20,
+		gold:40,
+		speed:1.5,
+		range:400,
+		width:64,
+		height:64,
+		radius:64,
+		file:"ships",
+		firearm:{
+			accuracy:60,
+			damage:5,
+			firerate:10,
+			speed:3,
+			radius:1,
+		},
+		components:[
+			{crop_x:10,crop_y:135,width:59,height:61},
+		]
+	});
 
 	enermy1.save();
 	enermy2.save();
 	enermy3.save();
+	enermy4.save();
 
 	var wave1 = new Wave({_id:1,enermies:[{count:8,_enermy:1}]});
 	var wave2 = new Wave({_id:2,enermies:[{count:8,_enermy:2}]});
 	var wave3 = new Wave({_id:3,enermies:[{count:8,_enermy:1},{count:8,_enermy:2}]});
 	var wave4 = new Wave({_id:4,enermies:[{count:1,_enermy:3}]});
 
+	var wave5 = new Wave({_id:5,enermies:[{count:10,_enermy:1}]});
+	var wave6 = new Wave({_id:6,enermies:[{count:10,_enermy:2}]});
+	var wave7 = new Wave({_id:7,enermies:[{count:10,_enermy:1},{count:10,_enermy:2}]});
+	var wave8 = new Wave({_id:8,enermies:[{count:1,_enermy:4}]});
+	
+
 	wave1.save();
 	wave2.save();
 	wave3.save();
 	wave4.save();
-
+	wave5.save();
+	wave6.save();
+	wave7.save();
+	wave8.save();
 });

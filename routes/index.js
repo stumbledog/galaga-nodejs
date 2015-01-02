@@ -1,10 +1,11 @@
 var express = require('express');
 var router = express.Router();
 
-var UserController = require('../controllers/UserController');
+UserController = require('../controllers/UserController');
 ShipController = require('../controllers/ShipController');
-var StarController = require('../controllers/StarController');
-var GameController = require('../controllers/GameController');
+StarController = require('../controllers/StarController');
+GameController = require('../controllers/GameController');
+ItemController = require('../controllers/ItemController');
 
 var title = "Galaga JS";
 
@@ -29,6 +30,13 @@ router.get('/galaxy', function(req, res){
 	StarController.getGalaxy(req, function(process){
 		res.contentType('json');
 		res.send({ process:process });
+	});
+});
+
+router.post('/getItems', function(req, res){
+	ItemController.getItems(req.body.type, function(items){
+		res.contentType('json');
+		res.send({ items:items });
 	});
 });
 

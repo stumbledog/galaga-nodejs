@@ -1,9 +1,15 @@
+var PLAYING = 0;
+var VICTORY = 1;
+var DEFEAT = -1;
+
 function Game(star, ship, user, difficulty, bonus){
     var stars = [], enermies = [];
     var gold, exp, lvl;
-    game = this;    
-    this.ship = ship;
+
+    game = this;
     this.star = star;
+    this.user = user;
+    this.ship = ship;
     this.difficulty = difficulty.split(",");
     this.bonus = bonus;
 
@@ -14,6 +20,8 @@ function Game(star, ship, user, difficulty, bonus){
 	this.enermy_destoryed = 0;
 	this.total_exp_gained = 0;
 	this.total_gold_earned = 0;
+
+    this.status = PLAYING;
 
     init.call(this);
 
@@ -76,6 +84,7 @@ Game.prototype.initEventHandler = function(){
 Game.prototype.handleLoadComplete = function(){
 	effect = new Effect();
 	user = new User(this.user);
+	user.renderGold();
 	ship = new Ship(this.ship);
 	wave = new Wave(this.star._wave);
 	game.balance_controller = new BalanceController(1, game.difficulty);
@@ -167,7 +176,8 @@ Game.prototype.renderGameResultPanel = function(title){
 
 Game.prototype.victory = function(){
 	var data = {level:user.level, exp:user.exp, gold:user.gold, star:this.star._id};
-	game.pause();
+	this.status = VICTORY;
+	//game.pause();
 	$.post("/victory", data, function(){
 		game.renderGameResultPanel("Victory");
 	});
@@ -175,14 +185,15 @@ Game.prototype.victory = function(){
 
 Game.prototype.defeat = function(){
 	var data = {level:user.level, exp:user.exp, gold:user.gold};
-	game.pause();
+	this.status = DEFEAT;
+	//game.pause();
 	$.post("/defeat", data, function(){
 		game.renderGameResultPanel("Defeat");
 	});
 }
 
 Game.prototype.tick = function(){
-    if(!createjs.Ticker.getPaused()){
+    if(!createjs.Ticker.getPaused() && game.status === 0){
         ship.tick();
         wave.tick();
     }

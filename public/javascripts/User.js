@@ -20,6 +20,7 @@ User.prototype.getGold = function(gold){
 	gold *= game.bonus;
 	this.gold += gold;
 	game.total_gold_earned += gold;
+	this.gold_text.text = this.gold.toFixed(0) + " Gold";
 }
 
 User.prototype.levelUp = function(){
@@ -38,4 +39,21 @@ User.prototype.levelUp = function(){
 	if(this.exp >= this.level * 10){
 		this.levelUp();
 	}
+}
+
+User.prototype.renderGold = function(){
+	this.gold_text = new createjs.Text(this.gold.toFixed(0) + " Gold", "12px Arial", "#FFBE2C");
+	this.gold_text.textAlign = "right";
+	this.gold_text.textBaseline = "bottom";
+	this.gold_text.x = this.gold_text.y = 620
+	stage.addChild(this.gold_text);
+}
+
+User.prototype.renderLevel = function(){
+	this.level_text = new createjs.Text(this.level + " Level", "12px Arial", "#FFFFFF");
+	this.level_text.textAlign = "right";
+	this.level_text.textBaseline = "bottom";
+	this.level_text.x = 620;
+	this.level_text.y = 606;
+	stage.addChild(this.level_text);	
 }
