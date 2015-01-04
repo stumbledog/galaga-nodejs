@@ -30,9 +30,9 @@ function Game(star, ship, user, difficulty, bonus){
         stage.enableMouseOver(10);
         var manifest = [
             {src:"./assets/images/Components64.png", id:"components"},
+            {src:"./assets/images/Ships64.png", id:"ships"},
             {src:"./assets/images/Items64.png", id:"items"},
             {src:"./assets/images/Button64.png", id:"button"},
-            {src:"./assets/images/Ships64.png", id:"ships"},
         ];
 
         loader = new createjs.LoadQueue(false);

@@ -8,8 +8,9 @@ function Home(user){
 
 	function init(){
 		var manifest = [
+            {src:"./assets/images/Components64.png", id:"components"},
+			{src:"./assets/images/Ships64.png", id:"ships"},
 			{src:"./assets/images/Button64.png", id:"button"},
-			{src:"./assets/images/Ships64.png", id:"ship"},
 		];
 		stage = new createjs.Stage("home");
 		stage.enableMouseOver(10);

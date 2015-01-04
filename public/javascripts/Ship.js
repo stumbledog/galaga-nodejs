@@ -111,9 +111,11 @@ Ship.prototype.renderShip = function(){
 	this.container = new createjs.Container();
 	this.ship._shape.components.forEach(function(component){
 		var shape = new createjs.Shape();
-		shape.graphics.bf(loader.getResult("components")).drawRect(component.x,component.y,component.width,component.height);
-		shape.regX = component.x + component.width / 2;
-		shape.regY = component.y + component.height / 2;
+		shape.graphics.bf(loader.getResult(this.ship._shape.file)).drawRect(component.crop_x,component.crop_y,component.width,component.height);
+		shape.regX = component.crop_x + component.width / 2;
+		shape.regY = component.crop_y + component.height / 2;
+		shape.x = component.x;
+		shape.y = component.y;
 		this.container.addChild(shape);
 	}, this);
 	this.container.x = this.container.y = 320;

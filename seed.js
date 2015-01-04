@@ -20,13 +20,69 @@ connection.once("open", function(){
 	var Star = mongoose.model('Star');
 	var Enermy = mongoose.model('Enermy');
 	var Wave = mongoose.model('Wave');
+	var ShipItem = mongoose.model('ShipItem');
 
-	var shape = new Shape({
-		name:"Aries", 
+	var shipItem1 = new ShipItem({
+		_id:1,
+		price:100,
+		rarity:1,
+		name:"Aries II",
+		health:10,
+		psychic:10,
+		speed:3,
+		weapons:1,
+		_shape:1,
+	});
+
+	var shipItem2 = new ShipItem({
+		_id:2,
+		price:100,
+		rarity:1,
+		name:"Aries II",
+		health:20,
+		psychic:10,
+		speed:4,
+		weapons:1,
+		_shape:2,
+	});
+
+	var shipItem3 = new ShipItem({
+		_id:3,
+		price:500,
+		rarity:1,
+		name:"Aries III",
+		health:100,
+		psychic:10,
+		speed:2,
+		weapons:2,
+		_shape:3,
+	});
+
+	var shape1 = new Shape({
+		_id:1,
 		width:14,
 		height:28,
 		radius:14,
-		components:[{x:58,y:113,width:14,height:28}]
+		file:"components",
+		components:[{crop_x:58,crop_y:113,width:14,height:28}]
+	});
+
+	var shape2 = new Shape({
+		_id:2,
+		width:12,
+		height:26,
+		radius:12,
+		file:"components",
+		components:[{crop_x:75,crop_y:345,width:12,height:26}]
+	});
+
+	var shape3 = new Shape({
+		_id:3,
+		width:56,
+		height:46,
+		radius:46,
+		file:"ships",
+		components:[{crop_x:129,crop_y:13,width:56,height:46}]
 	});
 
 	var ship = new Ship({
@@ -34,9 +90,12 @@ connection.once("open", function(){
 		health:10,
 		psychic:10,
 		speed:3,
+		_shape:1,
+		_firearm:1,
 	});
 
 	var firearm = new Firearm({
+		_id:1,
 		name:"gun",
 		rarity:1,
 		cost:1,
@@ -55,13 +114,14 @@ connection.once("open", function(){
 		}
 	});
 
-	shape.save(function(){
-		firearm.save(function(){
-			ship._shape = shape._id;
-			ship._firearm.push(firearm._id);
-			ship.save();
-		});
-	});
+	shipItem1.save();
+	shipItem2.save();
+	shipItem3.save();
+	shape1.save();
+	shape2.save();
+	shape3.save();
+	firearm.save();
+	ship.save();
 
 	var star1 = new Star({_id:1,name:"Elnath",x:320,y:320,radius:6,_next:[2], _wave:[1,2,3,4]});
 	var star2 = new Star({_id:2,name:"Decrux",x:280,y:380,radius:8,_next:[3], _wave:[5,6,7,8]});

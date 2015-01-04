@@ -2,15 +2,18 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var ShapeSchema = new Schema({
-	name: String,
-	width: Number,
-	height: Number,
-	radius: Number,
+	_id:Number,
+	width:Number,
+	height:Number,
+	radius:Number,
+	file:String,
 	components:[{
-		x: Number,
-		y: Number,
-		width: Number,
-		height: Number
+		x:{type:Number,default:0},
+		y:{type:Number,default:0},
+		crop_x:Number,
+		crop_y:Number,
+		width:Number,
+		height:Number
 	}]
 });
 

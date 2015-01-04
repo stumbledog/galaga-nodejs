@@ -1,6 +1,12 @@
 var express = require('express');
 var router = express.Router();
 
+mongoose = require('mongoose');
+ShipModel = mongoose.model('Ship');
+ShipItemModel = mongoose.model('ShipItem');
+ShapeModel = mongoose.model('Shape');
+FirearmModel = mongoose.model('Firearm');
+
 UserController = require('../controllers/UserController');
 ShipController = require('../controllers/ShipController');
 StarController = require('../controllers/StarController');

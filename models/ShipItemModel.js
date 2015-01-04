@@ -1,15 +1,17 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var ShipSchema = new Schema({
+var ShipItemSchema = new Schema({
+	_id:Number,	
+	price:Number,
+	rarity:Number,
 	name:String,
 	health:Number,
 	psychic:Number,
 	speed:Number,
-	_user:{type:Schema.Types.ObjectId,ref:'User'},
-	_firearm:[{type:Number,ref:'Firearm'}],
+	weapons:Number,
 	_shape:{type:Number,ref:'Shape'},
 	created_at:{type:Date,default:Date.now},
 });
 
-mongoose.model('Ship', ShipSchema);
+mongoose.model('ShipItem', ShipItemSchema);
