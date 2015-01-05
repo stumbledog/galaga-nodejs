@@ -2,7 +2,7 @@ function Store(){
 	
 	this.isOpen = false;
 	var store = this;
-	var item_container;
+	var item_container, gold_text;
 
 	init.call(this);
 
@@ -18,7 +18,7 @@ function Store(){
 		item_container.y = 20;
 
 		var background = new createjs.Shape();
-		background.graphics.s("#fff").ss(5).f("#333").rr(10,10,120,200,10).rr(150,10,480,620,10);
+		background.graphics.s("#fff").ss(5).f("#333").rr(10,10,120,200,10).rr(10,230,120,100,10).rr(150,10,480,540,10);
 
 		var button_border = new createjs.Shape();
 		button_border.graphics.s("#fff").ss(2).f("#000").rr(0,0,100,30,5);
@@ -50,6 +50,12 @@ function Store(){
 			console.log("show weapons");
 		});
 
+
+		gold_text = new createjs.Text(home.user.gold + " Gold", "12px Arial", "#FFBE2C");
+		gold_text.x = 20;
+		gold_text.y = 240;
+
+
 		var close_button = new createjs.Shape();
 		close_button.graphics.bf(loader.getResult("button")).drawRect(638,1094,63,66);
 		close_button.regX = 670;
@@ -62,26 +68,29 @@ function Store(){
 			store.close();
 		});
 
-		this.container.addChild(background, close_button, ship_button, weapon_button, item_container);
+		this.container.addChild(background, close_button, ship_button, weapon_button, item_container, gold_text);
 		getItems("ship");
 	}
 
 	function getItems(type){
 		$.post("/getItems/",{type:type}, function(res){
-			console.log("ship list");
-			renderItems(res.items);
+			if(type === "ship"){
+				renderShips(res.items);
+			}else{
+
+			}
 		});
 	}
 
-	function renderItems(items){
+	function renderShips(ships){
 		var index = 0;
-		items.forEach(function(item){
+		ships.forEach(function(ship){
 			var container = new createjs.Container();
 			var border = new createjs.Shape();
 			border.graphics.s("#fff").ss(2).f("#000").rr(0,0,100,160,5);
 
 			var shape_container = new createjs.Container();
-			item._shape.components.forEach(function(component){
+			ship._shape.components.forEach(function(component){
 				var shape = new createjs.Shape();
 				shape.graphics.bf(loader.getResult(this.file)).drawRect(component.crop_x,component.crop_y,component.width,component.height);
 				shape.regX = component.crop_x + component.width / 2;
@@ -89,22 +98,22 @@ function Store(){
 				shape.x = component.x + 50;
 				shape.y = component.y + 80;
 				shape_container.addChild(shape);
-			}, item._shape);
+			}, ship._shape);
 
 			var health_text = new createjs.Text("Health: ","12px Arial","#FFB03B");
-			var health_amount_text = new createjs.Text(item.health,"12px Arial","#fff");
+			var health_amount_text = new createjs.Text(ship.health,"12px Arial","#fff");
 			health_text.x = 5;
 			health_amount_text.x = health_text.getMeasuredWidth() + 5;
 			health_text.y = health_amount_text.y = 5;
 			
 			var speed_text = new createjs.Text("Speed: ","12px Arial","#FFB03B");
-			var speed_amount_text = new createjs.Text(item.speed,"12px Arial","#fff");
+			var speed_amount_text = new createjs.Text(ship.speed,"12px Arial","#fff");
 			speed_text.x = 5;
 			speed_amount_text.x = speed_text.getMeasuredWidth() + 5;
 			speed_text.y = speed_amount_text.y = 18;
 			
 			var weapons_text = new createjs.Text("Weapons: ","12px Arial","#FFB03B");
-			var weapons_amount_text = new createjs.Text(item.weapons,"12px Arial","#fff");
+			var weapons_amount_text = new createjs.Text(ship.weapons,"12px Arial","#fff");
 			weapons_text.x = 5;
 			weapons_amount_text.x = weapons_text.getMeasuredWidth() + 5;
 			weapons_text.y = weapons_amount_text.y = 31;
@@ -112,22 +121,91 @@ function Store(){
 			var button_container = new createjs.Container();
 			var button_border = new createjs.Shape();
 			button_border.graphics.s("#fff").ss(2).f("#333").rr(0,0,80,20,5);
-			var button_text = new createjs.Text(item.price,"12px Arial","#FFBE2C");
+			var button_text = new createjs.Text(ship.price,"12px Arial","#FFBE2C");
 			button_text.textAlign = "center";
-			button_text.regX = -50 + button_text.getMeasuredWidth()/2;
+			button_text.x = 40;
 			button_text.y = 4;
+
+			var name = new createjs.Text(ship.name,"12px Arial","#fff");
+			name.textAlign = "center";
+			name.x = 50;
+			name.y = 110;
 
 			button_container.x = 10;
 			button_container.y = 130;
 			button_container.cursor = "pointer";
 			button_container.addChild(button_border, button_text);
 
+			button_container.addEventListener("mousedown", function(event){
+				confirm(event, "Do you want to pay " + ship.price + " for "+ship.name+"?", function(callback){
+					$.post("/buyShip",{ship_id:ship._id},function(res){
+						if(res.code > 0){
+							home.user.setGold(res.gold);
+							home.user.renderShip();
+							console.log(res);
+							gold_text.text = res.gold+" Gold";							
+						}else{
+
+						}
+						callback();
+					});
+				});
+			});
 			container.x = index % 3 * 110;
 			container.y = parseInt(index / 3) * 170;
-			container.addChild(border, shape_container, health_text, health_amount_text, speed_text, speed_amount_text, weapons_text, weapons_amount_text, button_container);
+			container.addChild(border, shape_container, health_text, health_amount_text, speed_text, speed_amount_text, weapons_text, weapons_amount_text, button_container, name);
 			item_container.addChild(container);
 			index++;
 		});
+	}
+
+	function confirm(event, msg, callback){
+		var container = new createjs.Container();
+		var text = new createjs.Text(msg, "12px Arial","#fff");
+		var border = new createjs.Shape();
+		var yes_button = new createjs.Container();
+		var no_button = new createjs.Container();
+		var yes_text = new createjs.Text("Yes","12px Arial","#fff");
+		var no_text = new createjs.Text("No","12px Arial","#fff");
+		var yes_border = new createjs.Shape();
+		var no_border = new createjs.Shape();
+		yes_border.graphics.s("#fff").ss(2).f("#468966").rr(0,0,60,20,5);
+		yes_button.y = 35;
+		yes_button.x = text.getMeasuredWidth()/2 + 10 - 65;
+		yes_text.textAlign = "center";
+		yes_text.x = 30;
+		yes_text.y = 4;
+		yes_button.addChild(yes_border, yes_text);
+
+		yes_button.addEventListener("mousedown", function(event){
+			callback(function(){
+				stage.removeChild(container);
+				stage.update();
+			});
+		});
+
+		no_border.graphics.s("#fff").ss(2).f("#B64926").rr(0,0,60,20,5);
+		no_button.y = 35;
+		no_button.x = text.getMeasuredWidth()/2 + 10 + 5;
+		no_text.textAlign = "center";
+		no_text.x = 30;
+		no_text.y = 4;
+		no_button.addChild(no_border, no_text);
+
+		yes_button.cursor = no_button.cursor = "pointer";
+
+		no_button.addEventListener("mousedown", function(event){
+			stage.removeChild(container);
+			stage.update();
+		});
+
+		text.x = text.y = 10;
+		border.graphics.s("#fff").ss(2).f("#000").rr(0,0,text.getMeasuredWidth() + 20,70,5);
+		container.x = event.stageX - text.getMeasuredWidth()/2 - 10;
+		container.y = event.stageY - 40;
+		container.addChild(border, text, yes_button, no_button);
+		stage.addChild(container);
+		stage.update();
 	}
 }
 

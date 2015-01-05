@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 mongoose = require('mongoose');
+UserModel = mongoose.model('User');
 ShipModel = mongoose.model('Ship');
 ShipItemModel = mongoose.model('ShipItem');
 ShapeModel = mongoose.model('Shape');
@@ -43,6 +44,13 @@ router.post('/getItems', function(req, res){
 	ItemController.getItems(req.body.type, function(items){
 		res.contentType('json');
 		res.send({ items:items });
+	});
+});
+
+router.post('/buyShip', function(req, res){
+	ItemController.buyShip(req.body.ship_id, req.session.user._id, function(result){
+		res.contentType('json');
+		res.send(result);
 	});
 });
 

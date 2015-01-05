@@ -118,7 +118,9 @@ exports.authenticate = function(req, res, callback){
 				req.session.user = user;
 				ShipController.select(user._selected_ship, function(ship){
 					req.session.ship = ship;
-					callback(user);
+					self.populateSelectedShip(user, function(user){
+                        callback(user);
+                    });
 				});
 			}else{
 				self.createUser(req, res, callback);
@@ -130,7 +132,9 @@ exports.authenticate = function(req, res, callback){
 }
 
 exports.createUser = function(req, res, callback){
+    var self = this;
 	var user = new User();
+    user.gold = 10000;
 	user.save(function(){
 		var process = new Process({_user:user._id, _selectable:[1]});
 		process.save(function(){
@@ -140,9 +144,19 @@ exports.createUser = function(req, res, callback){
 					req.session.user = user;
 					req.session.ship = ship;
 					res.cookie('user_id', user._id, {maxAge: 10 * 365 * 24 * 60 * 60 * 1000, httpOnly: true });
-					callback(user);
-				})
+                    self.populateSelectedShip(user, function(user){
+                        callback(user);
+                    });
+				});
 			});
 		});
 	});
+}
+
+exports.populateSelectedShip = function(user, callback){
+    ShipModel.populate(user, {path:"_selected_ship"}, function(err, user){
+        ShapeModel.populate(user, {path:"_selected_ship._shape"}, function(err, user){
+            callback(user);
+        });
+    });    
 }

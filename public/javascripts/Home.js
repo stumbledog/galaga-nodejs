@@ -24,6 +24,7 @@ function Home(user){
 		loadGalaxy();
 		home.user.renderGold();
 		home.user.renderLevel();
+		home.user.renderShip();
 		initButtons();
 		store = new Store();
 		balance_controller = new BalanceController();

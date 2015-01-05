@@ -6,6 +6,7 @@ var ShipSchema = new Schema({
 	health:Number,
 	psychic:Number,
 	speed:Number,
+	weapons:Number,
 	_user:{type:Schema.Types.ObjectId,ref:'User'},
 	_firearm:[{type:Number,ref:'Firearm'}],
 	_shape:{type:Number,ref:'Shape'},

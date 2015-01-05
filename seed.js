@@ -90,6 +90,7 @@ connection.once("open", function(){
 		health:10,
 		psychic:10,
 		speed:3,
+		weapons:1,
 		_shape:1,
 		_firearm:1,
 	});
