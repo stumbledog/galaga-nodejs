@@ -2,16 +2,16 @@ var PLAYING = 0;
 var VICTORY = 1;
 var DEFEAT = -1;
 
-function Game(star, ship, user, difficulty, bonus){
+function Game(data){
     var stars = [], enermies = [];
     var gold, exp, lvl;
-
     game = this;
-    this.star = star;
-    this.user = user;
-    this.ship = ship;
-    this.difficulty = difficulty.split(",");
-    this.bonus = bonus;
+    this.star = data.star;
+    console.log(data.user);
+    this.user = User.getInstance(data.user,null,this);
+    this.ship = data.ship;
+    this.difficulty = data.difficulty.split(",");
+    this.bonus = data.bonus;
 
 	this.total_damage_dealt = 0;
 	this.largest_damage_dealt = 0;
@@ -20,6 +20,9 @@ function Game(star, ship, user, difficulty, bonus){
 	this.enermy_destoryed = 0;
 	this.total_exp_gained = 0;
 	this.total_gold_earned = 0;
+
+
+	var aaa = single_ship.getInstance(this.ship);
 
     this.status = PLAYING;
 
@@ -83,10 +86,9 @@ Game.prototype.initEventHandler = function(){
 
 Game.prototype.handleLoadComplete = function(){
 	effect = new Effect();
-	user = new User(this.user);
-	user.renderGold();
-	ship = new Ship(this.ship);
-	wave = new Wave(this.star._wave);
+	game.user.render();
+	ship = new Ship(game.ship);
+	wave = new Wave(game.star._wave);
 	game.balance_controller = new BalanceController(1, game.difficulty);
 	ship_stats = new ShipStats();
 	createjs.Ticker.addEventListener("tick", game.tick);
@@ -175,7 +177,7 @@ Game.prototype.renderGameResultPanel = function(title){
 }
 
 Game.prototype.victory = function(){
-	var data = {level:user.level, exp:user.exp, gold:user.gold, star:this.star._id};
+	var data = {level:this.user.getLevel(), exp:this.user.getExp(), gold:this.user.getGold(), star:this.star._id};
 	this.status = VICTORY;
 	//game.pause();
 	$.post("/victory", data, function(){

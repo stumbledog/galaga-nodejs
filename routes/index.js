@@ -18,7 +18,10 @@ var title = "Galaga JS";
 
 router.get('/', function(req, res) {
 	UserController.authenticate(req, res, function(user){
-		res.render('home', { title:title, user:user });
+		StarController.getGalaxy(req, function(process){
+			var data = {user:user, process:process};
+			res.render('home', {data:data});
+		});
 	});
 });
 
@@ -28,16 +31,10 @@ router.post('/game', function(req, res) {
 		res.redirect("/");		
 	}else{
 		GameController.init(req, res, function(star){
-			res.render('game', { title:title, star:star , ship:req.session.ship, user:req.session.user, difficulty:req.body.difficulty, bonus:req.body.bonus});
+			var data = { title:title, star:star , ship:req.session.ship, user:req.session.user, difficulty:req.body.difficulty, bonus:req.body.bonus};
+			res.render('game', {data:data});
 		});
 	}
-});
-
-router.get('/galaxy', function(req, res){
-	StarController.getGalaxy(req, function(process){
-		res.contentType('json');
-		res.send({ process:process });
-	});
 });
 
 router.post('/getItems', function(req, res){

@@ -3,7 +3,7 @@ function Store(){
 	this.isOpen = false;
 	var store = this;
 	var item_container, gold_text;
-
+	var user = User.getInstance();
 	init.call(this);
 
 	function init(){
@@ -18,7 +18,7 @@ function Store(){
 		item_container.y = 20;
 
 		var background = new createjs.Shape();
-		background.graphics.s("#fff").ss(5).f("#333").rr(10,10,120,200,10).rr(10,230,120,100,10).rr(150,10,480,540,10);
+		background.graphics.s("#fff").ss(5).f("#333").rr(10,10,120,200,10).rr(150,10,480,540,10);
 
 		var button_border = new createjs.Shape();
 		button_border.graphics.s("#fff").ss(2).f("#000").rr(0,0,100,30,5);
@@ -50,12 +50,6 @@ function Store(){
 			console.log("show weapons");
 		});
 
-
-		gold_text = new createjs.Text(home.user.gold + " Gold", "12px Arial", "#FFBE2C");
-		gold_text.x = 20;
-		gold_text.y = 240;
-
-
 		var close_button = new createjs.Shape();
 		close_button.graphics.bf(loader.getResult("button")).drawRect(638,1094,63,66);
 		close_button.regX = 670;
@@ -68,7 +62,7 @@ function Store(){
 			store.close();
 		});
 
-		this.container.addChild(background, close_button, ship_button, weapon_button, item_container, gold_text);
+		this.container.addChild(background, close_button, ship_button, weapon_button, item_container);
 		getItems("ship");
 	}
 
@@ -135,15 +129,12 @@ function Store(){
 			button_container.y = 130;
 			button_container.cursor = "pointer";
 			button_container.addChild(button_border, button_text);
-
 			button_container.addEventListener("mousedown", function(event){
 				confirm(event, "Do you want to pay " + ship.price + " for "+ship.name+"?", function(callback){
 					$.post("/buyShip",{ship_id:ship._id},function(res){
 						if(res.code > 0){
-							home.user.setGold(res.gold);
-							home.user.renderShip();
-							console.log(res);
-							gold_text.text = res.gold+" Gold";							
+							user.setGold(res.user.gold);
+							user.setShip(res.user._selected_ship);
 						}else{
 
 						}
@@ -219,21 +210,4 @@ Store.prototype.close = function(){
 	this.isOpen = false;
 	stage.removeChild(this.container);
 	stage.update();
-}
-
-Store.prototype.buy = function(item){
-	if(user.gold >= item.price){
-		$.post("/buyitem",{user:used._id, item:item._id},function(res){
-			/*
-				result: -1 not enough gold
-			*/
-			console.log(res);
-		});
-	}else{
-		alert("You don't have enough gold to buy it.")
-	}
-}
-
-Store.prototype.sell = function(item){
-
 }

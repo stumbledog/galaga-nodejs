@@ -1,7 +1,7 @@
 function Enermy(wave, property){
 	this.wave = wave;
 	this.stats = property;
-
+	this.user = User.getInstance();
 	init.call(this);
 
 	function init(){
@@ -73,8 +73,8 @@ Enermy.prototype.destroyed = function(bullet){
 	.to({x:text.x+20, y:text.y-20, alpha:0}, 2000).call(function(item){
 		stage.removeChild(item.target);
 	});	
-	user.getExp(this.stats.exp);
-	user.getGold(this.stats.gold);
+	this.user.gainExp(this.stats.exp);
+	this.user.earnGold(this.stats.gold);
 	effect.destroy(bullet.shape.x,bullet.shape.y,this.stats.radius / 20);
 	stage.removeChild(this.container);
 	stage.removeChild(this.health_bar);

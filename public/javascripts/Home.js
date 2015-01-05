@@ -1,8 +1,9 @@
-function Home(user){
+function Home(data){
 	var selected_star, balance_controller, store;
 	var difficulty = [1,1,1,1,1];
-	this.user = new User(user);
 	var home = this;
+	var user = User.getInstance(data.user, this);
+	var process = data.process;
 
 	init.call(this);
 
@@ -21,72 +22,67 @@ function Home(user){
 	}
 
 	function handleLoadComplete(){
-		loadGalaxy();
-		home.user.renderGold();
-		home.user.renderLevel();
-		home.user.renderShip();
+		
+		renderGalaxy();
+		user.render();
 		initButtons();
 		store = new Store();
 		balance_controller = new BalanceController();
 	}
 
-	function loadGalaxy(){
-		$.get("/galaxy", function(res){
-			var process = res.process;
-			process._selectable.forEach(function(star){
-				var wave_count = star._wave.length;
-				var container = new createjs.Container();
-				container.x = star.x;
-				container.y = star.y;
-				var radius = star.radius;
+	function renderGalaxy(){
+		process._selectable.forEach(function(star){
+			var wave_count = star._wave.length;
+			var container = new createjs.Container();
+			container.x = star.x;
+			container.y = star.y;
+			var radius = star.radius;
 
-				var star_shape = new createjs.Shape();
-				star_shape.graphics
-				.rf(["#fff","#333"],[0,1],radius/3,-radius/3,0,0,0,radius)
-				.dc(0, 0 , radius);
-				star_shape.cursor = "pointer";
+			var star_shape = new createjs.Shape();
+			star_shape.graphics
+			.rf(["#fff","#333"],[0,1],radius/3,-radius/3,0,0,0,radius)
+			.dc(0, 0 , radius);
+			star_shape.cursor = "pointer";
 
-				var text = new createjs.Text(star.name, "14px Arial", "#ffffff");
-				text.x = radius + 5;				
+			var text = new createjs.Text(star.name, "12px Arial", "#ffffff");
+			text.x = radius + 5;				
 
-				container.addChild(star_shape, text);
-				stage.addChild(container);
+			container.addChild(star_shape, text);
+			stage.addChild(container);
 
-				var tooltip_container = new createjs.Container();
-				var tooltip_text = new createjs.Text(wave_count+" waves", "16px Arial", "#ffffff");
+			var tooltip_container = new createjs.Container();
+			var tooltip_text = new createjs.Text(wave_count+" waves", "16px Arial", "#ffffff");
 
-				tooltip_container.x = star.x + radius + 5;
-				tooltip_container.y = star.y - radius - 10;
+			tooltip_container.x = star.x + radius + 5;
+			tooltip_container.y = star.y - radius - 10;
 
-				tooltip_container.addChild(tooltip_text);
+			tooltip_container.addChild(tooltip_text);
 
-				container.addEventListener("rollover", function(event){
-					if(!store.isOpen){
-						container.scaleX = container.scaleY = 1.2;
-						//stage.addChild(tooltip_container);
-						stage.update();
-					}
-				});
-
-				container.addEventListener("rollout", function(event){
-					if(!store.isOpen){
-						container.scaleX = container.scaleY = 1;
-						//stage.removeChild(tooltip_container);
-						stage.update();
-					}
-				});
-
-				container.addEventListener("mousedown", function(event){
-					if(!store.isOpen){
-						selected_star = star._id;
-						balance_controller.selectStar(selected_star);
-						stage.update();
-					}
-				});
+			container.addEventListener("rollover", function(event){
+				if(!store.isOpen){
+					container.scaleX = container.scaleY = 1.2;
+					//stage.addChild(tooltip_container);
+					stage.update();
+				}
 			});
 
-			stage.update();
+			container.addEventListener("rollout", function(event){
+				if(!store.isOpen){
+					container.scaleX = container.scaleY = 1;
+					//stage.removeChild(tooltip_container);
+					stage.update();
+				}
+			});
+
+			container.addEventListener("mousedown", function(event){
+				if(!store.isOpen){
+					selected_star = star._id;
+					balance_controller.selectStar(selected_star);
+					stage.update();
+				}
+			});
 		});
+		stage.update();
 	}
 
 	function initButtons(){
@@ -99,27 +95,22 @@ function Home(user){
 		store_button.cursor = "pointer";
 
 		store_button.addEventListener("rollover", function(event){
-			if(!store.isOpen){
 				store_button.scaleX = store_button.scaleY = 1.2;
 				stage.update();
-			}
 		});
 
 		store_button.addEventListener("rollout", function(event){
-			if(!store.isOpen){
 				store_button.scaleX = store_button.scaleY = 1.0;
 				stage.update();
-			}
 		});
 
 		store_button.addEventListener("mousedown", function(event){
-			if(!store.isOpen){
 				store_button.scaleX = store_button.scaleY = 1.0;
 				store.open();
 				stage.update();
-			}
 		});
 
 		stage.addChild(store_button);
+		stage.update();
 	}
 }

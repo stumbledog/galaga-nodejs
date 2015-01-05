@@ -1,4 +1,60 @@
+var single_ship = (function(){
+
+	var instance;
+
+	function init(ship){
+
+		var shape, firearms = [];
+		var move_right = move_left = move_up = move_down = trigger = false;
+		trigger = true;
+		var last_mouse_position = {x:0, y:0};
+		var ship = ship;
+
+		var health_max = ship.health
+		var health = ship.health;
+		var psychic_max = ship.psychic;
+		var psychic = ship.psychic;
+
+		renderShip();
+		renderHealthBar();
+		renderText();
+
+		initFirearm(ship._firearm);
+
+		function initFirearm(firearms){
+
+		}
+
+		function renderShip(){
+
+		}
+
+		function renderHealthBar(){
+
+		}
+
+		function renderText(){
+
+		}
+
+		return{
+
+		}
+	}
+
+	return {
+		getInstance:function(ship){
+			if(!instance){
+				instance = init.call(this, ship);
+			}
+
+			return instance;
+		}
+	}
+})();
+
 function Ship(ship){
+	console.log(ship);
 	var shape, firearms = [];
 	var move_right = move_left = move_up = move_down = trigger = false;
 	trigger = true;
@@ -171,4 +227,16 @@ Ship.prototype.destroyed = function(){
 	effect.destroy(this.container.x,this.container.y, 1);
 	stage.removeChild(this.container);
 	game.defeat();
+}
+
+Ship.prototype.levelUp = function(){
+	this.level_up_text.visible = true;
+	this.health = this.health_max;	
+	this.psychic = this.psychic_max;
+	createjs.Tween.get(this.level_up_text)
+	.to({scaleX:-1}, 500).to({scaleX:1}, 500).wait(1000).call(function(){
+		this.level_up_text.visible = false;
+	},[],this);
+	this.damage_bar.graphics.c().beginFill("#CC0000").drawRect(this.ship._shape.radius * 2 / this.health_max * this.health - this.ship._shape.radius, -this.ship._shape.radius * 2, this.ship._shape.radius * 2 * (this.health_max - this.health) / this.health_max, this.ship._shape.radius / 5);
+	ship_stats.renderHealthBar();
 }

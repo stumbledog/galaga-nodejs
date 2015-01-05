@@ -28,7 +28,9 @@ exports.buyShip = function(ship_id, user_id, callback){
 					user.gold -= ship.price;
 					user._selected_ship = new_ship._id;
 					user.save(function(){
-						callback({code:1,msg:"Successfully purchased",gold:user.gold,user:user});
+						UserController.populateSelectedShip(user, function(user){
+							callback({code:1,msg:"Successfully purchased",gold:user.gold,user:user});
+						});
 					});
 				});
 			}else{

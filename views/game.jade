@@ -3,10 +3,5 @@ extends layout
 block content
 	canvas#game(width=640, height=640)
 	script(type='text/javascript').
-		var star = !{JSON.stringify(star)};
-		var ship = !{JSON.stringify(ship)};
-		var user = !{JSON.stringify(user)};
-		var difficulty = !{JSON.stringify(difficulty)};
-		var bonus = !{JSON.stringify(bonus)};
-		var game = new Game(star, ship, user, difficulty, bonus);
+		var game = new Game(!{JSON.stringify(data)});
 

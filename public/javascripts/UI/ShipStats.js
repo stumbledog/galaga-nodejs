@@ -5,8 +5,8 @@ function ShipStats(){
 		//initFrame.call(this);
 		initHealthBar.call(this);
 		//initPsychicBar.call(this);
-		initExpBar.call(this);
-		initEvent.call(this);
+		//initExpBar.call(this);
+		//initEvent.call(this);
 	}
 
 	function initFrame(){
@@ -39,6 +39,7 @@ function ShipStats(){
 	}
 
 	function initExpBar(){
+		var user = User.getInstance();
 		this.exp_bar_border = new createjs.Shape();
 		this.exp_bar_border.graphics.beginStroke("#fff").drawRect(169, 626, 302, 14);
 		this.exp_bar = new createjs.Shape();
@@ -67,6 +68,7 @@ ShipStats.prototype.renderHealthBar = function(){
 }
 
 ShipStats.prototype.renderExpBar = function(){
+	var user = User.getInstance();
 	this.exp_bar.graphics.c().beginFill("#FCFFF5").drawRect(170, 627, 300*(user.exp / user.exp_cap), 12);
 	this.exp_text.text = "Level " + user.level + " Exp " + (user.exp / user.exp_cap * 100).toFixed(2)+"%";
 }
