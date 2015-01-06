@@ -2,12 +2,12 @@ var User = (function(){
 
 	var instance;
 
-	function init(user, home, game){
+	function init(user, ship, home, game){
 		var level = user.level;
 		var exp = user.exp;
 		var exp_cap = user.level * 10;
 		var gold = user.gold;
-		var selected_ship = user._selected_ship;
+		//var selected_ship = user._selected_ship;
 		var home = home;
 		var game = game;
 
@@ -49,9 +49,9 @@ var User = (function(){
 
 		function renderShip(){
 			shape_container.removeAllChildren();
-			selected_ship._shape.components.forEach(function(component){
+			ship._shape.components.forEach(function(component){
 				var shape = new createjs.Shape();
-				shape.graphics.bf(loader.getResult(selected_ship._shape.file)).drawRect(component.crop_x,component.crop_y,component.width,component.height);
+				shape.graphics.bf(loader.getResult(ship._shape.file)).drawRect(component.crop_x,component.crop_y,component.width,component.height);
 				shape.regX = component.crop_x + component.width / 2;
 				shape.regY = component.crop_y + component.height / 2;
 				shape.x = component.x;
@@ -125,9 +125,9 @@ var User = (function(){
 	};
 
 	return {
-		getInstance:function(user, home, game){
+		getInstance:function(user, ship, home, game){
 			if(!instance){
-				instance = init.call(this, user, home, game);
+				instance = init.call(this, user, ship, home, game);
 			}
 
 			return instance;

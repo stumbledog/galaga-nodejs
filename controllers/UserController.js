@@ -89,7 +89,9 @@ exports.victory = function(req, res, callback){
         user.level = req.body.level;
         user.exp = req.body.exp;
         user.gold = req.body.gold;        
+        console.log(user);
         user.save(function(){
+            console.log(user);
             req.session.user = user;
             Process.findOne({_user:user._id}, function(err, process){
                 Star.findById(req.body.star, function(err, star){
@@ -141,10 +143,10 @@ exports.createUser = function(req, res, callback){
 			ShipController.create(user, "Aries", function(ship){
 				user._selected_ship = ship._id;
 				user.save(function(){
-					req.session.user = user;
-					req.session.ship = ship;
-					res.cookie('user_id', user._id, {maxAge: 10 * 365 * 24 * 60 * 60 * 1000, httpOnly: true });
                     self.populateSelectedShip(user, function(user){
+                        req.session.user = user;
+                        req.session.ship = ship;
+                        res.cookie('user_id', user._id, {maxAge: 10 * 365 * 24 * 60 * 60 * 1000, httpOnly: true });
                         callback(user);
                     });
 				});
@@ -154,9 +156,11 @@ exports.createUser = function(req, res, callback){
 }
 
 exports.populateSelectedShip = function(user, callback){
+    callback(user);
+    /*
     ShipModel.populate(user, {path:"_selected_ship"}, function(err, user){
         ShapeModel.populate(user, {path:"_selected_ship._shape"}, function(err, user){
             callback(user);
         });
-    });    
+    });*/    
 }

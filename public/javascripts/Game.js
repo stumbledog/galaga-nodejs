@@ -8,7 +8,7 @@ function Game(data){
     game = this;
     this.star = data.star;
     console.log(data.user);
-    this.user = User.getInstance(data.user,null,this);
+    this.user = User.getInstance(data.user,data.ship, null,this);
     this.ship = data.ship;
     this.difficulty = data.difficulty.split(",");
     this.bonus = data.bonus;
@@ -22,7 +22,7 @@ function Game(data){
 	this.total_gold_earned = 0;
 
 
-	var aaa = single_ship.getInstance(this.ship);
+	//var aaa = single_ship.getInstance(this.ship);
 
     this.status = PLAYING;
 

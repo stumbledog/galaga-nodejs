@@ -134,7 +134,7 @@ function Store(){
 					$.post("/buyShip",{ship_id:ship._id},function(res){
 						if(res.code > 0){
 							user.setGold(res.user.gold);
-							user.setShip(res.user._selected_ship);
+							user.setShip(res.ship);
 						}else{
 
 						}

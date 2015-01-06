@@ -2,7 +2,7 @@ function Home(data){
 	var selected_star, balance_controller, store;
 	var difficulty = [1,1,1,1,1];
 	var home = this;
-	var user = User.getInstance(data.user, this);
+	var user = User.getInstance(data.user, data.ship, this);
 	var process = data.process;
 
 	init.call(this);

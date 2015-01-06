@@ -6,7 +6,9 @@ exports.getItems = function(type, callback){
 	}
 }
 
-exports.buyShip = function(ship_id, user_id, callback){
+exports.buyShip = function(req, callback){
+	var ship_id = req.body.ship_id;
+	var user_id = req.session.user._id;
 	UserModel.findById(user_id, function(err, user){
 		if(err){
 			callback({code:-2,msg:"Unauthficated user"});
@@ -26,10 +28,10 @@ exports.buyShip = function(ship_id, user_id, callback){
 				new_ship.name = ship.name;
 				new_ship.save(function(){
 					user.gold -= ship.price;
-					user._selected_ship = new_ship._id;
 					user.save(function(){
-						UserController.populateSelectedShip(user, function(user){
-							callback({code:1,msg:"Successfully purchased",gold:user.gold,user:user});
+						ShipController.populateShip(new_ship, function(ship){
+							req.session.ship = new_ship;
+							callback({code:1,msg:"Successfully purchased",gold:user.gold,user:user, ship:req.session.ship});							
 						});
 					});
 				});
