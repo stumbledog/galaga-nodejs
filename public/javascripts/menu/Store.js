@@ -7,10 +7,10 @@ function Store(){
 	init.call(this);
 
 	function init(){
-		renderStore.call(this);
+		render.call(this);
 	}
 
-	function renderStore(){
+	function render(){
 		this.container = new createjs.Container();
 
 		item_container = new createjs.Container();

@@ -66,6 +66,14 @@ router.post('/defeat', function(req, res){
 	});
 });
 
+router.get('/getUserShips', function(req,res){
+	console.log("asd");
+	ShipController.getUserShips(req, function(ships){
+		res.contentType('json');
+		res.send({ ships:ships });
+	});
+});
+
 router.get('*', function(req, res){
 	res.redirect("/");
 });

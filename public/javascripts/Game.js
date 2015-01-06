@@ -22,8 +22,6 @@ function Game(data){
 	this.total_gold_earned = 0;
 
 
-	//var aaa = single_ship.getInstance(this.ship);
-
     this.status = PLAYING;
 
     init.call(this);

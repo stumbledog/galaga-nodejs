@@ -1,5 +1,5 @@
 function Home(data){
-	var selected_star, balance_controller, store;
+	var selected_star, balance_controller, store, hangar;
 	var difficulty = [1,1,1,1,1];
 	var home = this;
 	var user = User.getInstance(data.user, data.ship, this);
@@ -27,6 +27,7 @@ function Home(data){
 		user.render();
 		initButtons();
 		store = new Store();
+		hangar = new Hangar();
 		balance_controller = new BalanceController();
 	}
 
@@ -110,7 +111,31 @@ function Home(data){
 				stage.update();
 		});
 
-		stage.addChild(store_button);
+		var hangar_button = new createjs.Shape();
+		hangar_button.graphics.bf(loader.getResult("button")).drawRect(638,257,63,66);
+		hangar_button.regX = 670;
+		hangar_button.regY = 290;
+		hangar_button.x = 240;
+		hangar_button.y = 600;
+		hangar_button.cursor = "pointer";
+
+		hangar_button.addEventListener("rollover", function(event){
+				hangar_button.scaleX = hangar_button.scaleY = 1.2;
+				stage.update();
+		});
+
+		hangar_button.addEventListener("rollout", function(event){
+				hangar_button.scaleX = hangar_button.scaleY = 1.0;
+				stage.update();
+		});
+
+		hangar_button.addEventListener("mousedown", function(event){
+				hangar_button.scaleX = hangar_button.scaleY = 1.0;
+				hangar.open();
+				stage.update();
+		});
+
+		stage.addChild(store_button, hangar_button);
 		stage.update();
 	}
 }

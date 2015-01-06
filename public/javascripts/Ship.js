@@ -1,141 +1,3 @@
-var single_ship = (function(){
-
-	var instance;
-
-	function init(ship){
-
-		var shape, firearms = [];
-		var move_right = move_left = move_up = move_down = trigger = false;
-		trigger = true;
-		var last_mouse_position = {x:0, y:0};
-		var ship = ship;
-
-		var health_max = ship.health
-		var health = ship.health;
-		var psychic_max = ship.psychic;
-		var psychic = ship.psychic;
-
-		renderShip();
-		renderHealthBar();
-		renderText();
-
-		initFirearm(ship._firearm);
-
-		function initFirearm(firearm_property_array){
-			firearm_property_array.forEach(function(firearm_property){
-				var firearm = new Firearm(firearm_property.accuracy, firearm_property.firerate, firearm_property.speed, firearm_property.damage, firearm_property.critical_rate, firearm_property.critical_damage);
-				firearms.push(firearm);
-			});
-		}
-
-		function renderShip(){
-			this.container = new createjs.Container();
-			this.ship._shape.components.forEach(function(component){
-				var shape = new createjs.Shape();
-				shape.graphics.bf(loader.getResult(this.ship._shape.file)).drawRect(component.crop_x,component.crop_y,component.width,component.height);
-				shape.regX = component.crop_x + component.width / 2;
-				shape.regY = component.crop_y + component.height / 2;
-				shape.x = component.x;
-				shape.y = component.y;
-				this.container.addChild(shape);
-			}, this);
-			this.container.x = this.container.y = 320;
-			this.container.width = this.ship.width;
-			this.container.height = this.ship.height;
-			stage.addChild(this.container);
-		}
-
-		function renderHealthBar(){
-
-		}
-
-		function renderText(){
-
-		}
-
-		return{
-			keyDown:function(key){
-				switch(key) {
-					case 87:
-						move_up = true; return false;
-					case 68:
-						move_right = true; return false;
-					case 83:
-						move_down = true; return false;
-					case 65:
-						move_left = true; return false;
-					case 32:
-						trigger = true; return false;
-				}
-			},
-			keyUp:function(key){
-				switch(key) {
-					case 87:
-						move_up = false; return false;
-					case 83:
-						move_down = false; return false;
-					case 68:
-						move_right = false; return false;
-					case 65:
-						move_left = false; return false;
-					case 32:
-						trigger = false; return false;
-				}
-			},
-			mouseMove:function(event){
-		        last_mouse_position.x = event.stageX;
-		        last_mouse_position.y = event.stageY;
-		    },
-			getBullets:function(){
-		        var bullets = [];
-		        firearms.forEach(function(firearm){
-		            bullets.push(firearm.getBullets());
-		        })
-		        return bullets;
-		    },
-			tick:function() {
-		        var dx = last_mouse_position.x - this.container.x;
-		        var dy = last_mouse_position.y - this.container.y;
-		        var degree = -Math.atan2(dx,dy) * 180 / Math.PI + 180;
-
-		        this.container.rotation = degree;
-				this.health_bar.rotation = -degree;
-				this.damage_bar.rotation = -degree;
-				this.level_up_text.rotation = -degree;
-
-		        if(move_up && this.container.y > 0){
-		            this.container.y -= this.ship.speed;
-		        }else if(move_down && this.container.y < 640){
-		            this.container.y += this.ship.speed;
-		        }
-
-		        if(move_right && this.container.x < 640){
-		            this.container.x += this.ship.speed;
-		        }else if(move_left && this.container.x > 0){
-		            this.container.x -= this.ship.speed;
-		        }
-
-		        firearms.forEach(function(firearm){
-		            if(trigger){
-		                firearm.fire(this.container.x, this.container.y, degree);
-		            }
-		            firearm.tick();
-		        }, this);
-		    }
-		}
-	}
-
-	return {
-		getInstance:function(ship){
-			if(!instance){
-				instance = init.call(this, ship);
-			}
-
-			return instance;
-		}
-	}
-})();
-
 function Ship(ship){
 	console.log(ship);
 	var shape, firearms = [];
@@ -266,8 +128,8 @@ Ship.prototype.renderShip = function(){
 Ship.prototype.renderHealthBar = function(){
 	this.health_bar = new createjs.Shape();
 	this.damage_bar = new createjs.Shape();
-	this.health_bar.graphics.beginFill("#00CC00").drawRect( -this.ship._shape.radius, -this.ship._shape.radius * 2, this.ship._shape.radius * 2, this.ship._shape.radius/5);
-	this.damage_bar.graphics.beginFill("#CC0000").drawRect(this.ship._shape.radius * 2 / this.health_max * this.health - this.ship._shape.radius, -this.ship._shape.radius * 2, this.ship._shape.radius * 2 * (this.health_max - this.health) / this.health_max, this.ship._shape.radius / 5);
+	this.health_bar.graphics.beginFill("#00CC00").drawRect( -this.ship._shape.radius, -this.ship._shape.radius, this.ship._shape.radius * 2, this.ship._shape.radius/5);
+	this.damage_bar.graphics.beginFill("#CC0000").drawRect(this.ship._shape.radius * 2 / this.health_max * this.health - this.ship._shape.radius, -this.ship._shape.radius, this.ship._shape.radius * 2 * (this.health_max - this.health) / this.health_max, this.ship._shape.radius / 5);
 	this.container.addChild(this.health_bar, this.damage_bar);
 }
 
@@ -320,6 +182,6 @@ Ship.prototype.levelUp = function(){
 	.to({scaleX:-1}, 500).to({scaleX:1}, 500).wait(1000).call(function(){
 		this.level_up_text.visible = false;
 	},[],this);
-	this.damage_bar.graphics.c().beginFill("#CC0000").drawRect(this.ship._shape.radius * 2 / this.health_max * this.health - this.ship._shape.radius, -this.ship._shape.radius * 2, this.ship._shape.radius * 2 * (this.health_max - this.health) / this.health_max, this.ship._shape.radius / 5);
+	this.damage_bar.graphics.c().beginFill("#CC0000").drawRect(this.ship._shape.radius * 2 / this.health_max * this.health - this.ship._shape.radius, -this.ship._shape.radius, this.ship._shape.radius * 2 * (this.health_max - this.health) / this.health_max, this.ship._shape.radius / 5);
 	ship_stats.renderHealthBar();
 }

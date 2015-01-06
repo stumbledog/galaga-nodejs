@@ -62,3 +62,10 @@ exports.upgrade = function(ship_id){
 exports.findByUser = function(user, callback){
 	ShipModel.find({"user":user._id}, callback);
 }
+
+exports.getUserShips = function(req, callback){
+	ShipModel.find({_user:req.session.user._id}).populate("_shape _firearm").exec(function(err, ships){
+		console.log(ships);
+		callback(ships);
+	});
+}
