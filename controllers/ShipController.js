@@ -15,7 +15,7 @@ exports.create = function(user, callback){
 		shape:{
 			width:14,
 			height:28,
-			radius:14,
+			radius:7,
 			file:"components",
 			components:[{crop_x:58,crop_y:113,width:14,height:28}]
 		},
@@ -49,7 +49,7 @@ exports.create = function(user, callback){
 		shape:{
 			width:12,
 			height:26,
-			radius:12,
+			radius:6,
 			file:"components",
 			components:[{crop_x:75,crop_y:345,width:12,height:26}]
 		},
@@ -83,7 +83,7 @@ exports.create = function(user, callback){
 		shape:{
 			width:56,
 			height:46,
-			radius:46,
+			radius:23,
 			file:"ships",
 			components:[{crop_x:129,crop_y:13,width:56,height:46}]
 		},
@@ -91,7 +91,7 @@ exports.create = function(user, callback){
 			firerate:4,
 			accuracy:70,
 			bullet:{
-				damage:2,
+				damage:3,
 				speed:20,
 				radius:1,
 				critical_rate:0.1,
@@ -124,7 +124,7 @@ exports.purchase = function(ship_id){
 }
 
 exports.getShips = function(user_id, callback){
-	ShipModel.find({_user:user_id}, function(err, ships){
+	ShipModel.find({_user:user_id}).sort("price").exec(function(err, ships){
 		callback(ships);
 	});
 }

@@ -20,6 +20,14 @@ var User = (function(){
 			var loader = Game.getInstance().getLoader();
 		}
 
+		render();
+
+		function render(){
+			renderGold();
+			renderLevel();
+			initShip();
+		}
+
 		function renderGold(){
 			gold_text = new createjs.Text(gold.toFixed(0)  + " Gold", "12px Arial", "#FFBE2C");
 			gold_text.x = 20;
@@ -70,7 +78,8 @@ var User = (function(){
 		function levelUp(){
 			exp -= level * 10;
 			level++;
-			level_text = level + " Level";
+			level_text.text = level + " Level";
+			console.log(level);
 			exp_cap = level * 10;
 			Ship.getInstance().levelUp();
 			if(exp >= level * 10){
@@ -78,20 +87,7 @@ var User = (function(){
 			}
 		}
 
-		function refreshExpBar(){
-			exp_bar.graphics.c().beginFill("#FCFFF5").drawRect(170, 627, 300*(exp / exp_cap), 12);
-			exp_text.text = "Level " + level + " Exp " + (exp / exp_cap * 100).toFixed(2)+"%";
-		}
-
 		return{
-			render:function(){
-				renderGold();
-				renderLevel();
-				initShip();
-				if(type === "game"){
-					renderExpBar();
-				}
-			},
 			gainExp:function(exp_gained){
 				var game = Game.getInstance();
 				exp_gained *= game.getBonus();
@@ -100,7 +96,7 @@ var User = (function(){
 				if(exp >= level * 10){
 					levelUp();
 				}
-				refreshExpBar();
+				ShipStats.getInstance().renderExpBar(level, exp, exp_cap);
 			},
 			earnGold:function(gold_earned){
 				var game = Game.getInstance();
@@ -122,6 +118,9 @@ var User = (function(){
 			},
 			getExp:function(){
 				return exp;
+			},
+			getExpCap:function(){
+				return exp_cap;
 			},
 			getGold:function(){
 				return gold;

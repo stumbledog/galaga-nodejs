@@ -128,7 +128,7 @@ function BalanceController(star, difficulty, type){
 
 	this.selectStar = function(star){
 		this.star = star;
-		this.show();		
+		this.show();
 	}
 
 	this.show = function(){

@@ -8,6 +8,8 @@ var ShipSchema = new Schema({
 	speed:Number,
 	purchased:Boolean,
 	shape:{
+		width:Number,
+		height:Number,
 		radius:Number,
 		file:String,
 		components:[{

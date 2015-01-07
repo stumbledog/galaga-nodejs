@@ -13,6 +13,7 @@ function Bullet(firearm, x, y, degree, data){
 	this.stage = this.game.getStage();
 	this.loader = this.game.getLoader();
 	this.effect = Effect.getInstance();
+	this.wave = Wave.getInstance();
 
 	init.call(this);
 
@@ -48,7 +49,7 @@ Bullet.prototype.tick = function(){
 		this.stage.removeChild(this.shape);
 		delete this;
 	}else{
-		wave.enermies.forEach(function(enermy){
+		this.wave.getEnermies().forEach(function(enermy){
 			if(!this.isHit && enermy.status){
 				if(enermy.isHit(this.shape)){
 					this.hit();

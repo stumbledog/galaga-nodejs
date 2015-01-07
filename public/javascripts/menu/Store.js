@@ -1,27 +1,20 @@
-function Store(){
-	
-	this.isOpen = false;
-	var store = this;
-	var item_container, gold_text;
+function Store(){	
+	var items_container, gold_text;
 	var user = User.getInstance();
 	var stage = Home.getInstance().getStage();
 	var loader = Home.getInstance().getLoader();
 
-	init.call(this);
+	init();
 
 	function init(){
-		render.call(this);
-	}
+		container = new createjs.Container();
 
-	function render(){
-		this.container = new createjs.Container();
-
-		item_container = new createjs.Container();
-		item_container.x = 20;
-		item_container.y = 20;
+		items_container = new createjs.Container();
+		items_container.x = 20;
+		items_container.y = 20;
 
 		var background = new createjs.Shape();
-		background.graphics.s("#fff").ss(5).f("#333").rr(10,10,620,540,10);
+		background.graphics.s("#fff").ss(5).f("#333").rr(10,10,620,500,10);
 		
 		var close_button = new createjs.Shape();
 		close_button.graphics.bf(loader.getResult("button")).drawRect(638,1094,63,66);
@@ -32,17 +25,16 @@ function Store(){
 		close_button.scaleX = close_button.scaleY = 0.5;
 		close_button.cursor = "pointer";
 		close_button.addEventListener("mousedown", function(event){
-			store.close();
+			public.close();
 		});
 
-		this.container.addChild(background, close_button, item_container);
+		container.addChild(background, close_button, items_container);
 		getItems("ship");
 	}
 
 	function getItems(type){
 		$.post("/getItems/",{type:type}, function(res){
-			if(type === "ship"){
-				console.log(res);
+			if(type === "ship"){				
 				renderShips(res.items);
 			}else{
 
@@ -53,33 +45,27 @@ function Store(){
 	function renderShips(ships){
 		var index = 0;
 		ships.forEach(function(ship){
-			var container = new createjs.Container();
+			var item_container = new createjs.Container();
 			var border = new createjs.Shape();
 			border.graphics.s("#fff").ss(2).f("#000").rr(0,0,100,160,5);
 
-			var shape_container = new createjs.Container();
-			ship.shape.components.forEach(function(component){
-				var shape = new createjs.Shape();
-				shape.graphics.bf(loader.getResult(this.file)).drawRect(component.crop_x,component.crop_y,component.width,component.height);
-				shape.regX = component.crop_x + component.width / 2;
-				shape.regY = component.crop_y + component.height / 2;
-				shape.x = component.x + 50;
-				shape.y = component.y + 80;
-				shape_container.addChild(shape);
-			}, ship.shape);
+			var shape_container = Renderer.renderShip(ship, loader);
+			
+			shape_container.x = 50;
+			shape_container.y = 80;
 
 			var health_text = new createjs.Text("Health: ","12px Arial","#FFB03B");
 			var health_amount_text = new createjs.Text(ship.health,"12px Arial","#fff");
 			health_text.x = 5;
 			health_amount_text.x = health_text.getMeasuredWidth() + 5;
 			health_text.y = health_amount_text.y = 5;
-			
+
 			var speed_text = new createjs.Text("Speed: ","12px Arial","#FFB03B");
 			var speed_amount_text = new createjs.Text(ship.speed,"12px Arial","#fff");
 			speed_text.x = 5;
 			speed_amount_text.x = speed_text.getMeasuredWidth() + 5;
 			speed_text.y = speed_amount_text.y = 18;
-			
+
 			var firearm = ship.firearm;
 			var bullet = firearm.bullet;
 			
@@ -100,19 +86,23 @@ function Store(){
 			}else{
 				var button_text = new createjs.Text(ship.price,"12px Arial","#FFBE2C");
 				button_container.cursor = "pointer";
-				button_container.addEventListener("mousedown", function(event){
+				var handler = function(event){
 					confirm(event, "Do you want to pay " + ship.price + " for "+ship.name+"?", function(callback){
 						$.post("/buyShip",{ship_id:ship._id},function(res){
 							if(res.code > 0){
 								user.setGold(res.user.gold);
 								user.setShip(res.ship);
+								button_text.text = "Owned"
+								button_container.removeEventListener("mousedown", handler);
+								button_container.cursor = "null";
 							}else{
 
 							}
 							callback();
 						});
 					});
-				});
+				}
+				button_container.addEventListener("mousedown", handler);
 			}
 			button_text.textAlign = "center";
 			button_text.x = 40;
@@ -127,16 +117,20 @@ function Store(){
 			button_container.y = 130;
 			button_container.addChild(button_border, button_text);
 
-			container.x = index % 5 * 110;
-			container.y = parseInt(index / 5) * 170;
-			container.addChild(border, shape_container, health_text, health_amount_text, speed_text, speed_amount_text, dps_text, dps_amount_text, button_container, name);
-			item_container.addChild(container);
+			item_container.x = index % 5 * 110;
+			item_container.y = parseInt(index / 5) * 170;
+			item_container.addChild(border, shape_container, health_text, health_amount_text, speed_text, speed_amount_text, dps_text, dps_amount_text, button_container, name);
+			items_container.addChild(item_container);
 			index++;
 		});
 	}
 
+	function purchaseButton(){
+
+	}
+
 	function confirm(event, msg, callback){
-		var container = new createjs.Container();
+		var confirm_container = new createjs.Container();
 		var text = new createjs.Text(msg, "12px Arial","#fff");
 		var border = new createjs.Shape();
 		var yes_button = new createjs.Container();
@@ -155,7 +149,7 @@ function Store(){
 
 		yes_button.addEventListener("mousedown", function(event){
 			callback(function(){
-				stage.removeChild(container);
+				stage.removeChild(confirm_container);
 				stage.update();
 			});
 		});
@@ -171,28 +165,31 @@ function Store(){
 		yes_button.cursor = no_button.cursor = "pointer";
 
 		no_button.addEventListener("mousedown", function(event){
-			stage.removeChild(container);
+			stage.removeChild(confirm_container);
 			stage.update();
 		});
 
 		text.x = text.y = 10;
 		border.graphics.s("#fff").ss(2).f("#000").rr(0,0,text.getMeasuredWidth() + 20,70,5);
-		container.x = 320 - text.getMeasuredWidth()/2 - 10;
-		container.y = 320 - 40;
-		container.addChild(border, text, yes_button, no_button);
-		stage.addChild(container);
+		confirm_container.x = 320 - text.getMeasuredWidth()/2 - 10;
+		confirm_container.y = 320 - 40;
+		confirm_container.addChild(border, text, yes_button, no_button);
+		stage.addChild(confirm_container);
 		stage.update();
 	}
 
-	this.open = function(){
-		this.isOpen = true;
-		stage.addChild(this.container);
-		stage.update();	
+	var public = {
+		open:function(){
+			stage.addChild(container);
+			stage.update();
+		},
+		close:function(){
+			stage.removeChild(container);
+			stage.update();
+		},
+		isOpen:function(){
+			return stage.getChildIndex(container) > 0;
+		}
 	}
-
-	this.close = function(){
-		this.isOpen = false;
-		stage.removeChild(this.container);
-		stage.update();		
-	}
+	return public;
 }

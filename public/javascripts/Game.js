@@ -3,7 +3,8 @@ var Game = (function(data){
 	var instance;
 
 	function init(data){
-		var enermies=[], star, user;
+		console.log(data);
+		var enermies=[], star, user, ship, wave;
 		var data = data;
 
 		var difficulty = data.difficulty.split(",");
@@ -78,16 +79,15 @@ var Game = (function(data){
 
 		function handleLoadComplete(){
 			user = User.getInstance(data.user, data.ship, "game");
-			user.render();
 			ship = Ship.getInstance(data.ship);
-			//ship = Ship_singleton.getInstance(game.ship);
-
-			//ship = new Ship(game.ship);
-			wave = new Wave(data.star._wave);
-			balance_controller = new BalanceController(1, difficulty,"game");
-			ship_stats = new ShipStats();
+			
+			wave = Wave.getInstance(data.star._wave);
+			
+			balance_controller = new BalanceController(1, difficulty,"game");			
+			
 			createjs.Ticker.addEventListener("tick", tick);
 			createjs.Ticker.setFPS(30);
+			
 			initEventHandler();
 		}
 
@@ -128,13 +128,13 @@ var Game = (function(data){
 
 			restart_button.addEventListener("rollover", function(event){
 				restart_button.scaleX = restart_button.scaleY = 1.2;
-				game.panel_container.addChild(restart_text);
+				panel_container.addChild(restart_text);
 				stage.update();
 			});
 
 			restart_button.addEventListener("rollout", function(event){
 				restart_button.scaleX = restart_button.scaleY = 1;
-				game.panel_container.removeChild(restart_text);
+				panel_container.removeChild(restart_text);
 				stage.update();
 			});
 
@@ -144,13 +144,13 @@ var Game = (function(data){
 
 			map_button.addEventListener("rollover", function(event){
 				map_button.scaleX = map_button.scaleY = 1.2;
-				game.panel_container.addChild(map_text);
+				panel_container.addChild(map_text);
 				stage.update();
 			});
 
 			map_button.addEventListener("rollout", function(event){
 				map_button.scaleX = map_button.scaleY = 1;
-				game.panel_container.removeChild(map_text);
+				panel_container.removeChild(map_text);
 				stage.update();
 			});
 

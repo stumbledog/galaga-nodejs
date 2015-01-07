@@ -15,12 +15,12 @@ var Ship = (function(){
 		var stage = game.getStage();
 		var loader = game.getLoader();
 		var effect = Effect.getInstance();
+		var ship_stats = ShipStats.getInstance(health, health_max);
 
 		renderShip();
 		renderHealthBar();
 		renderText();
 		initFirearm(ship.firearm);
-
 
 		function renderShip(){
 			container = new createjs.Container();
@@ -151,7 +151,7 @@ var Ship = (function(){
 				damage_bar.graphics.c().beginFill("#CC0000").drawRect(ship.shape.radius * 2 / health_max * health - ship.shape.radius, -ship.shape.radius, ship.shape.radius * 2 * (health_max - health) / health_max, ship.shape.radius / 5);
 				ship_stats.renderHealthBar(health, health_max);
 				if(health <= 0){
-					destroyed(bullet);
+					this.destroyed(bullet);
 				}
 
 				game.addDamageTaken(damage);

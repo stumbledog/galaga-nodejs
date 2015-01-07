@@ -1,5 +1,5 @@
-function Enermy(wave, property){
-	this.wave = wave;
+function Enermy(property){
+	this.wave = Wave.getInstance();
 	this.stats = property;
 	this.user = User.getInstance();
 	this.game = Game.getInstance();
@@ -110,6 +110,7 @@ Enermy.prototype.fire = function(){
 }
 
 Enermy.prototype.tick = function(){
+	var ship = Ship.getInstance();
 	if(this.status){
 		var dx = ship.getContainer().x - this.container.x;
 		var dy = ship.getContainer().y - this.container.y;
