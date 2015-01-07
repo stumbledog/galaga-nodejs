@@ -31,7 +31,6 @@ router.post('/game', function(req, res) {
 		res.redirect("/");		
 	}else{
 		GameController.init(req, res, function(star){
-			console.log(req.session.ship);
 			var data = { title:title, star:star , ship:req.session.ship, user:req.session.user, difficulty:req.body.difficulty, bonus:req.body.bonus};
 			res.render('game', {data:data});
 		});
@@ -39,7 +38,7 @@ router.post('/game', function(req, res) {
 });
 
 router.post('/getItems', function(req, res){
-	ItemController.getItems(req.body.type, function(items){
+	ItemController.getItems(req, function(items){
 		res.contentType('json');
 		res.send({ items:items });
 	});

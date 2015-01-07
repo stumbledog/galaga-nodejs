@@ -21,7 +21,7 @@ connection.once("open", function(){
 	var Enermy = mongoose.model('Enermy');
 	var Wave = mongoose.model('Wave');
 	var ShipItem = mongoose.model('ShipItem');
-
+	/*
 	var shipItem1 = new ShipItem({
 		_id:1,
 		price:100,
@@ -84,17 +84,42 @@ connection.once("open", function(){
 		file:"ships",
 		components:[{crop_x:129,crop_y:13,width:56,height:46}]
 	});
-
-	var ship = new Ship({
+	/*
+	var ship1 = new Ship({
 		name:"Aries",
+		price:0,
 		health:10,
 		psychic:10,
 		speed:3,
 		weapons:1,
+		purchased:false,
 		_shape:1,
 		_firearm:1,
 	});
 
+	var ship2 = new Ship({
+		name:"Aries",
+		price:10,
+		health:10,
+		psychic:10,
+		speed:3,
+		weapons:1,
+		purchased:false,
+		_shape:2,
+		_firearm:1,
+	});
+
+	var ship3 = new Ship({
+		name:"Aries",
+		price:100,
+		health:10,
+		psychic:10,
+		speed:3,
+		weapons:1,
+		purchased:false,
+		_shape:3,
+		_firearm:1,
+	});
 	var firearm = new Firearm({
 		_id:1,
 		name:"gun",
@@ -122,7 +147,8 @@ connection.once("open", function(){
 	shape2.save();
 	shape3.save();
 	firearm.save();
-	ship.save();
+	ship1.save();
+	*/
 
 	var star1 = new Star({_id:1,name:"Elnath",x:320,y:320,radius:6,_next:[2], _wave:[1,2,3,4]});
 	var star2 = new Star({_id:2,name:"Decrux",x:280,y:380,radius:8,_next:[3], _wave:[5,6,7,8]});

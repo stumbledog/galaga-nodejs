@@ -1,8 +1,13 @@
-exports.getItems = function(type, callback){
+exports.getItems = function(req, callback){
+	var type = req.body.type;
 	if(type === "ship"){
-		ShipItemModel.find({}).populate("_shape").exec(function(err, ships){
+		ShipController.getShips(req.session.user._id, function(ships){
 			callback(ships);
 		});
+		/*
+		ShipItemModel.find({}).populate("_shape").exec(function(err, ships){
+			callback(ships);
+		});*/
 	}
 }
 

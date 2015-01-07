@@ -1,5 +1,5 @@
 function Home(data){
-	var selected_star, balance_controller, store, hangar;
+	var selected_star, balance_controller, store, hangar, current_menu;
 	var difficulty = [1,1,1,1,1];
 	var home = this;
 	var user = User.getInstance(data.user, data.ship, this);
@@ -107,7 +107,10 @@ function Home(data){
 
 		store_button.addEventListener("mousedown", function(event){
 				store_button.scaleX = store_button.scaleY = 1.0;
+				if(current_menu)
+					current_menu.close();
 				store.open();
+				current_menu = store;
 				stage.update();
 		});
 
@@ -131,7 +134,10 @@ function Home(data){
 
 		hangar_button.addEventListener("mousedown", function(event){
 				hangar_button.scaleX = hangar_button.scaleY = 1.0;
+				if(current_menu)
+					current_menu.close();
 				hangar.open();
+				current_menu = hangar;
 				stage.update();
 		});
 

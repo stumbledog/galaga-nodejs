@@ -118,11 +118,13 @@ exports.authenticate = function(req, res, callback){
 		User.findById(req.cookies.user_id, function(err, user){
 			if(user){
 				req.session.user = user;
+                console.log(user._selected_ship);
 				ShipController.select(user._selected_ship, function(ship){
 					req.session.ship = ship;
-					self.populateSelectedShip(user, function(user){
+                    console.log(ship);
+					//self.populateSelectedShip(user, function(user){
                         callback(user);
-                    });
+                    //});
 				});
 			}else{
 				self.createUser(req, res, callback);
@@ -140,7 +142,15 @@ exports.createUser = function(req, res, callback){
 	user.save(function(){
 		var process = new Process({_user:user._id, _selectable:[1]});
 		process.save(function(){
-			ShipController.create(user, "Aries", function(ship){
+			ShipController.create(user, function(ship){
+                req.session.user = user;
+                req.session.ship = ship;
+                console.log(user);
+                console.log(ship);
+                res.cookie('user_id', user._id, {maxAge: 10 * 365 * 24 * 60 * 60 * 1000, httpOnly: true });
+                callback(user);
+/*
+
 				user._selected_ship = ship._id;
 				user.save(function(){
                     self.populateSelectedShip(user, function(user){
@@ -149,7 +159,7 @@ exports.createUser = function(req, res, callback){
                         res.cookie('user_id', user._id, {maxAge: 10 * 365 * 24 * 60 * 60 * 1000, httpOnly: true });
                         callback(user);
                     });
-				});
+				});*/
 			});
 		});
 	});

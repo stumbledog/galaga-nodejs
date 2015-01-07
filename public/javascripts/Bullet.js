@@ -1,12 +1,12 @@
-function Bullet(firearm, x, y, degree, speed, damage, critical_rate, critical_damage){
+function Bullet(firearm, x, y, degree, data){
 	this.firearm = firearm;
 	this.x = x;
 	this.y = y;
 	this.degree = degree;
-	this.speed = speed;
-	this.damage = damage;
-	this.critical_rate = critical_rate;
-	this.critical_damage = critical_damage;
+	this.speed = data.speed;
+	this.damage = data.damage;
+	this.critical_rate = data.critical_rate;
+	this.critical_damage = data.critical_damage;
 	this.bullets = [];
 	this.isHit = false;
 
