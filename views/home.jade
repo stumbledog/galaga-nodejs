@@ -13,4 +13,4 @@ html(lang="en")
 	body
 		canvas#home(width=640,height=640)
 		script.
-			var home = new Home(!{JSON.stringify(data)});
+			Home.getInstance(!{JSON.stringify(data)});

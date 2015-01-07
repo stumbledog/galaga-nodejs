@@ -3,5 +3,5 @@ extends layout
 block content
 	canvas#game(width=640, height=640)
 	script(type='text/javascript').
-		var game = new Game(!{JSON.stringify(data)});
+		Game.getInstance(!{JSON.stringify(data)});
 

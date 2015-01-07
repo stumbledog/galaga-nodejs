@@ -9,12 +9,16 @@ function Bullet(firearm, x, y, degree, data){
 	this.critical_damage = data.critical_damage;
 	this.bullets = [];
 	this.isHit = false;
+	this.game = Game.getInstance();
+	this.stage = this.game.getStage();
+	this.loader = this.game.getLoader();
+	this.effect = Effect.getInstance();
 
 	init.call(this);
 
 	function init(){
 		this.shape = new createjs.Shape();
-		this.shape.graphics.bf(loader.getResult("items")).drawRect(124,231,10,4);
+		this.shape.graphics.bf(this.loader.getResult("items")).drawRect(124,231,10,4);
 		this.shape.cache(124,231,10,4);
 		this.shape.regX = 129;
 		this.shape.regY = 233;
@@ -22,7 +26,7 @@ function Bullet(firearm, x, y, degree, data){
 		this.shape.y = y;
 		this.shape.rotation = degree + 90;
 		this.shape.speed = this.speed;
-		stage.addChild(this.shape);
+		this.stage.addChild(this.shape);
 	}
 }
 
@@ -32,8 +36,8 @@ Bullet.prototype.getDamage = function(){
 }
 
 Bullet.prototype.hit = function(){
-	effect.hit(this.shape.x, this.shape.y);
-	stage.removeChild(this.shape);
+	this.effect.hit(this.shape.x, this.shape.y);
+	this.stage.removeChild(this.shape);
 	this.firearm.removeBullet(this);
 }
 
@@ -41,7 +45,7 @@ Bullet.prototype.tick = function(){
 	this.shape.x -= this.shape.speed * Math.cos(this.shape.rotation/180*Math.PI);
 	this.shape.y -= this.shape.speed * Math.sin(this.shape.rotation/180*Math.PI);
 	if(this.shape.y < -100 || this.shape.y > 740 || this.shape.x < -100 || this.shape.x > 740){
-		stage.removeChild(this.shape);
+		this.stage.removeChild(this.shape);
 		delete this;
 	}else{
 		wave.enermies.forEach(function(enermy){

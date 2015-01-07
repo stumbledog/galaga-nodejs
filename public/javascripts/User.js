@@ -2,17 +2,23 @@ var User = (function(){
 
 	var instance;
 
-	function init(user, ship, home, game){
+	function init(user, ship, type){
 		var level = user.level;
 		var exp = user.exp;
 		var exp_cap = user.level * 10;
 		var gold = user.gold;
-		//var selected_ship = user._selected_ship;
-		var home = home;
-		var game = game;
+		var type = type;
 
 		var gold_text, level_text;
 		var shape_container = new createjs.Container();
+
+		if(type === "home"){
+			var stage = Home.getInstance().getStage();
+			var loader = Home.getInstance().getLoader();
+		}else if(type === "game"){
+			var stage = Game.getInstance().getStage();
+			var loader = Game.getInstance().getLoader();
+		}
 
 		function renderGold(){
 			gold_text = new createjs.Text(gold.toFixed(0)  + " Gold", "12px Arial", "#FFBE2C");
@@ -66,7 +72,7 @@ var User = (function(){
 			level++;
 			level_text = level + " Level";
 			exp_cap = level * 10;
-			ship.levelUp();
+			Ship.getInstance().levelUp();
 			if(exp >= level * 10){
 				levelUp();
 			}
@@ -82,24 +88,24 @@ var User = (function(){
 				renderGold();
 				renderLevel();
 				initShip();
-				if(game){
+				if(type === "game"){
 					renderExpBar();
 				}
 			},
 			gainExp:function(exp_gained){
-				exp_gained *= game.bonus;
+				var game = Game.getInstance();
+				exp_gained *= game.getBonus();
+				game.addExp(exp_gained);
 				exp += exp_gained;
 				if(exp >= level * 10){
 					levelUp();
 				}
 				refreshExpBar();
-				game.total_exp_gained += exp_gained;
 			},
 			earnGold:function(gold_earned){
-				if(game){
-					gold_earned *= game.bonus;
-					game.total_gold_earned += gold_earned;
-				}
+				var game = Game.getInstance();
+				gold_earned *= game.getBonus();
+				game.addGold(gold_earned);
 				gold += gold_earned;
 				gold_text.text = gold.toFixed(0) + " Gold";
 			},
@@ -108,7 +114,6 @@ var User = (function(){
 				gold_text.text = gold.toFixed(0) + " Gold";
 			},
 			setShip:function(new_ship){
-				console.log(ship, new_ship);
 				ship = new_ship;
 				renderShip();
 			},
@@ -125,9 +130,9 @@ var User = (function(){
 	};
 
 	return {
-		getInstance:function(user, ship, home, game){
+		getInstance:function(user, ship, type){
 			if(!instance){
-				instance = init.call(this, user, ship, home, game);
+				instance = init.call(this, user, ship, type);
 			}
 
 			return instance;

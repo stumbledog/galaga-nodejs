@@ -2,11 +2,16 @@ function Enermy(wave, property){
 	this.wave = wave;
 	this.stats = property;
 	this.user = User.getInstance();
+	this.game = Game.getInstance();
+	this.stage = this.game.getStage();
+	this.loader = this.game.getLoader();
+	this.effect = Effect.getInstance();
+
 	init.call(this);
 
 	function init(){
 		this.bullets = [];
-		this.health_max = this.health = this.stats.health * game.difficulty[1];
+		this.health_max = this.health = this.stats.health * this.game.getDifficulty()[1];
 		this.status = true;
 		this.ticks = 0;
 
@@ -19,7 +24,7 @@ Enermy.prototype.renderShip = function(){
 	this.container = new createjs.Container();
 	this.stats.components.forEach(function(component){
 		this.shape = new createjs.Shape();
-		this.shape.graphics.bf(loader.getResult(this.stats.file)).dr(component.crop_x, component.crop_y, component.width, component.height);
+		this.shape.graphics.bf(this.loader.getResult(this.stats.file)).dr(component.crop_x, component.crop_y, component.width, component.height);
 		this.shape.regX = component.crop_x + component.width / 2;
 		this.shape.regY = component.crop_y + component.height / 2;
 		this.shape.x = component.x;
@@ -31,7 +36,7 @@ Enermy.prototype.renderShip = function(){
 	this.container.x = Math.cos(radian) * 500 + 320;
 	this.container.y = Math.sin(radian) * 500 + 320;
 
-	stage.addChild(this.container);
+	this.stage.addChild(this.container);
 }
 
 Enermy.prototype.renderHealthBar = function(){
@@ -48,7 +53,8 @@ Enermy.prototype.damaged = function(bullet){
 	text.x = this.container.x;
 	text.y = this.container.y;
 	text.textBaseline = "alphabetic";
-	stage.addChild(text);
+	this.stage.addChild(text);
+	var stage = this.stage
 	createjs.Tween.get(text)
 	.to({x:text.x-20, y:text.y-20, alpha:0}, 2000).call(function(item){
 		stage.removeChild(item.target);
@@ -58,28 +64,28 @@ Enermy.prototype.damaged = function(bullet){
 		this.destroyed(bullet);
 	}
 
-	game.total_damage_dealt += damage.amount;
-	game.largest_damage_dealt = damage.amount > game.largest_damage_dealt ? damage.amount : game.largest_damage_dealt;
+	this.game.addDamageDealt(damage.amount);
 }
 
 Enermy.prototype.destroyed = function(bullet){
 	this.status = false;
-	var text = new createjs.Text((this.stats.exp * game.bonus).toFixed(0)+" exp", "12px Arial", "#fff");
+	var text = new createjs.Text((this.stats.exp * this.game.getBonus()).toFixed(0)+" exp", "12px Arial", "#fff");
 	text.x = this.container.x;
 	text.y = this.container.y;
 	text.textBaseline = "alphabetic";
-	stage.addChild(text);
+	this.stage.addChild(text);
+	var stage = this.stage;
 	createjs.Tween.get(text)
 	.to({x:text.x+20, y:text.y-20, alpha:0}, 2000).call(function(item){
 		stage.removeChild(item.target);
 	});	
 	this.user.gainExp(this.stats.exp);
 	this.user.earnGold(this.stats.gold);
-	effect.destroy(bullet.shape.x,bullet.shape.y,this.stats.radius / 20);
-	stage.removeChild(this.container);
-	stage.removeChild(this.health_bar);
+	this.effect.destroy(bullet.shape.x,bullet.shape.y,this.stats.radius / 20);
+	this.stage.removeChild(this.container);
+	this.stage.removeChild(this.health_bar);
 
-	game.enermy_destoryed++;
+	this.game.enermyDestoryed();
 	this.wave.enermyDestroyed();
 }
 
@@ -89,7 +95,7 @@ Enermy.prototype.isHit = function(bullet){
 
 Enermy.prototype.fire = function(){
 	var shape = new createjs.Shape();
-	shape.graphics.bf(loader.getResult("items")).drawRect(124,231,10,4);
+	shape.graphics.bf(this.loader.getResult("items")).drawRect(124,231,10,4);
 	shape.cache(124,231,10,4);
 	shape.regX = 129;
 	shape.regY = 233;
@@ -97,16 +103,16 @@ Enermy.prototype.fire = function(){
 	shape.radian = Math.PI * (shape.rotation) / 180;
 	shape.x = this.container.x;
 	shape.y = this.container.y;
-	shape.damage = this.stats.firearm.damage * game.difficulty[2];
+	shape.damage = this.stats.firearm.damage * this.game.getDifficulty()[2];
 	shape.radius = this.stats.firearm.radius;
 	this.bullets.push(shape);
-	stage.addChild(shape);
+	this.stage.addChild(shape);
 }
 
 Enermy.prototype.tick = function(){
 	if(this.status){
-		var dx = ship.container.x - this.container.x;
-		var dy = ship.container.y - this.container.y;
+		var dx = ship.getContainer().x - this.container.x;
+		var dy = ship.getContainer().y - this.container.y;
 		var degree = -Math.atan2(dx,dy) * 180 / Math.PI + 180;
 		var radian = Math.PI*(degree-90)/180;
 		this.container.rotation = degree;
@@ -115,7 +121,7 @@ Enermy.prototype.tick = function(){
 		if(distance > this.stats.range || this.container.x < this.stats.radius * 2 || this.container.x > 640 - this.stats.radius * 2 || this.container.y < this.stats.radius * 2 || this.container.y > 640 - this.stats.radius * 2){
 			this.container.x += this.stats.speed * Math.cos(radian);
 			this.container.y += this.stats.speed * Math.sin(radian);
-		}else if(this.ticks > this.stats.firearm.firerate / game.difficulty[3]){
+		}else if(this.ticks > this.stats.firearm.firerate / this.game.getDifficulty()[3]){
 			this.fire();
 			this.ticks = 0;
 		}
@@ -125,15 +131,15 @@ Enermy.prototype.tick = function(){
 	var visible_bullets = [];
 	this.bullets.forEach(function(bullet){
 		if(bullet.x < -100 || bullet.x > 740 || bullet.y < -100 || bullet.y > 740){
-			stage.removeChild(bullet);
+			this.stage.removeChild(bullet);
 		}else{
 			if(ship.isHit(bullet)){
 				ship.damaged(bullet);
-				effect.hit(bullet.x, bullet.y);
-				stage.removeChild(bullet);
+				this.effect.hit(bullet.x, bullet.y);
+				this.stage.removeChild(bullet);
 			}else{
-				bullet.x += this.stats.firearm.speed * Math.cos(bullet.radian) * game.difficulty[4];
-				bullet.y += this.stats.firearm.speed * Math.sin(bullet.radian) * game.difficulty[4];
+				bullet.x += this.stats.firearm.speed * Math.cos(bullet.radian) * this.game.getDifficulty()[4];
+				bullet.y += this.stats.firearm.speed * Math.sin(bullet.radian) * this.game.getDifficulty()[4];
 				visible_bullets.push(bullet);
 			}
 		}

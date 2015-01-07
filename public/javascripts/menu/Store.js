@@ -4,6 +4,9 @@ function Store(){
 	var store = this;
 	var item_container, gold_text;
 	var user = User.getInstance();
+	var stage = Home.getInstance().getStage();
+	var loader = Home.getInstance().getLoader();
+
 	init.call(this);
 
 	function init(){
@@ -180,16 +183,16 @@ function Store(){
 		stage.addChild(container);
 		stage.update();
 	}
-}
 
-Store.prototype.open = function(){
-	this.isOpen = true;
-	stage.addChild(this.container);
-	stage.update();
-}
+	this.open = function(){
+		this.isOpen = true;
+		stage.addChild(this.container);
+		stage.update();	
+	}
 
-Store.prototype.close = function(){
-	this.isOpen = false;
-	stage.removeChild(this.container);
-	stage.update();
+	this.close = function(){
+		this.isOpen = false;
+		stage.removeChild(this.container);
+		stage.update();		
+	}
 }

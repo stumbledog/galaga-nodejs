@@ -15,12 +15,15 @@ function Wave(waves){
 	this.star_clear = false;
 	this.mission_clear = false;
 
+	this.game = Game.getInstance();
+	this.stage = this.game.getStage();
+
 	init.call(this);
 
 	function init(){
 		/*
 		var new_waves = [];
-		for(var i = 1; i < game.difficulty[4];i++){
+		for(var i = 1; i < this.game.getDifficulty()[4];i++){
 			this.waves.forEach(function(wave){
 				var new_wave = jQuery.extend({}, wave);
 				wave.enermies.forEach(function(enermy){
@@ -39,7 +42,7 @@ Wave.prototype.renderStatus = function(){
 	this.wavetext.y = 10;
 	this.wavetext.x = 620;
 	this.wavetext.textAlign = "right";
-	stage.addChild(this.wavetext);
+	this.stage.addChild(this.wavetext);
 }
 
 Wave.prototype.update = function(){
@@ -52,7 +55,7 @@ Wave.prototype.displayText = function(msg){
 	text.y = 320;
 	text.textAlign = "center";
 	text.textBaseline = "middle";
-	stage.addChild(text);
+	this.stage.addChild(text);
 	return text;
 }
 
@@ -62,8 +65,8 @@ Wave.prototype.queueEnermies = function(enermies_array){
 	var text = this.displayText("Wave " + (this.current_wave + 1));
 	createjs.Tween.get(text).to({x:320},1000, createjs.Ease.backInOut).wait(1000).to({x:740},1000, createjs.Ease.backInOut);
 	this.waves[this.current_wave].enermies.forEach(function(enermy_property){
-		this.wave_enermy_count += enermy_property.count * game.difficulty[0];
-		for(var i=0;i<enermy_property.count * game.difficulty[0];i++){
+		this.wave_enermy_count += enermy_property.count * this.game.getDifficulty()[0];
+		for(var i=0;i<enermy_property.count * this.game.getDifficulty()[0];i++){
 			this.enermy_queue.push(enermy_property._enermy);
 		}
 	}, this);

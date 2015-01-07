@@ -1,4 +1,4 @@
-function BalanceController(star, difficulty){
+function BalanceController(star, difficulty, type){
 	var total_exp;
 	var self = this;
 	this.star = star;
@@ -6,6 +6,14 @@ function BalanceController(star, difficulty){
 	this.bonus = self.difficulty.reduce(function(previous, current){
 		return previous * Math.sqrt(current);
 	},1 );
+
+	if(type === "home"){
+		var stage = Home.getInstance().getStage();
+		var loader = Home.getInstance().getLoader();
+	}else if(type === "game"){
+		var stage = Game.getInstance().getStage();
+		var loader = Game.getInstance().getLoader();
+	}
 
 	init.call(this);
 
@@ -117,17 +125,18 @@ function BalanceController(star, difficulty){
 		$("input#bonus").val(this.bonus);
 		$("form#game").submit();
 	}
-}
 
-BalanceController.prototype.selectStar = function(star){
-	this.star = star;
-	this.show();
-}
+	this.selectStar = function(star){
+		this.star = star;
+		this.show();		
+	}
 
-BalanceController.prototype.show = function(){
-	stage.addChild(this.game_panel_container);
-}
+	this.show = function(){
+		stage.addChild(this.game_panel_container);
+	}
 
-BalanceController.prototype.hide = function(){
-	stage.removeChild(this.game_panel_container);
+	this.hide = function(){
+		stage.removeChild(this.game_panel_container);
+	}
+
 }
