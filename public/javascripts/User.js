@@ -124,6 +124,9 @@ var User = (function(){
 			},
 			getGold:function(){
 				return gold;
+			},
+			getShip:function(){
+				return ship;
 			}
 		}
 	};

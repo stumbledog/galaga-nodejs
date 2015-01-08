@@ -2,19 +2,19 @@ function Hangar(){
 	var ships_container, weapon_container, selected_ship_container, container;
 	var item_container, gold_text;
 	var user = User.getInstance();
-	var selected_ship;
 	var stage = Home.getInstance().getStage();
 	var loader = Home.getInstance().getLoader();
+	var selectedShip = User.getInstance().getShip();
 
 	init();
 
 	function init(){
 		container = new createjs.Container();
 		var background = new createjs.Shape();
-		background.graphics.s("#fff").ss(5).f("#333").dr(10,10,620,503);
+		background.graphics.s("#fff").ss(5).f("#333").dr(10,10,620,504).s("#fff").ss(1).dr(400,60,220,380);
 
 		ships_container = new createjs.Container();
-		ships_container.x = 13;
+		ships_container.x = 14;
 		ships_container.y = 450;
 		weapon_container = new createjs.Container();
 
@@ -49,7 +49,7 @@ function Hangar(){
 			var shape_container = Renderer.renderShip(ship, loader);
 			shape_container.x = shape_container.y = 30;
 			var background = new createjs.Shape();
-			background.graphics.s("#FFF0A5").ss(1).f("#333").dr(0,0,60,60);
+			background.graphics.s("#FFB03B").ss(2).f("#FFF0A5").dr(0,0,60,60);
 			ship_container.x = index * 60;
 			ship_container.cursor = "pointer";
 			ship_container.addEventListener("mousedown", function(event){
@@ -81,6 +81,12 @@ function Hangar(){
 		open:function(){
 			stage.addChild(container);
 			$.get("/getUserShips", function(res){
+				res.ships.forEach(function(ship){
+					if(ship._id === selectedShip._id){
+						selectShip(ship);
+						return;
+					}
+				});
 				renderShipList(res.ships);
 				stage.update();
 			});
