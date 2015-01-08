@@ -5,6 +5,7 @@ var ShipSchema = new Schema({
 	price:Number,
 	name:String,
 	health:Number,
+	armor:Number,
 	speed:Number,
 	purchased:Boolean,
 	shape:{
@@ -37,6 +38,15 @@ var ShipSchema = new Schema({
 				height:Number
 			}
 		},
+	},
+	upgrade:{
+		health:{type:Number,default:0},
+		armor:{type:Number,default:0},
+		firerate:{type:Number,default:0},
+		accuracy:{type:Number,default:0},
+		damage:{type:Number,default:0},
+		critical_rate:{type:Number,default:0},
+		critical_damage:{type:Number,default:0},
 	},
 	_user:{type:Schema.Types.ObjectId,ref:'User'},
 	created_at:{type:Date,default:Date.now},

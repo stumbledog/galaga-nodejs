@@ -1,13 +1,13 @@
 var mongoose = require('mongoose');
 var ShipModel = mongoose.model('Ship');
 var ShapeModel = mongoose.model('Shape');
-var FirearmModel = mongoose.model('Firearm');
 
 exports.create = function(user, callback){
 	var ship1 = new ShipModel({
 		name:"Aries",
 		price:0,
 		health:10,
+		armor:0,
 		psychic:10,
 		speed:3,
 		purchased:true,
@@ -42,6 +42,7 @@ exports.create = function(user, callback){
 		name:"Aries",
 		price:100,
 		health:20,
+		armor:0,
 		psychic:10,
 		speed:4,
 		purchased:false,
@@ -76,6 +77,7 @@ exports.create = function(user, callback){
 		name:"Aries",
 		price:1000,
 		health:100,
+		armor:0,
 		psychic:10,
 		speed:2,
 		purchased:false,
@@ -132,16 +134,12 @@ exports.getShips = function(user_id, callback){
 exports.select = function(ship_id, callback){
 	var self = this;
 	ShipModel.findById(ship_id, function(err, ship){
-		self.populateShip(ship, callback);
+		callback(ship);
 	});
 }
 
 exports.populateShip = function(ship, callback){
-	ShapeModel.populate(ship, {path:'_shape'}, function(err, ship){
-		FirearmModel.populate(ship, {path:'_firearm'}, function(err, ship){
-			callback(ship);
-		});
-	});
+	
 }
 
 exports.upgrade = function(ship_id){

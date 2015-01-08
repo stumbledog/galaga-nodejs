@@ -1,5 +1,5 @@
 function Hangar(){
-	var ship_container, weapon_container, selected_ship_container, container;
+	var ships_container, weapon_container, selected_ship_container, container;
 	var item_container, gold_text;
 	var user = User.getInstance();
 	var selected_ship;
@@ -11,9 +11,11 @@ function Hangar(){
 	function init(){
 		container = new createjs.Container();
 		var background = new createjs.Shape();
-		background.graphics.s("#fff").ss(5).f("#333").rr(10,10,620,400,10).s("#ccc").f("#fff").rr(10,420,620,100,10);
+		background.graphics.s("#fff").ss(5).f("#333").dr(10,10,620,503);
 
-		ship_container = new createjs.Container();
+		ships_container = new createjs.Container();
+		ships_container.x = 13;
+		ships_container.y = 450;
 		weapon_container = new createjs.Container();
 
 		selected_ship_container = new createjs.Container();
@@ -31,41 +33,57 @@ function Hangar(){
 		close_button.addEventListener("mousedown", function(event){
 			public.close();
 		});
-		container.addChild(background, ship_container, weapon_container, selected_ship_container, close_button);
+
+		container.addChild(background, ships_container, weapon_container, selected_ship_container, close_button);
 	}
 
 	function renderShipList(ships){
-		ship_container.removeAllChildren();
+		ships_container.removeAllChildren();
 		var index = 0;
-		var offsetX = 0;
 		ships.forEach(function(ship){
+			var ship_container = new createjs.Container();
+			var mask = new createjs.Shape();
+			mask.graphics.beginFill("#f00").drawRect(index * 60,0,60,60);
+			ship_container.mask = mask;
+			var max = ship.shape.width > ship.shape.height ? ship.shape.width : ship.shape.height;
 			var shape_container = Renderer.renderShip(ship, loader);
-			offsetX += ship.shape.width/2 + 20;
-			shape_container.x = 20 + offsetX;
-			shape_container.y = 470;
-			shape_container.cursor = "pointer";
-			shape_container.addEventListener("mousedown", function(event){
+			shape_container.x = shape_container.y = 30;
+			var background = new createjs.Shape();
+			background.graphics.s("#FFF0A5").ss(1).f("#333").dr(0,0,60,60);
+			ship_container.x = index * 60;
+			ship_container.cursor = "pointer";
+			ship_container.addEventListener("mousedown", function(event){
 				selectShip(ship);
 			});
-			ship_container.addChild(shape_container);
+			ship_container.addChild(background, shape_container);
+			ships_container.addChild(ship_container);
 			index++;
 		});
+	}
+
+	function renderUpgrade(ship){
+		console.log(ship.upgrade);
+	}
+
+	function upgrade(part){
+		
 	}
 
 	function selectShip(ship){
 		selected_ship_container.removeAllChildren();
 		selected_ship_container.addChild(Renderer.renderShip(ship, loader));
+		renderUpgrade(ship);
+
 		stage.update();
 	}
 
 	var public = {
 		open:function(){
+			stage.addChild(container);
 			$.get("/getUserShips", function(res){
 				renderShipList(res.ships);
+				stage.update();
 			});
-
-			stage.addChild(container);
-			stage.update();
 		},
 		close:function(){
 			stage.removeChild(container);

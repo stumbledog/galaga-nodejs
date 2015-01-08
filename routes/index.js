@@ -4,9 +4,7 @@ var router = express.Router();
 mongoose = require('mongoose');
 UserModel = mongoose.model('User');
 ShipModel = mongoose.model('Ship');
-ShipItemModel = mongoose.model('ShipItem');
 ShapeModel = mongoose.model('Shape');
-FirearmModel = mongoose.model('Firearm');
 
 UserController = require('../controllers/UserController');
 ShipController = require('../controllers/ShipController');
