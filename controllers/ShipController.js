@@ -153,7 +153,7 @@ exports.findByUser = function(user, callback){
 }
 
 exports.getUserShips = function(req, callback){
-	ShipModel.find({_user:req.session.user._id}).populate("_shape _firearm").exec(function(err, ships){
+	ShipModel.find({_user:req.session.user._id, purchased:true}).populate("_shape _firearm").exec(function(err, ships){
 		console.log(ships);
 		callback(ships);
 	});
