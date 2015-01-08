@@ -49,6 +49,13 @@ router.post('/buyShip', function(req, res){
 	});
 });
 
+router.post('/upgrade', function(req, res){
+	ShipController.upgrade(req, function(result){
+		res.contentType('json');
+		res.send(result);
+	});
+});
+
 router.post('/victory', function(req, res){
 	UserController.victory(req, res, function(process){
 		res.contentType('json');

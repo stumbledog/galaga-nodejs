@@ -5,7 +5,7 @@ var ShapeModel = mongoose.model('Shape');
 exports.create = function(user, callback){
 	var ship1 = new ShipModel({
 		name:"Aries",
-		price:0,
+		price:50,
 		health:10,
 		armor:0,
 		psychic:10,
@@ -121,6 +121,59 @@ exports.create = function(user, callback){
 
 }
 
+exports.upgrade = function(req, callback){
+	var user_id = req.session.user._id;
+	var ship_id = req.body.ship;
+	var type = req.body.type;
+
+	UserModel.findById(user_id, function(err, user){
+		ShipModel.findById(ship_id, function(err, ship){
+			var upgrade;
+			var upgrade_unit;
+			if(type === "Health"){
+				upgrade = ship.upgrade.health;
+				upgrade_unit = 10;
+			}else if(type === "Armor"){
+				upgrade = ship.upgrade.armor;
+				upgrade_unit = 1;
+			}else if(type === "Firerate"){
+				upgrade = ship.upgrade.firerate;
+				upgrade_unit = -0.1;
+			}else if(type === "Accuracy"){
+				upgrade = ship.upgrade.accuracy;
+				upgrade_unit = 0.1;
+			}else if(type === "Damage"){
+				upgrade = ship.upgrade.damage;
+				upgrade_unit = 0.1;
+			}else if(type === "Crit Damage"){
+				upgrade = ship.upgrade.critical_damage;
+				upgrade_unit = 0.01;
+			}else if(type === "Crit Rate"){
+				upgrade = ship.upgrade.critical_rate;
+				upgrade_unit = 0.1;
+			}
+
+			var count = upgrade.count;
+			var current_value = upgrade.value;
+
+			var price = ship.price * (1 + count) / 10;
+
+			if(user.gold >= price){
+				user.gold -= price;
+				user.save(function(){
+					upgrade.count++;
+					upgrade.value += upgrade_unit;
+					ship.save(function(){
+						callback({code:1, ship:ship, gold:user.gold});
+					});
+				});
+			}else{
+				callback({code:-1, msg:"not enough gold", ship:ship});
+			}
+		});
+	});
+}
+
 exports.purchase = function(ship_id){
 	//check balance
 }
@@ -140,12 +193,6 @@ exports.select = function(ship_id, callback){
 
 exports.populateShip = function(ship, callback){
 	
-}
-
-exports.upgrade = function(ship_id){
-	this.select(ship_id, function(ship){
-		console.log(ship);
-	});
 }
 
 exports.findByUser = function(user, callback){
