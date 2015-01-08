@@ -139,7 +139,7 @@ var Game = (function(data){
 			});
 
 			restart_button.addEventListener("mousedown", function(event){
-				game.balance_controller.show();
+				balance_controller.show();
 			});
 
 			map_button.addEventListener("rollover", function(event){
@@ -229,7 +229,7 @@ var Game = (function(data){
 				});
         	},
 			defeat:function(){
-				var value = {level:user.level, exp:user.exp, gold:user.gold};
+				var value = {level:user.getLevel(), exp:user.getExp(), gold:user.getGold()};
 				status = DEFEAT;
 				$.post("/defeat", value, function(){
 					renderGameResultPanel("Defeat");

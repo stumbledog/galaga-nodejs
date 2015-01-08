@@ -1,7 +1,3 @@
-var mongoose = require('mongoose');
-var ShipModel = mongoose.model('Ship');
-var ShapeModel = mongoose.model('Shape');
-
 exports.create = function(user, callback){
 	var ship1 = new ShipModel({
 		name:"Aries",
@@ -122,24 +118,31 @@ exports.create = function(user, callback){
 }
 
 exports.upgrade = function(req, callback){
-	var user_id = req.session.user._id;
-	var ship_id = req.body.ship;
 	var type = req.body.type;
+	var ship_id = req.body.ship;
 
-	UserModel.findById(user_id, function(err, user){
+	UserModel.findById(req.session.user, function(err, user){
 		ShipModel.findById(ship_id, function(err, ship){
-			var upgrade;
-			var upgrade_unit;
+			var upgrade, upgrade_unit;
 			if(type === "Health"){
 				upgrade = ship.upgrade.health;
 				upgrade_unit = 10;
 			}else if(type === "Armor"){
 				upgrade = ship.upgrade.armor;
-				upgrade_unit = 1;
+				upgrade_unit = 0.1;
+			}else if(type === "Speed"){
+				upgrade = ship.upgrade.speed;
+				upgrade_unit = 0.1;
 			}else if(type === "Firerate"){
+				if(ship.firearm.firerate <= 1){
+					callback({code:-1, msg:"Reached maximum firerate", ship:ship});
+				}
 				upgrade = ship.upgrade.firerate;
-				upgrade_unit = -0.1;
+				upgrade_unit = -0.01;
 			}else if(type === "Accuracy"){
+				if(ship.firearm.accuracy >= 100){
+					callback({code:-1, msg:"Reached maximum accuracy", ship:ship});
+				}
 				upgrade = ship.upgrade.accuracy;
 				upgrade_unit = 0.1;
 			}else if(type === "Damage"){
@@ -149,8 +152,11 @@ exports.upgrade = function(req, callback){
 				upgrade = ship.upgrade.critical_damage;
 				upgrade_unit = 0.01;
 			}else if(type === "Crit Rate"){
+				if(ship.firearm.bullet.critical_rate >= 1){
+					callback({code:-1, msg:"Reached maximum critical rate", ship:ship});
+				}
 				upgrade = ship.upgrade.critical_rate;
-				upgrade_unit = 0.1;
+				upgrade_unit = 0.001;
 			}
 
 			var count = upgrade.count;
@@ -191,6 +197,16 @@ exports.select = function(ship_id, callback){
 	});
 }
 
+exports.selectShip = function(req, callback){
+	var ship_id = req.body.ship;
+	UserModel.findById(req.session.user, function(err, user){
+		user._selected_ship = ship_id;
+		user.save(function(){
+			callback({code:1});
+		});
+	});
+}
+
 exports.populateShip = function(ship, callback){
 	
 }
@@ -200,8 +216,7 @@ exports.findByUser = function(user, callback){
 }
 
 exports.getUserShips = function(req, callback){
-	ShipModel.find({_user:req.session.user._id, purchased:true}).populate("_shape _firearm").exec(function(err, ships){
-		console.log(ships);
+	ShipModel.find({_user:req.session.user, purchased:true}).populate("_shape _firearm").exec(function(err, ships){
 		callback(ships);
 	});
 }

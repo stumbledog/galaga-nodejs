@@ -2,15 +2,17 @@ var Wave = (function(){
 	var instance;
 
 	function init(waves){
+
 		var waves = waves;
 		var enermies = [], enermy_queue = [];
 
-		var current_wave = ticks = 0;
-		var interval = 30;
-		var wave_count = waves.length;
-		console.log(wave_count);
 		var game = Game.getInstance();
 		var stage = game.getStage();
+
+		var current_wave = ticks = 0;
+		var interval = 30 / game.getDifficulty()[0];
+		var wave_count = waves.length;
+		console.log(wave_count);
 
 		var wavetext, destoryed_enermy_count, wave_enermy_count;
 

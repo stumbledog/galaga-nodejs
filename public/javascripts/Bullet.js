@@ -1,12 +1,13 @@
-function Bullet(firearm, x, y, degree, data){
+function Bullet(firearm, x, y, degree, data, upgrade){
 	this.firearm = firearm;
 	this.x = x;
 	this.y = y;
 	this.degree = degree;
 	this.speed = data.speed;
-	this.damage = data.damage;
-	this.critical_rate = data.critical_rate;
-	this.critical_damage = data.critical_damage;
+	this.radius = data.radius;
+	this.damage = data.damage + upgrade.damage.value;
+	this.critical_rate = data.critical_rate + upgrade.critical_rate.value;
+	this.critical_damage = data.critical_damage + upgrade.critical_damage.value;
 	this.bullets = [];
 	this.isHit = false;
 	this.game = Game.getInstance();
@@ -27,6 +28,7 @@ function Bullet(firearm, x, y, degree, data){
 		this.shape.y = y;
 		this.shape.rotation = degree + 90;
 		this.shape.speed = this.speed;
+		this.shape.radius = this.radius;
 		this.stage.addChild(this.shape);
 	}
 }

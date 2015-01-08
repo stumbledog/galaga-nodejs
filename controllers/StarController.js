@@ -1,14 +1,8 @@
-var mongoose = require('mongoose');
-var Star = mongoose.model('Star');
-var Process = mongoose.model('Process');
-var Wave = mongoose.model('Wave');
-var Enermy = mongoose.model('Enermy');
-
 exports.getGalaxy = function(req, callback){
-	var user = req.session.user;
-	Process.findOne({_user:user._id}).populate('_selectable _cleared').exec(function(err, process){
-		Star.populate(process, {path:'_selectable._next'}, function(err, process){
-			Wave.populate(process, {path:'_selectable._wave'}, function(err, process){
+	var user_id = req.session.user;
+	ProcessModel.findOne({_user:user_id}).populate('_selectable _cleared').exec(function(err, process){
+		StarModel.populate(process, {path:'_selectable._next'}, function(err, process){
+			WaveModel.populate(process, {path:'_selectable._wave'}, function(err, process){
 				callback(process);
 			});
 		});
@@ -16,7 +10,7 @@ exports.getGalaxy = function(req, callback){
 }
 
 exports.getNextStarID = function(star_id){
-	Star.findById(star_id).populate('_next').exec(function(err, star){
+	StarModel.findById(star_id).populate('_next').exec(function(err, star){
 		console.log(star);
 	});
 }

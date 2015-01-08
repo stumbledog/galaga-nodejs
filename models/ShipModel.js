@@ -42,6 +42,7 @@ var ShipSchema = new Schema({
 	upgrade:{
 		health:{count:{type:Number,default:0},value:{type:Number,default:0}},
 		armor:{count:{type:Number,default:0},value:{type:Number,default:0}},
+		speed:{count:{type:Number,default:0},value:{type:Number,default:0}},
 		firerate:{count:{type:Number,default:0},value:{type:Number,default:0}},
 		accuracy:{count:{type:Number,default:0},value:{type:Number,default:0}},
 		damage:{count:{type:Number,default:0},value:{type:Number,default:0}},

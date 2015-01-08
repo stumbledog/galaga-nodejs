@@ -79,7 +79,6 @@ var User = (function(){
 			exp -= level * 10;
 			level++;
 			level_text.text = level + " Level";
-			console.log(level);
 			exp_cap = level * 10;
 			Ship.getInstance().levelUp();
 			if(exp >= level * 10){

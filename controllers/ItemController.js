@@ -1,7 +1,7 @@
 exports.getItems = function(req, callback){
 	var type = req.body.type;
 	if(type === "ship"){
-		ShipController.getShips(req.session.user._id, function(ships){
+		ShipController.getShips(req.session.user, function(ships){
 			callback(ships);
 		});
 	}
@@ -9,8 +9,7 @@ exports.getItems = function(req, callback){
 
 exports.buyShip = function(req, callback){
 	var ship_id = req.body.ship_id;
-	var user_id = req.session.user._id;
-	UserModel.findById(user_id, function(err, user){
+	UserModel.findById(req.session.user, function(err, user){
 		if(err){
 			callback({code:-2,msg:"Unauthficated user"});
 		}
@@ -24,8 +23,7 @@ exports.buyShip = function(req, callback){
 				user.save(function(err, user){
 					ship.purchased = true;
 					ship.save(function(err, ship){
-						req.session.ship = ship;
-						callback({code:1,msg:"Successfully purchased",gold:user.gold,user:user, ship:req.session.ship});
+						callback({code:1,msg:"Successfully purchased",gold:user.gold,user:user, ship:ship});
 					});
 				});
 			}else{

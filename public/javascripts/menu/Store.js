@@ -69,7 +69,7 @@ function Store(){
 			var firearm = ship.firearm;
 			var bullet = firearm.bullet;
 			
-			var dps = 30 / firearm.firerate * firearm.accuracy / 100 * bullet.damage * ((1 - bullet.critical_rate * (bullet.critical_damage - 1)));
+			var dps = 30 / firearm.firerate * firearm.accuracy / 100 * bullet.damage * ((1 - bullet.critical_rate * (1 - bullet.critical_damage)));
 
 			var dps_text = new createjs.Text("DPS: ","12px Arial","#FFB03B");
 			var dps_amount_text = new createjs.Text(dps.toFixed(2),"12px Arial","#fff");

@@ -1,10 +1,14 @@
 var express = require('express');
+var mongoose = require('mongoose');
 var router = express.Router();
 
-mongoose = require('mongoose');
-UserModel = mongoose.model('User');
+EnermyModel = mongoose.model('Enermy');
+ProcessModel = mongoose.model('Process');
 ShipModel = mongoose.model('Ship');
+StarModel = mongoose.model('Star');
 ShapeModel = mongoose.model('Shape');
+UserModel = mongoose.model('User');
+WaveModel = mongoose.model('Wave');
 
 UserController = require('../controllers/UserController');
 ShipController = require('../controllers/ShipController');
@@ -15,21 +19,21 @@ ItemController = require('../controllers/ItemController');
 var title = "Galaga JS";
 
 router.get('/', function(req, res) {
-	UserController.authenticate(req, res, function(user){
+	UserController.authenticate(req, res, function(user, ship){
 		StarController.getGalaxy(req, function(process){
-			var data = {user:user, process:process, ship:req.session.ship};
+			var data = { title:title, user:user, process:process, ship:ship};
 			res.render('home', {data:data});
 		});
 	});
 });
 
 router.post('/game', function(req, res) {
-	if(!req.body.star || !req.session.user || !req.session.ship){
+	if(!req.body.star || !req.session.user){
 		console.log("redirect");
-		res.redirect("/");		
+		res.redirect("/");
 	}else{
-		GameController.init(req, res, function(star){
-			var data = { title:title, star:star , ship:req.session.ship, user:req.session.user, difficulty:req.body.difficulty, bonus:req.body.bonus};
+		GameController.init(req, res, function(user, ship, star){
+			var data = { title:title, star:star , ship:ship, user:user, difficulty:req.body.difficulty, bonus:req.body.bonus};
 			res.render('game', {data:data});
 		});
 	}
@@ -56,6 +60,13 @@ router.post('/upgrade', function(req, res){
 	});
 });
 
+router.post('/selectShip', function(req, res){
+	ShipController.selectShip(req, function(result){
+		res.contentType('json');
+		res.send(result);
+	});
+});
+
 router.post('/victory', function(req, res){
 	UserController.victory(req, res, function(process){
 		res.contentType('json');
@@ -71,7 +82,6 @@ router.post('/defeat', function(req, res){
 });
 
 router.get('/getUserShips', function(req,res){
-	console.log("asd");
 	ShipController.getUserShips(req, function(ships){
 		res.contentType('json');
 		res.send({ ships:ships });

@@ -8,7 +8,9 @@ var Ship = (function(){
 		var last_mouse_position = {x:0, y:0};
 		var ship = ship;
 		
-		var health_max = health = ship.health;
+		console.log(ship);
+
+		var health_max = health = ship.health + ship.upgrade.health.value;
 		var psychic_max = psychic = ship.psychic;
 
 		var game = Game.getInstance();
@@ -17,10 +19,11 @@ var Ship = (function(){
 		var effect = Effect.getInstance();
 		var ship_stats = ShipStats.getInstance(health, health_max);
 
+		var firearm = new Firearm(ship.firearm, ship.upgrade);
+
 		renderShip();
 		renderHealthBar();
 		renderText();
-		initFirearm(ship.firearm);
 
 		function renderShip(){
 			container = new createjs.Container();
@@ -53,10 +56,6 @@ var Ship = (function(){
 			level_up_text.regX = level_up_text.getMeasuredWidth()/2;
 			level_up_text.visible = false;
 			container.addChild(level_up_text);
-		}
-
-		function initFirearm(data){
-			firearm = new Firearm(data);
 		}
 
 		return{
@@ -118,27 +117,37 @@ var Ship = (function(){
 				level_up_text.rotation = -degree;
 
 		        if(move_up && container.y > 0){
-		            container.y -= ship.speed;
+		            container.y -= ship.speed + ship.upgrade.speed.value;
 		        }else if(move_down && container.y < 640){
-		            container.y += ship.speed;
+		            container.y += ship.speed + ship.upgrade.speed.value;
 		        }
 
 		        if(move_right && container.x < 640){
-		            container.x += ship.speed;
+		            container.x += ship.speed + ship.upgrade.speed.value;
 		        }else if(move_left && container.x > 0){
-		            container.x -= ship.speed;
+		            container.x -= ship.speed + ship.upgrade.speed.value;
 		        }
 
 		        firearm.fire(container.x, container.y, degree);
 		        firearm.tick();
 		    },
 		    isHit:function(bullet){
-				return (Math.pow(bullet.x - container.x, 2) + Math.pow(bullet.y - container.y, 2) < Math.pow(ship.shape.radius + bullet.radius, 2));
+		    	/*
+		    	var hit = false;		    	
+		    	container.children.forEach(function(child){
+		    		if(child.hitTest(bullet.x - container.x,bullet.y - container.y)){
+		    			hit = true;
+		    		}
+		    	});
+		    	return hit;*/
+				//return (Math.pow(bullet.x - container.x, 2) + Math.pow(bullet.y - container.y, 2) < Math.pow(ship.shape.radius + bullet.radius, 2));
+				return Math.abs(bullet.x - container.x) < ship.shape.radius + bullet.radius && Math.abs(bullet.y - container.y) < ship.shape.radius + bullet.radius;
 			},
 			damaged:function(bullet){
-				var damage = bullet.damage;
+				var armor = ship.armor + ship.upgrade.armor.value;
+				var damage = bullet.damage * (1 - armor / (armor + 25));
 				health -= damage;
-				var text = new createjs.Text(damage, "12px Arial", "#F60605");
+				var text = new createjs.Text(Math.round(damage), "12px Arial", "#F60605");
 				text.x = container.x;
 				text.y = container.y;
 				text.textBaseline = "alphabetic";
@@ -149,11 +158,11 @@ var Ship = (function(){
 				});
 				
 				damage_bar.graphics.c().beginFill("#CC0000").drawRect(ship.shape.radius * 2 / health_max * health - ship.shape.radius, -ship.shape.radius, ship.shape.radius * 2 * (health_max - health) / health_max, ship.shape.radius / 5);
-				ship_stats.renderHealthBar(health, health_max);
 				if(health <= 0){
+					health = 0;
 					this.destroyed(bullet);
 				}
-
+				ship_stats.renderHealthBar(health, health_max);
 				game.addDamageTaken(damage);
 			},
 			destroyed:function(){

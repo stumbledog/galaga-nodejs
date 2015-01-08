@@ -49,7 +49,7 @@ Enermy.prototype.damaged = function(bullet){
 	var damage = bullet.getDamage();
 	this.health -= damage.amount;
 	var font_size = damage.critical?"16":"12";
-	var text = new createjs.Text(damage.amount, font_size+"px Arial", damage.critical?"#F6D605":"#F5F4FE");
+	var text = new createjs.Text(Math.round(damage.amount), font_size+"px Arial", damage.critical?"#F6D605":"#F5F4FE");
 	text.x = this.container.x;
 	text.y = this.container.y;
 	text.textBaseline = "alphabetic";
@@ -90,7 +90,8 @@ Enermy.prototype.destroyed = function(bullet){
 }
 
 Enermy.prototype.isHit = function(bullet){
-	return (Math.pow(bullet.x - this.container.x, 2) + Math.pow(bullet.y - this.container.y, 2) < Math.pow(this.stats.radius, 2));
+	//return (Math.pow(bullet.x - this.container.x, 2) + Math.pow(bullet.y - this.container.y, 2) < Math.pow(this.stats.radius, 2));
+	return Math.abs(bullet.x - this.container.x) < this.stats.radius + bullet.radius && Math.abs(bullet.y - this.container.y) < this.stats.radius + bullet.radius;
 }
 
 Enermy.prototype.fire = function(){
