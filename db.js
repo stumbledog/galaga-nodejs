@@ -14,10 +14,4 @@ var models_path = __dirname + '/models'
   , model_files = fs.readdirSync(models_path)
 model_files.forEach(function (file) {
 	require(models_path+'/'+file);
-/*
-	if (file == 'user.js')
-		User = require(models_path+'/'+file)
-	else
-		require(models_path+'/'+file)
-*/		
 });

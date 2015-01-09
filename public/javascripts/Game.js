@@ -101,12 +101,12 @@ var Game = (function(data){
 			}
 		}
 
-		function renderGameResultPanel(title){
+		function renderGameResultPanel(title, msg){
 			var panel_container = new createjs.Container();
 			var panel = new createjs.Shape();
 			var restart_button = new createjs.Bitmap(loader.getResult("button"));
 			var map_button = new createjs.Bitmap(loader.getResult("button"));
-			var text = new createjs.Text(title,"32px Arial","#fff");
+			var text = new createjs.Text(title,"16px Arial","#fff");
 			var restart_text = new createjs.Text("Restart this stage","16px Arial","#fff");
 			var map_text = new createjs.Text("Return to the map","16px Arial","#fff");
 
@@ -231,9 +231,16 @@ var Game = (function(data){
 			defeat:function(){
 				var value = {level:user.getLevel(), exp:user.getExp(), gold:user.getGold()};
 				status = DEFEAT;
-				$.post("/defeat", value, function(){
-					renderGameResultPanel("Defeat");
-				});
+				var current_wave = wave.getCurrentWave();
+				if(current_wave>0){
+					$.post("/defeat", value, function(){
+						renderGameResultPanel("Defeat");
+					});
+				}else{
+					total_exp_gained = 0;
+					total_gold_earned = 0;
+					renderGameResultPanel("Defeat! You have to clear first wave to get reward!");
+				}
 			}
         }
 		return public;

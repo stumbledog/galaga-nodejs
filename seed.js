@@ -35,7 +35,7 @@ connection.once("open", function(){
 		exp:1,
 		gold:1,
 		speed:2,
-		range:200,
+		range:300,
 		width:40,
 		height:40,
 		radius:20,
@@ -45,7 +45,13 @@ connection.once("open", function(){
 			damage:1,
 			firerate:60,
 			speed:3,
-			radius:1,
+			radius:2,
+			shape:{
+				crop_x:124,
+				crop_y:231,
+				width:10,
+				height:4
+			}
 		},
 		components:[
 			{x:-12,y:8,crop_x:171,crop_y:76,width:23,height:21},
@@ -61,7 +67,7 @@ connection.once("open", function(){
 		exp:2,
 		gold:2,
 		speed:2,
-		range:400,
+		range:500,
 		width:30,
 		height:30,
 		radius:30,
@@ -70,8 +76,14 @@ connection.once("open", function(){
 			accuracy:90,
 			damage:1,
 			firerate:60,
-			speed:10,
+			speed:6,
 			radius:2,
+			shape:{
+				crop_x:124,
+				crop_y:231,
+				width:10,
+				height:4
+			}
 		},
 		components:[
 			{crop_x:240,crop_y:112,width:14,height:24},
@@ -87,7 +99,7 @@ connection.once("open", function(){
 		exp:10,
 		gold:20,
 		speed:1,
-		range:300,
+		range:400,
 		width:48,
 		height:48,
 		radius:32,
@@ -98,6 +110,12 @@ connection.once("open", function(){
 			firerate:20,
 			speed:4,
 			radius:2,
+			shape:{
+				crop_x:124,
+				crop_y:231,
+				width:10,
+				height:4
+			}
 		},
 		components:[
 			{crop_x:190,crop_y:10,width:56,height:56},
@@ -121,7 +139,13 @@ connection.once("open", function(){
 			damage:5,
 			firerate:10,
 			speed:3,
-			radius:1,
+			radius:2,
+			shape:{
+				crop_x:124,
+				crop_y:231,
+				width:10,
+				height:4
+			}
 		},
 		components:[
 			{crop_x:10,crop_y:135,width:59,height:61},

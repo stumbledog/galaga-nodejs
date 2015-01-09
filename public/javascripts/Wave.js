@@ -30,8 +30,8 @@ var Wave = (function(){
 		function queueEnermies(){
 			destoryed_enermy_count = 0;
 			wave_enermy_count = 0;
-			var text = slideWaveText("Wave " + (current_wave + 1));
-			createjs.Tween.get(text).to({x:320},1000, createjs.Ease.backInOut).wait(1000).to({x:740},1000, createjs.Ease.backInOut);
+			slideWaveText("Wave " + (current_wave + 1));
+			
 			waves[current_wave].enermies.forEach(function(enermy_property){
 				wave_enermy_count += enermy_property.count * game.getDifficulty()[0];
 				for(var i=0;i<enermy_property.count * game.getDifficulty()[0];i++){
@@ -53,6 +53,7 @@ var Wave = (function(){
 			text.textAlign = "center";
 			text.textBaseline = "middle";
 			stage.addChild(text);
+			createjs.Tween.get(text).to({x:320},1000, createjs.Ease.backInOut).wait(1000).to({x:740},1000, createjs.Ease.backInOut);
 			return text;
 		}
 
@@ -92,6 +93,9 @@ var Wave = (function(){
 					enermy.tick();
 				});
 				ticks++;
+			},
+			getCurrentWave:function(){
+				return current_wave;
 			}
 		}
 	}

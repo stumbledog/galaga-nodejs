@@ -9,14 +9,17 @@ function Hangar(){
 	init();
 
 	function init(){
+		createjs.Ticker.addEventListener("tick", tick);
+		createjs.Ticker.setFPS(30);
+
 		container = new createjs.Container();
 		name_text = new createjs.Text("","12px Arial","#fff");
 		name_text.textAlign = "center";
 		name_text.x = 320;
-		name_text.y = 240;
+		name_text.y = 400;
 
 		var background = new createjs.Shape();
-		background.graphics.s("#fff").ss(5).f("#333").dr(10,10,620,504).s("#fff").ss(1).f("#000").dr(380,60,240,380).dr(20,60,240,380);
+		background.graphics.s("#fff").ss(5).f("#333").dr(10,10,620,504).s("#fff").ss(1).f("#000").dr(270,60,350,235).dr(20,60,240,380);
 
 		ships_container = new createjs.Container();
 		ships_container.x = 14;
@@ -25,7 +28,7 @@ function Hangar(){
 
 		selected_ship_container = new createjs.Container();
 		selected_ship_container.x = 320;
-		selected_ship_container.y = 200;
+		selected_ship_container.y = 360;
 
 		var close_button = new createjs.Shape();
 		close_button.graphics.bf(loader.getResult("button")).drawRect(638,1094,63,66);
@@ -44,7 +47,7 @@ function Hangar(){
 		stats_container.y = 70;
 
 		upgrade_container = new createjs.Container();
-		upgrade_container.x = 390;
+		upgrade_container.x = 280;
 		upgrade_container.y = 70;
 
 		var select_button_container = new createjs.Container();
@@ -52,15 +55,16 @@ function Hangar(){
 		var select_text = new createjs.Text("Select Ship","12px Arial","#FFBE2C");
 
 		select_button_container.x = 320;
-		select_button_container.y = 260;
-		select_button.graphics.s("#fff").ss(2).f("#333").rr(-40,0,80,16,5);
+		select_button_container.y = 420;
+		select_button.graphics.s("#fff").ss(2).f("#333").rr(-40,0,80,18,5);
 		select_text.textAlign = "center";
-		select_text.y = 3;
+		select_text.y = 2;
 		select_button_container.cursor = "pointer";
 		select_button_container.addEventListener("mousedown", function(event){
 			$.post("/selectShip", {ship:selectedShip._id}, function(res){
 				console.log(res);
 				if(res.code > 0){
+					slideText(selectedShip.name + " is ready for takeoff!","#468966");
 					user.setShip(selectedShip);
 				}
 			});
@@ -71,7 +75,18 @@ function Hangar(){
 		container.addChild(background, ships_container, weapon_container, selected_ship_container, close_button, stats_container, upgrade_container, select_button_container, name_text);
 	}
 
-
+	function slideText(msg, color){
+		var text = new createjs.Text(msg, "bold 36px Arial", color);
+		text.x = -300
+		text.y = 320;
+		text.textAlign = "center";
+		text.textBaseline = "middle";
+		stage.addChild(text);
+		createjs.Tween.get(text).to({x:320},1000, createjs.Ease.backInOut).wait(1000).to({x:940},1000, createjs.Ease.backInOut).call(function(){
+			stage.removeChild(text);
+		});
+		return text;
+	}
 
 	function renderShipList(ships){
 		ships_container.removeAllChildren();
@@ -137,22 +152,30 @@ function Hangar(){
 	function renderUpgrade(ship){
 		upgrade_container.removeAllChildren();
 		var upgrade_text = new createjs.Text("Upgrade","bold 16px Arial","#fff");
-		upgrade_text.x = 10;
-		upgrade_text.y = -30;
 
-		renderUpgradeButton("Health", ship.upgrade.health, ship.price / 10, 0, 0);
-		renderUpgradeButton("Armor", ship.upgrade.armor, ship.price / 10, 25, 1);
-		renderUpgradeButton("Speed", ship.upgrade.speed, ship.price / 10, 50, 1);
-		renderUpgradeButton("Firerate", ship.upgrade.firerate, ship.price / 10, 75, 2);
-		renderUpgradeButton("Accuracy", ship.upgrade.accuracy, ship.price / 10, 100, 2);
-		renderUpgradeButton("Damage", ship.upgrade.damage, ship.price / 10, 125, 2);
-		renderUpgradeButton("Crit Damage", ship.upgrade.critical_damage, ship.price / 10, 150, 2);
-		renderUpgradeButton("Crit Rate", ship.upgrade.critical_rate, ship.price / 10, 175, 3);
+		var upgrade_x1 = new createjs.Text("x1", "12px Arial","#fff");
+		var upgrade_x10 = new createjs.Text("x10", "12px Arial","#fff");
+		var upgrade_x100 = new createjs.Text("x100", "12px Arial","#fff");
+		upgrade_x1.y = upgrade_x10.y = upgrade_x100.y = 6;
+		upgrade_x1.textAlign = upgrade_x10.textAlign = upgrade_x100.textAlign = "center";
+		upgrade_x1.x = 160;
+		upgrade_x10.x = 230;
+		upgrade_x100.x = 300;
 
-		upgrade_container.addChild(upgrade_text);
+
+		renderUpgradeButton("Health", ship.upgrade.health, 25, 0);
+		renderUpgradeButton("Armor", ship.upgrade.armor, 50, 1);
+		renderUpgradeButton("Speed", ship.upgrade.speed, 75, 1);
+		renderUpgradeButton("Firerate", ship.upgrade.firerate, 100, 2);
+		renderUpgradeButton("Accuracy", ship.upgrade.accuracy, 125, 2);
+		renderUpgradeButton("Damage", ship.upgrade.damage, 150, 2);
+		renderUpgradeButton("Crit Damage", ship.upgrade.critical_damage, 175, 2);
+		renderUpgradeButton("Crit Rate", ship.upgrade.critical_rate, 200, 3);
+
+		upgrade_container.addChild(upgrade_text, upgrade_x1, upgrade_x10, upgrade_x100);
 	}
 
-	function renderUpgradeButton(type, upgrade, upgrade_unit_price, y, fixed){
+	function renderUpgradeButton(type, upgrade, y, fixed){
 		var text = new createjs.Text(type + ":","12px Arial","#FFB03B");
 		text.y = y + 2;
 
@@ -160,28 +183,70 @@ function Hangar(){
 		upgrade_amount_text.x = text.getMeasuredWidth() + 5;
 		upgrade_amount_text.y = y + 2;
 
+		multipleButtons(type,upgrade,y,0);
+		multipleButtons(type,upgrade,y,1);
+		multipleButtons(type,upgrade,y,2);
+		/*
+		for(var i=0;i<3;i++){
+			var n = Math.pow(10,i);
+			var price = n * (current_price * 2 + (n-1) * upgrade_unit_price)/2;
+			
+			
+			upgrade_button.graphics.s("#fff").ss(2).f("#333").rr(0,y,60,18,5);
+			upgrade_button.x = 130 + i * 70;
+			upgrade_button.cursor = "pointer";
+
+			var upgrade_price = new createjs.Text(price, "10px Arial", "#FFBE2C");
+			upgrade_price.x = 160 + i * 70;
+			upgrade_price.y = y + 3;
+			upgrade_price.textAlign = "center";
+			upgrade_container.addChild(upgrade_button, upgrade_price);
+
+			upgrade_button.addEventListener("mousedown", function(event){
+				console.log(upgrade_button);
+				$.post("/upgrade",{ship:selectedShip._id, type:type, multiple:1000},function(res){
+					console.log(res);
+					if(res.code>0){
+						selectedShip.upgrade = res.ship.upgrade;
+						user.setGold(res.gold);
+						selectShip(selectedShip);
+					}else{
+						alert(res.msg);
+					}
+				});
+			});
+		}*/
+
+		upgrade_container.addChild(text, upgrade_amount_text);
+	}
+
+	function multipleButtons(type,upgrade,y,index){
+		var current_price = 10 * (1 + upgrade.count);
+		var n = Math.pow(10,index);
+		var price = n * (current_price * 2 + (n-1) * 10)/2;		
+		
 		var upgrade_button = new createjs.Shape();
-		upgrade_button.graphics.s("#fff").ss(2).f("#333").rr(0,y,80,16,5);
-		upgrade_button.x = 140;
+		upgrade_button.graphics.s("#fff").ss(2).f("#333").rr(0,y,60,18,5);
+		upgrade_button.x = 130 + index * 70;
 		upgrade_button.cursor = "pointer";
 
-		var upgrade_price = new createjs.Text(upgrade_unit_price * (1 + upgrade.count), "12px Arial", "#FFBE2C");
-		upgrade_price.x = 180;
+		var upgrade_price = new createjs.Text(price, "10px Arial", "#FFBE2C");
+		upgrade_price.x = 160 + index * 70;
 		upgrade_price.y = y + 3;
 		upgrade_price.textAlign = "center";
-		upgrade_container.addChild(text, upgrade_amount_text, upgrade_button, upgrade_price);
+		upgrade_container.addChild(upgrade_button, upgrade_price);
 
 		upgrade_button.addEventListener("mousedown", function(event){
-			$.post("/upgrade",{ship:selectedShip._id, type:type},function(res){
+			$.post("/upgrade",{ship:selectedShip._id, type:type, multiple:n},function(res){
 				console.log(res);
 				if(res.code>0){
 					selectedShip.upgrade = res.ship.upgrade;
 					user.setGold(res.gold);
-					selectShip(selectedShip);
+					selectShip(selectedShip);					
+					slideText(type+" is upgraded x"+(res.upgrade.count - upgrade.count), "#FFB03B");
 				}else{
-					alert(res.msg);
+					slideText(res.msg, "#8E2800");
 				}
-
 			});
 		});
 	}
@@ -194,6 +259,10 @@ function Hangar(){
 		renderUpgrade(selectedShip);
 		renderStats(selectedShip);
 		stage.update();
+	}
+
+	function tick(){
+	    stage.update();
 	}
 
 	var public = {

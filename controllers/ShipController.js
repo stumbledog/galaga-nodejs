@@ -120,13 +120,14 @@ exports.create = function(user, callback){
 exports.upgrade = function(req, callback){
 	var type = req.body.type;
 	var ship_id = req.body.ship;
+	var multiple = parseInt(req.body.multiple);
 
 	UserModel.findById(req.session.user, function(err, user){
 		ShipModel.findById(ship_id, function(err, ship){
 			var upgrade, upgrade_unit;
 			if(type === "Health"){
 				upgrade = ship.upgrade.health;
-				upgrade_unit = 10;
+				upgrade_unit = 1;
 			}else if(type === "Armor"){
 				upgrade = ship.upgrade.armor;
 				upgrade_unit = 0.1;
@@ -134,14 +135,17 @@ exports.upgrade = function(req, callback){
 				upgrade = ship.upgrade.speed;
 				upgrade_unit = 0.1;
 			}else if(type === "Firerate"){
-				if(ship.firearm.firerate <= 1){
+				if(ship.firearm.firerate + ship.upgrade.firerate.value * multiple < 1){
+					console.log(ship.firearm.firerate + ship.upgrade.firerate * multiple);
 					callback({code:-1, msg:"Reached maximum firerate", ship:ship});
+					return;
 				}
 				upgrade = ship.upgrade.firerate;
 				upgrade_unit = -0.01;
 			}else if(type === "Accuracy"){
-				if(ship.firearm.accuracy >= 100){
+				if(ship.firearm.accuracy + ship.upgrade.accuracy.value * multiple >= 100){
 					callback({code:-1, msg:"Reached maximum accuracy", ship:ship});
+					return;
 				}
 				upgrade = ship.upgrade.accuracy;
 				upgrade_unit = 0.1;
@@ -152,29 +156,31 @@ exports.upgrade = function(req, callback){
 				upgrade = ship.upgrade.critical_damage;
 				upgrade_unit = 0.01;
 			}else if(type === "Crit Rate"){
-				if(ship.firearm.bullet.critical_rate >= 1){
+				if(ship.firearm.bullet.critical_rate + ship.upgrade.critical_rate.value * multiple >= 1){
 					callback({code:-1, msg:"Reached maximum critical rate", ship:ship});
+					return;
 				}
 				upgrade = ship.upgrade.critical_rate;
 				upgrade_unit = 0.001;
 			}
 
 			var count = upgrade.count;
-			var current_value = upgrade.value;
+			var current_price = 10 * (1 + count);
 
-			var price = ship.price * (1 + count) / 10;
+			var price = multiple * (current_price * 2 + (multiple-1) * 10)/2;
+			console.log(price);
 
 			if(user.gold >= price){
 				user.gold -= price;
 				user.save(function(){
-					upgrade.count++;
-					upgrade.value += upgrade_unit;
+					upgrade.count += multiple;
+					upgrade.value += upgrade_unit * multiple;
 					ship.save(function(){
-						callback({code:1, ship:ship, gold:user.gold});
+						callback({code:1, ship:ship, gold:user.gold, upgrade:upgrade});
 					});
 				});
 			}else{
-				callback({code:-1, msg:"not enough gold", ship:ship});
+				callback({code:-1, msg:"Not enough gold", ship:ship});
 			}
 		});
 	});

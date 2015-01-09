@@ -67,10 +67,14 @@ var ShipStats = (function(){
 
 		return {
 			renderHealthBar:function(health, max){
+				var health = Math.round(health);
+				var max = Math.round(max);
 				health_bar.graphics.c().lf(["#61BF23","#39B52F"], [0, 1],320,613,320,626).dr(170, 613, 300 * (health / max), 12);
 				health_text.text = health + " / " + max;
 			},
 			renderExpBar:function(level, exp, cap){
+				var exp = Math.round(exp);
+				var cap = Math.round(cap);
 				exp_bar.graphics.c().beginFill("#FCFFF5").drawRect(170, 627, 300*(exp / cap), 12);
 				exp_text.text = "Level " + level + " Exp " + (exp / cap * 100).toFixed(2)+"%";	
 			}

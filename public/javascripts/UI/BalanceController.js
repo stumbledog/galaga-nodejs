@@ -72,7 +72,7 @@ function BalanceController(star, difficulty, type){
 		createBalaceController.call(this, "Enermy\nHealth", 1);
 		createBalaceController.call(this, "Enermy\nDamage", 2);
 		createBalaceController.call(this, "Enermy\nFirerate", 3);
-		createBalaceController.call(this, "Bullet\nSpeed", 4);
+		createBalaceController.call(this, "Bullet\nSize", 4);
 	}
 
 	function createBalaceController(title, index){
@@ -90,10 +90,10 @@ function BalanceController(star, difficulty, type){
 		container.addChild(title, exp);
 
 		var bars = [];
-		for(var i=0;i<10;i++){
+		for(var i=0;i<40;i++){
 			var bar = new createjs.Shape();
-			bar.graphics.s("#000").ss(1).f(i < self.difficulty[index] ? "#fff" : "#666").rr(0, 0, 16, 32, 2);
-			bar.x = i * 20 - 100;
+			bar.graphics.s("#000").ss(1).f(i < self.difficulty[index] ? "#fff" : "#666").rr(0, 0, 4, 32, 2);
+			bar.x = i * 5 - 100;
 			bar.y = y;
 			bar.index = i;
 			bar.cursor = "pointer";
@@ -103,8 +103,8 @@ function BalanceController(star, difficulty, type){
 
 		bars.forEach(function(bar){
 			bar.addEventListener("mousedown", function(event){
-				for(var i=0;i<10;i++){
-					bars[i].graphics.f(i<=bar.index?"#fff":"#666").rr(0, 0, 16, 32, 2);
+				for(var i=0;i<40;i++){
+					bars[i].graphics.f(i<=bar.index?"#fff":"#666").rr(0, 0, 4, 32, 2);
 				}
 				exp.text = "x" + (bar.index + 1);
 				self.difficulty[index] = bar.index + 1;

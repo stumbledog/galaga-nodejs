@@ -5,7 +5,7 @@ var User = (function(){
 	function init(user, ship, type){
 		var level = user.level;
 		var exp = user.exp;
-		var exp_cap = user.level * 10;
+		var exp_cap = user.level * 100;
 		var gold = user.gold;
 		var type = type;
 
@@ -76,12 +76,12 @@ var User = (function(){
 		}
 
 		function levelUp(){
-			exp -= level * 10;
+			exp -= level * 100;
 			level++;
 			level_text.text = level + " Level";
-			exp_cap = level * 10;
+			exp_cap = level * 100;
 			Ship.getInstance().levelUp();
-			if(exp >= level * 10){
+			if(exp >= level * 100){
 				levelUp();
 			}
 		}
@@ -92,7 +92,7 @@ var User = (function(){
 				exp_gained *= game.getBonus();
 				game.addExp(exp_gained);
 				exp += exp_gained;
-				if(exp >= level * 10){
+				if(exp >= level * 100){
 					levelUp();
 				}
 				ShipStats.getInstance().renderExpBar(level, exp, exp_cap);

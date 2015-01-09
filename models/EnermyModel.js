@@ -19,6 +19,12 @@ var EnermySchema = new Schema({
 		firerate:Number,
 		speed:Number,
 		radius:Number,
+		shape:{
+			crop_x:Number,
+			crop_y:Number,
+			width:Number,
+			height:Number,
+		}
 	},
 	components:[{
 		x:{type:Number,default:0},
