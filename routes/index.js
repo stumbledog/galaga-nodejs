@@ -21,7 +21,8 @@ var title = "Galaga JS";
 router.get('/', function(req, res) {
 	UserController.authenticate(req, res, function(user, ship){
 		StarController.getGalaxy(req, function(process){
-			var data = { title:title, user:user, process:process, ship:ship};
+			var difficulty = req.session.difficulty? req.session.difficulty : "1,1,1,1,1";
+			var data = { title:title, user:user, process:process, ship:ship, difficulty:difficulty};
 			res.render('home', {data:data});
 		});
 	});
@@ -33,7 +34,8 @@ router.post('/game', function(req, res) {
 		res.redirect("/");
 	}else{
 		GameController.init(req, res, function(user, ship, star){
-			var data = { title:title, star:star , ship:ship, user:user, difficulty:req.body.difficulty, bonus:req.body.bonus};
+			req.session.difficulty = req.body.difficulty;
+			var data = { title:title, star:star , ship:ship, user:user, difficulty:req.session.difficulty, bonus:req.body.bonus};
 			res.render('game', {data:data});
 		});
 	}

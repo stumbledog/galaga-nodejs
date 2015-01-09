@@ -4,8 +4,8 @@ var Home = (function(){
 
 	function init(data){
 		var selected_star, balance_controller, store, hangar, current_menu, user;
-		var difficulty = [1,1,1,1,1];
 		var data = data;
+		var difficulty = data.difficulty.split(",");
 		var process = data.process;
 
 		var manifest = [
@@ -25,7 +25,7 @@ var Home = (function(){
 			store = new Store();
 			current_menu = store;
 			hangar = new Hangar();
-			balance_controller = new BalanceController(null, null, "home");
+			balance_controller = new BalanceController(null, difficulty, "home");
 			renderGalaxy();
 			initButtons();
 		}
@@ -140,7 +140,20 @@ var Home = (function(){
 					stage.update();
 			});
 
-			stage.addChild(store_button, hangar_button);
+			var mastery_button = new createjs.Container();
+			mastery_button.x = 480;
+			mastery_button.y = 600;
+			
+			var mastery_button_shape = new createjs.Shape();
+			mastery_button_shape.graphics.bf(loader.getResult("button")).drawRect(537,101,145,64);
+			mastery_button_shape.regX = 609;
+			mastery_button_shape.regY = 133;
+			mastery_button_shape.cursor = "pointer";
+			var mastery_button_text = new createjs.Text("Mastery","Bold 20px Arial","#FFF");
+			mastery_button_text.textAlign = "center";
+			mastery_button_text.textBaseline = "middle";
+			mastery_button.addChild(mastery_button_shape, mastery_button_text);
+			stage.addChild(store_button, hangar_button, mastery_button);
 			stage.update();
 		}
 		return{
