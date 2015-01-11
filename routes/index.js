@@ -52,6 +52,10 @@ router.get('/getMasteryPoint',function(req, res){
 	UserController.getMasteryPoint(req, res);
 });
 
+router.post('/saveMastery', function(req, res){
+	UserController.saveMastery(req, res);
+})
+
 router.post('/buyShip', function(req, res){
 	ItemController.buyShip(req, function(result){
 		res.contentType('json');

@@ -8,8 +8,10 @@ var User = (function(){
 		var exp_cap = user.level * 100;
 		var gold = user.gold;
 		var type = type;
-
+		var multi_shot = user.mastery.multi_shot.point;
+		var slow_bullet = user.mastery.slow_bullet.point;
 		var gold_text, level_text;
+
 		var shape_container = new createjs.Container();
 
 		if(type === "home"){
@@ -126,6 +128,12 @@ var User = (function(){
 			},
 			getShip:function(){
 				return ship;
+			},
+			getMultiShot:function(){
+				return multi_shot;
+			},
+			getSlowBullet:function(){
+				return slow_bullet;
 			}
 		}
 	};

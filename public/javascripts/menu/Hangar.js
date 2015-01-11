@@ -61,7 +61,7 @@ function Hangar(){
 			$.post("/selectShip", {ship:selectedShip._id}, function(res){
 				console.log(res);
 				if(res.code > 0){
-					slideText(selectedShip.name + " is ready for takeoff!","#468966");
+					Renderer.slideText(selectedShip.name + " is ready for takeoff!","#468966", stage);
 					user.setShip(selectedShip);
 				}
 			});
@@ -70,19 +70,6 @@ function Hangar(){
 		select_button_container.addChild(select_button, select_text);
 
 		container.addChild(background, ships_container, weapon_container, selected_ship_container, close_button, stats_container, upgrade_container, select_button_container, name_text);
-	}
-
-	function slideText(msg, color){
-		var text = new createjs.Text(msg, "bold 36px Arial", color);
-		text.x = -300
-		text.y = 320;
-		text.textAlign = "center";
-		text.textBaseline = "middle";
-		stage.addChild(text);
-		createjs.Tween.get(text).to({x:320},1000, createjs.Ease.backInOut).wait(1000).to({x:940},1000, createjs.Ease.backInOut).call(function(){
-			stage.removeChild(text);
-		});
-		return text;
 	}
 
 	function renderShipList(ships){
@@ -183,36 +170,6 @@ function Hangar(){
 		multipleButtons(type,upgrade,y,0);
 		multipleButtons(type,upgrade,y,1);
 		multipleButtons(type,upgrade,y,2);
-		/*
-		for(var i=0;i<3;i++){
-			var n = Math.pow(10,i);
-			var price = n * (current_price * 2 + (n-1) * upgrade_unit_price)/2;
-			
-			
-			upgrade_button.graphics.s("#fff").ss(2).f("#333").rr(0,y,60,18,5);
-			upgrade_button.x = 130 + i * 70;
-			upgrade_button.cursor = "pointer";
-
-			var upgrade_price = new createjs.Text(price, "10px Arial", "#FFBE2C");
-			upgrade_price.x = 160 + i * 70;
-			upgrade_price.y = y + 3;
-			upgrade_price.textAlign = "center";
-			upgrade_container.addChild(upgrade_button, upgrade_price);
-
-			upgrade_button.addEventListener("mousedown", function(event){
-				console.log(upgrade_button);
-				$.post("/upgrade",{ship:selectedShip._id, type:type, multiple:1000},function(res){
-					console.log(res);
-					if(res.code>0){
-						selectedShip.upgrade = res.ship.upgrade;
-						user.setGold(res.gold);
-						selectShip(selectedShip);
-					}else{
-						alert(res.msg);
-					}
-				});
-			});
-		}*/
 
 		upgrade_container.addChild(text, upgrade_amount_text);
 	}
@@ -220,7 +177,7 @@ function Hangar(){
 	function multipleButtons(type,upgrade,y,index){
 		var current_price = 10 * (1 + upgrade.count);
 		var n = Math.pow(10,index);
-		var price = n * (current_price * 2 + (n-1) * 10)/2;		
+		var price = n * (current_price * 2 + (n-1) * 10)/2;
 		
 		var upgrade_button = new createjs.Shape();
 		upgrade_button.graphics.s("#fff").ss(2).f("#333").rr(0,y,60,18,5);
@@ -240,9 +197,9 @@ function Hangar(){
 					selectedShip.upgrade = res.ship.upgrade;
 					user.setGold(res.gold);
 					selectShip(selectedShip);					
-					slideText(type+" is upgraded x"+(res.upgrade.count - upgrade.count), "#FFB03B");
+					Renderer.slideText(type+" is upgraded x"+(res.upgrade.count - upgrade.count), "#FFB03B", stage);
 				}else{
-					slideText(res.msg, "#8E2800");
+					Renderer.slideText(res.msg, "#8E2800", stage);
 				}
 			});
 		});

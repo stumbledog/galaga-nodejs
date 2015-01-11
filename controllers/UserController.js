@@ -27,6 +27,7 @@ exports.authenticate = function(req, res, callback){
 exports.createUser = function(req, res, callback){
 	var self = this;
 	var user = new UserModel();
+	user.level = 1000;
 	user.gold = 10000;
 	user.save(function(){
 		var process = new ProcessModel({_user:user._id, _selectable:[1]});
@@ -43,7 +44,17 @@ exports.createUser = function(req, res, callback){
 exports.getMasteryPoint = function(req, res){
 	UserModel.findById(req.session.user, function(err, user){
 		res.contentType('json');
-		res.send({ point:user.level });
+		res.send({ total_point:user.level, mastery:user.mastery });
+	});
+}
+
+exports.saveMastery = function(req, res){
+	UserModel.findById(req.session.user, function(err, user){
+		user.mastery = JSON.parse(req.body.mastery);
+		user.save(function(){
+			res.contentType('json');
+			res.send({ total_point:user.level, mastery:user.mastery });			
+		});
 	});
 }
 

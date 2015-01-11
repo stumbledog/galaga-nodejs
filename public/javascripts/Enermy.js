@@ -6,6 +6,7 @@ function Enermy(data){
 	this.stage = this.game.getStage();
 	this.loader = this.game.getLoader();
 	this.effect = Effect.getInstance();
+	this.slow = this.user.getSlowBullet();
 	init.call(this);
 
 	function init(){
@@ -141,8 +142,8 @@ Enermy.prototype.tick = function(){
 				this.effect.hit(bullet.x, bullet.y);
 				this.stage.removeChild(bullet);
 			}else{
-				bullet.x += this.data.firearm.speed * Math.cos(bullet.radian);
-				bullet.y += this.data.firearm.speed * Math.sin(bullet.radian);
+				bullet.x += this.data.firearm.speed * Math.cos(bullet.radian) * (100 - this.slow * 5)/100;
+				bullet.y += this.data.firearm.speed * Math.sin(bullet.radian) * (100 - this.slow * 5)/100;
 				visible_bullets.push(bullet);
 			}
 		}

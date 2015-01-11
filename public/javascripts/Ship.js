@@ -8,8 +8,6 @@ var Ship = (function(){
 		var last_mouse_position = {x:0, y:0};
 		var ship = ship;
 		
-		console.log(ship);
-
 		var health_max = health = ship.health + ship.upgrade.health.value;
 		var psychic_max = psychic = ship.psychic;
 

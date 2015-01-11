@@ -91,6 +91,7 @@ function Store(){
 								button_text.text = "Owned"
 								button_container.removeEventListener("mousedown", handler);
 								button_container.cursor = "null";
+								Renderer.slideText("You purchased " + res.ship.name, "#DB9E36", stage);
 							}else{
 
 							}

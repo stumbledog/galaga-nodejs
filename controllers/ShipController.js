@@ -143,7 +143,7 @@ exports.upgrade = function(req, callback){
 				upgrade = ship.upgrade.firerate;
 				upgrade_unit = -0.01;
 			}else if(type === "Accuracy"){
-				if(ship.firearm.accuracy + ship.upgrade.accuracy.value + 0.1 * multiple >= 100){
+				if(ship.firearm.accuracy + ship.upgrade.accuracy.value + 0.1 * multiple > 100){
 					callback({code:-1, msg:"Reached maximum accuracy", ship:ship});
 					return;
 				}
@@ -156,7 +156,7 @@ exports.upgrade = function(req, callback){
 				upgrade = ship.upgrade.critical_damage;
 				upgrade_unit = 0.01;
 			}else if(type === "Crit Rate"){
-				if(ship.firearm.bullet.critical_rate + ship.upgrade.critical_rate.value + 0.001* multiple >= 1){
+				if(ship.firearm.bullet.critical_rate + ship.upgrade.critical_rate.value + 0.001* multiple > 1){
 					callback({code:-1, msg:"Reached maximum critical rate", ship:ship});
 					return;
 				}
