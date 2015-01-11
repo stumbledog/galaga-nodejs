@@ -41,11 +41,15 @@ router.post('/game', function(req, res) {
 	}
 });
 
-router.post('/getItems', function(req, res){
-	ItemController.getItems(req, function(items){
+router.get('/getShips', function(req, res){
+	ShipController.getShips(req.session.user, function(ships){
 		res.contentType('json');
-		res.send({ items:items });
+		res.send({ ships:ships });
 	});
+});
+
+router.get('/getMasteryPoint',function(req, res){
+	UserController.getMasteryPoint(req, res);
 });
 
 router.post('/buyShip', function(req, res){
@@ -70,17 +74,11 @@ router.post('/selectShip', function(req, res){
 });
 
 router.post('/victory', function(req, res){
-	UserController.victory(req, res, function(process){
-		res.contentType('json');
-		res.send({ save:true });
-	});
+	UserController.victory(req, res);
 });
 
 router.post('/defeat', function(req, res){
-	UserController.defeat(req, res, function(){
-		res.contentType('json');
-		res.send({ save:true });
-	});
+	UserController.defeat(req, res);
 });
 
 router.get('/getUserShips', function(req,res){

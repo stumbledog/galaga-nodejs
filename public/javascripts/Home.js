@@ -3,7 +3,7 @@ var Home = (function(){
 	var instance;
 
 	function init(data){
-		var selected_star, balance_controller, store, hangar, current_menu, user;
+		var selected_star, balance_controller, store, hangar, mastery, current_menu, user;
 		var data = data;
 		var difficulty = data.difficulty.split(",");
 		var process = data.process;
@@ -23,11 +23,13 @@ var Home = (function(){
 		function handleLoadComplete(){
 			user = User.getInstance(data.user, data.ship, "home");
 			store = new Store();
-			current_menu = store;
 			hangar = new Hangar();
+			mastery = new Mastery();
 			balance_controller = new BalanceController(null, difficulty, "home");
 			renderGalaxy();
 			initButtons();
+			createjs.Ticker.addEventListener("tick", tick);
+			createjs.Ticker.setFPS(30);
 		}
 
 		function renderGalaxy(){
@@ -59,103 +61,73 @@ var Home = (function(){
 				tooltip_container.addChild(tooltip_text);
 
 				container.addEventListener("rollover", function(event){
-					if(!current_menu.isOpen()){
+					if(!current_menu || !current_menu.isOpen()){
 						container.scaleX = container.scaleY = 1.2;
 						//stage.addChild(tooltip_container);
-						stage.update();
 					}
 				});
 
 				container.addEventListener("rollout", function(event){
-					if(!current_menu.isOpen()){
+					if(!current_menu || !current_menu.isOpen()){
 						container.scaleX = container.scaleY = 1;
 						//stage.removeChild(tooltip_container);
-						stage.update();
 					}
 				});
 
 				container.addEventListener("mousedown", function(event){
-					if(!current_menu.isOpen()){
+					if(!current_menu || !current_menu.isOpen()){
 						selected_star = star._id;
 						balance_controller.selectStar(selected_star);
-						stage.update();
 					}
 				});
 			});
-			stage.update();
 		}
 
 		function initButtons(){
-			var store_button = new createjs.Shape();
-			store_button.graphics.bf(loader.getResult("button")).drawRect(638,630,63,66);
-			store_button.regX = 670;
-			store_button.regY = 663;
-			store_button.x = 320;
-			store_button.y = 600;
-			store_button.cursor = "pointer";
+			renderButton("Hangar", 160, 600, hangar);
+			renderButton("Store", 260, 600, store);
+			renderButton("Mastery", 360, 600, mastery);
+		}
 
-			store_button.addEventListener("rollover", function(event){
-					store_button.scaleX = store_button.scaleY = 1.2;
-					stage.update();
+		function renderButton(text, x, y, menu){
+			var container = new createjs.Container();
+			container.x = x;
+			container.y = y;
+			container.cursor = "pointer";
+			var text_outline = new createjs.Text(text, "bold 24px Arial", "#ffffff");
+			text_outline.textAlign = "center";
+			text_outline.textBaseline = "middle";
+			text_outline.outline = 5;
+
+			var text = text_outline.clone();
+			text.color = "#ff7700";
+			text.outline = false;
+
+			container.addEventListener("rollover", function(event){
+					container.scaleX = container.scaleY = 1.2;
 			});
 
-			store_button.addEventListener("rollout", function(event){
-					store_button.scaleX = store_button.scaleY = 1.0;
-					stage.update();
+			container.addEventListener("rollout", function(event){
+					container.scaleX = container.scaleY = 1.0;
 			});
 
-			store_button.addEventListener("mousedown", function(event){
-					store_button.scaleX = store_button.scaleY = 1.0;
-					if(current_menu)
-						current_menu.close();
-					store.open();
-					current_menu = store;
-					stage.update();
+			container.addEventListener("mousedown", function(event){
+				container.scaleX = container.scaleY = 1.0;
+				if(current_menu){
+					current_menu.close();
+				}
+				menu.open();
+				current_menu = menu;
 			});
 
-			var hangar_button = new createjs.Shape();
-			hangar_button.graphics.bf(loader.getResult("button")).drawRect(638,257,63,66);
-			hangar_button.regX = 670;
-			hangar_button.regY = 290;
-			hangar_button.x = 240;
-			hangar_button.y = 600;
-			hangar_button.cursor = "pointer";
+			container.addChild(text_outline, text);
+			stage.addChild(container);
+		}
 
-			hangar_button.addEventListener("rollover", function(event){
-					hangar_button.scaleX = hangar_button.scaleY = 1.2;
-					stage.update();
-			});
-
-			hangar_button.addEventListener("rollout", function(event){
-					hangar_button.scaleX = hangar_button.scaleY = 1.0;
-					stage.update();
-			});
-
-			hangar_button.addEventListener("mousedown", function(event){
-					hangar_button.scaleX = hangar_button.scaleY = 1.0;
-					if(current_menu)
-						current_menu.close();
-					hangar.open();
-					current_menu = hangar;
-					stage.update();
-			});
-
-			var mastery_button = new createjs.Container();
-			mastery_button.x = 480;
-			mastery_button.y = 600;
-			
-			var mastery_button_shape = new createjs.Shape();
-			mastery_button_shape.graphics.bf(loader.getResult("button")).drawRect(537,101,145,64);
-			mastery_button_shape.regX = 609;
-			mastery_button_shape.regY = 133;
-			mastery_button_shape.cursor = "pointer";
-			var mastery_button_text = new createjs.Text("Mastery","Bold 20px Arial","#FFF");
-			mastery_button_text.textAlign = "center";
-			mastery_button_text.textBaseline = "middle";
-			mastery_button.addChild(mastery_button_shape, mastery_button_text);
-			stage.addChild(store_button, hangar_button, mastery_button);
+		function tick(){
 			stage.update();
 		}
+
 		return{
 			getStage:function(){
 				return stage;

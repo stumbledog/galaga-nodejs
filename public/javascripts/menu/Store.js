@@ -29,16 +29,12 @@ function Store(){
 		});
 
 		container.addChild(background, close_button, items_container);
-		getItems("ship");
+		getShips();
 	}
 
-	function getItems(type){
-		$.post("/getItems/",{type:type}, function(res){
-			if(type === "ship"){				
-				renderShips(res.items);
-			}else{
-
-			}
+	function getShips(){
+		$.get("/getShips", function(res){
+			renderShips(res.ships);
 		});
 	}
 
@@ -150,7 +146,6 @@ function Store(){
 		yes_button.addEventListener("mousedown", function(event){
 			callback(function(){
 				stage.removeChild(confirm_container);
-				stage.update();
 			});
 		});
 
@@ -166,7 +161,6 @@ function Store(){
 
 		no_button.addEventListener("mousedown", function(event){
 			stage.removeChild(confirm_container);
-			stage.update();
 		});
 
 		text.x = text.y = 10;
@@ -175,17 +169,14 @@ function Store(){
 		confirm_container.y = 320 - 40;
 		confirm_container.addChild(border, text, yes_button, no_button);
 		stage.addChild(confirm_container);
-		stage.update();
 	}
 
 	var public = {
 		open:function(){
 			stage.addChild(container);
-			stage.update();
 		},
 		close:function(){
 			stage.removeChild(container);
-			stage.update();
 		},
 		isOpen:function(){
 			return stage.getChildIndex(container) > 0;

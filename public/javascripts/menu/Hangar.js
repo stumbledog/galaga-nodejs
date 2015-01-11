@@ -9,9 +9,6 @@ function Hangar(){
 	init();
 
 	function init(){
-		createjs.Ticker.addEventListener("tick", tick);
-		createjs.Ticker.setFPS(30);
-
 		container = new createjs.Container();
 		name_text = new createjs.Text("","12px Arial","#fff");
 		name_text.textAlign = "center";
@@ -258,11 +255,6 @@ function Hangar(){
 		selected_ship_container.addChild(Renderer.renderShip(selectedShip, loader));
 		renderUpgrade(selectedShip);
 		renderStats(selectedShip);
-		stage.update();
-	}
-
-	function tick(){
-	    stage.update();
 	}
 
 	var public = {
@@ -277,12 +269,10 @@ function Hangar(){
 					}
 				});
 				renderShipList(ships);
-				stage.update();
 			});
 		},
 		close:function(){
 			stage.removeChild(container);
-			stage.update();
 		},
 		isOpen:function(){
 			return stage.getChildIndex(container) > 0;

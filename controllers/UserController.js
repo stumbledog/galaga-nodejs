@@ -1,6 +1,6 @@
 exports.authenticate = function(req, res, callback){
 	if(req.session.user){
-		this.getUser(req.session.user, function(user){
+		UserModel.findById(req.session.user, function(err, user){
 			ShipController.select(user._selected_ship, function(ship){
 				callback(user, ship);
 			});
@@ -40,25 +40,27 @@ exports.createUser = function(req, res, callback){
 	});
 }
 
-exports.getUser = function(user_id, callback){
-	UserModel.findById(user_id, function(err, user){
-		callback(user);
+exports.getMasteryPoint = function(req, res){
+	UserModel.findById(req.session.user, function(err, user){
+		res.contentType('json');
+		res.send({ point:user.level });
 	});
 }
 
-exports.defeat = function(req, res, callback){
+exports.defeat = function(req, res){
 	console.log(req.body);
 	UserModel.findById(req.session.user, function(err, user){
 		user.level = req.body.level;
 		user.exp = req.body.exp;
 		user.gold = req.body.gold;
 		user.save(function(){
-			callback();
+			res.contentType('json');
+			res.send({ save:true });
 		});
 	});
 }
 
-exports.victory = function(req, res, callback){
+exports.victory = function(req, res){
 	console.log(req.session.user);
 	UserModel.findById(req.session.user, function(err, user){
 		user.level = req.body.level;
@@ -75,7 +77,8 @@ exports.victory = function(req, res, callback){
 							process._cleared.push(req.body.star);
 						}
 						process.save(function(){
-							callback(process);
+							res.contentType('json');
+							res.send({ save:true });
 						});
 					});
 				});

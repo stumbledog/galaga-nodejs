@@ -1,12 +1,3 @@
-exports.getItems = function(req, callback){
-	var type = req.body.type;
-	if(type === "ship"){
-		ShipController.getShips(req.session.user, function(ships){
-			callback(ships);
-		});
-	}
-}
-
 exports.buyShip = function(req, callback){
 	var ship_id = req.body.ship_id;
 	UserModel.findById(req.session.user, function(err, user){
