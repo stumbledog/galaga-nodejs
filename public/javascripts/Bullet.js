@@ -1,14 +1,14 @@
-function Bullet(firearm, x, y, degree, data, upgrade){
+function Bullet(firearm, x, y, degree, data, upgrade, increase_damage){
 	this.firearm = firearm;
 	this.x = x;
 	this.y = y;
 	this.degree = degree;
 	this.speed = data.speed;
 	this.radius = data.radius;
-	this.damage = data.damage + upgrade.damage.value;
+	this.damage = (data.damage + upgrade.damage.value) * increase_damage;
 	this.critical_rate = data.critical_rate + upgrade.critical_rate.value;
 	this.critical_damage = data.critical_damage + upgrade.critical_damage.value;
-	
+
 	this.crop_x = data.shape.crop_x;
 	this.crop_y = data.shape.crop_y;
 	this.width = data.shape.width;

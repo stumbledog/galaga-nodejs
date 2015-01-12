@@ -99,21 +99,23 @@ Enemy.prototype.isHit = function(bullet){
 }
 
 Enemy.prototype.fire = function(){
-	var shape = new createjs.Shape();
-	var crop = this.data.firearm.shape;
-	shape.graphics.bf(this.loader.getResult("items")).drawRect(crop.crop_x,crop.crop_y,crop.width,crop.height);
-	shape.cache(crop.crop_x,crop.crop_y,crop.width,crop.height);
-	shape.regX = crop.crop_x + crop.width/2;
-	shape.regY = crop.crop_y + crop.height/2;
-	shape.rotation = this.container.rotation - 90 + 180 * (Math.random()-0.5) * (100 - this.data.firearm.accuracy) / 100;
-	shape.radian = Math.PI * (shape.rotation) / 180;
-	shape.x = this.container.x;
-	shape.y = this.container.y;
-	shape.damage = this.data.firearm.damage * this.game.getDifficulty()[2];
-	shape.radius = this.data.firearm.radius * (1 + (this.game.getDifficulty()[4]-1) / 10);
-	shape.scaleX = shape.scaleY = 1 + (this.game.getDifficulty()[4]-1)/10;
-	shape.speed = this.data.firearm.speed;
-	this.wave.addBullet(shape);
+	for(var i=0;i<this.data.firearm.shots;i++){
+		var shape = new createjs.Shape();
+		var crop = this.data.firearm.shape;
+		shape.graphics.bf(this.loader.getResult("items")).drawRect(crop.crop_x,crop.crop_y,crop.width,crop.height);
+		shape.cache(crop.crop_x,crop.crop_y,crop.width,crop.height);
+		shape.regX = crop.crop_x + crop.width/2;
+		shape.regY = crop.crop_y + crop.height/2;
+		shape.rotation = this.container.rotation - 90 + 180 * (Math.random()-0.5) * (100 - this.data.firearm.accuracy) / 100;
+		shape.radian = Math.PI * (shape.rotation) / 180;
+		shape.x = this.container.x;
+		shape.y = this.container.y;
+		shape.damage = this.data.firearm.damage * this.game.getDifficulty()[2];
+		shape.radius = this.data.firearm.radius * (1 + (this.game.getDifficulty()[4]-1) / 10);
+		shape.scaleX = shape.scaleY = 1 + (this.game.getDifficulty()[4]-1)/10;
+		shape.speed = this.data.firearm.speed;
+		this.wave.addBullet(shape);		
+	}
 }
 
 Enemy.prototype.tick = function(){

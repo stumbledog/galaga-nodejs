@@ -41,11 +41,12 @@ connection.once("open", function(){
 		radius:20,
 		file:"components",
 		firearm:{
-			accuracy:70,
+			accuracy:100,
 			damage:1,
 			firerate:60,
 			speed:3,
 			radius:2,
+			shots:1,
 			shape:{
 				crop_x:124,
 				crop_y:231,
@@ -65,19 +66,20 @@ connection.once("open", function(){
 		name:"MK-II",
 		health:5,
 		exp:2,
-		gold:2,
+		gold:3,
 		speed:2,
 		range:500,
 		width:30,
 		height:30,
-		radius:30,
+		radius:15,
 		file:"components",
 		firearm:{
-			accuracy:90,
+			accuracy:60,
 			damage:1,
 			firerate:60,
 			speed:6,
 			radius:2,
+			shots:2,
 			shape:{
 				crop_x:124,
 				crop_y:231,
@@ -102,14 +104,15 @@ connection.once("open", function(){
 		range:400,
 		width:48,
 		height:48,
-		radius:32,
+		radius:24,
 		file:"ships",
 		firearm:{
-			accuracy:80,
-			damage:3,
-			firerate:20,
+			accuracy:70,
+			damage:1,
+			firerate:30,
 			speed:4,
 			radius:2,
+			shots:3,
 			shape:{
 				crop_x:124,
 				crop_y:231,
@@ -132,14 +135,15 @@ connection.once("open", function(){
 		range:400,
 		width:64,
 		height:64,
-		radius:64,
+		radius:32,
 		file:"ships",
 		firearm:{
 			accuracy:60,
-			damage:5,
+			damage:2,
 			firerate:10,
 			speed:3,
 			radius:2,
+			shots:2,
 			shape:{
 				crop_x:124,
 				crop_y:231,
@@ -162,9 +166,9 @@ connection.once("open", function(){
 	var wave3 = new Wave({_id:3,enemies:[{count:8,_enemy:1},{count:8,_enemy:2}]});
 	var wave4 = new Wave({_id:4,enemies:[{count:1,_enemy:3}]});
 
-	var wave5 = new Wave({_id:5,enemies:[{count:10,_enemy:1}]});
-	var wave6 = new Wave({_id:6,enemies:[{count:10,_enemy:2}]});
-	var wave7 = new Wave({_id:7,enemies:[{count:10,_enemy:1},{count:10,_enemy:2}]});
+	var wave5 = new Wave({_id:5,enemies:[{count:12,_enemy:1}]});
+	var wave6 = new Wave({_id:6,enemies:[{count:12,_enemy:2}]});
+	var wave7 = new Wave({_id:7,enemies:[{count:12,_enemy:1},{count:12,_enemy:2}]});
 	var wave8 = new Wave({_id:8,enemies:[{count:1,_enemy:4}]});
 	
 

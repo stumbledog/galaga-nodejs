@@ -19,6 +19,7 @@ var EnemySchema = new Schema({
 		firerate:Number,
 		speed:Number,
 		radius:Number,
+		shots:Number,
 		shape:{
 			crop_x:Number,
 			crop_y:Number,

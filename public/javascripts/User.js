@@ -135,6 +135,12 @@ var User = (function(){
 			},
 			getReduceSize:function(){
 				return user.mastery.reduce_size.point;
+			},
+			getIncreaseDamage:function(){
+				return user.mastery.increase_damage.point;
+			},
+			getIncreaseHealth:function(){
+				return user.mastery.increase_health.point;
 			}
 		}
 	};

@@ -6,9 +6,10 @@ var Ship = (function(){
 		var shape, firearm, container, health_bar, damage_bar, level_up_text;
 		var move_right = move_left = move_up = move_down = false;
 		var last_mouse_position = {x:0, y:0};
-		var ship = ship;
-		
-		var health_max = health = ship.health + ship.upgrade.health.value;
+		var ship = ship;		
+		var user = User.getInstance();
+
+		var health_max = health = (ship.health + ship.upgrade.health.value)*(1+user.getIncreaseHealth()/10);
 		var psychic_max = psychic = ship.psychic;
 
 		var game = Game.getInstance();
@@ -17,8 +18,8 @@ var Ship = (function(){
 		var effect = Effect.getInstance();
 		var ship_stats = ShipStats.getInstance(health, health_max);
 
-		var user = User.getInstance();
 		var firearm = new Firearm(ship.firearm, ship.upgrade);
+
 
 		renderShip();
 		renderHealthBar();

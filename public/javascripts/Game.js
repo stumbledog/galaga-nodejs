@@ -3,8 +3,7 @@ var Game = (function(data){
 	var instance;
 
 	function init(data){
-		console.log(data);
-		var enemies=[], star, user, ship, wave;
+		var star, user, ship, wave, pause_menu;
 		var data = data;
 
 		var difficulty = data.difficulty.split(",");
@@ -37,16 +36,11 @@ var Game = (function(data){
         loader.addEventListener("complete", handleLoadComplete);
         loader.loadManifest(manifest);
 
-        var pause_text = new createjs.Text("PAUSED\nPress 'P' to resume", "bold 24px Arial", "#FFFFFF");
-        pause_text.x = stage.canvas.width/2;
-        pause_text.y = stage.canvas.height/2;
-        pause_text.textAlign = "center";
-        pause_text.textBaseline = "alphabetic";
-
         function handleKeyDown(event){
 		    switch(event.keyCode){
 		        case 73:
 		            return false;
+		        case 27:
 		        case 80:
 		            pause();
 		            return false;
@@ -84,7 +78,8 @@ var Game = (function(data){
 			wave = Wave.getInstance(data.star._wave);
 			
 			balance_controller = new BalanceController(1, difficulty,"game");			
-			
+			pause_menu = initPauseMenu();
+
 			createjs.Ticker.addEventListener("tick", tick);
 			createjs.Ticker.setFPS(30);
 			
@@ -93,12 +88,84 @@ var Game = (function(data){
 
 		function pause(){
 			if(createjs.Ticker.getPaused()){
-				stage.removeChild(pause_text);
+				balance_controller.hide();
+				stage.removeChild(pause_menu);
 				createjs.Ticker.setPaused(false);
 			}else{
-				stage.addChild(pause_text);
+				stage.addChild(pause_menu);
 				createjs.Ticker.setPaused(true);
 			}
+		}
+
+		function initPauseMenu(){
+			var container = new createjs.Container();
+			var background = new createjs.Shape();
+			background.graphics.s("#fff").ss(5).f("#333").dr(220,200,200,240);
+
+			var color = "#fff";//"#7E8AA2";//"#263248";
+
+			//var game_menu = new createjs.Text()
+
+			var button_border = new createjs.Shape();
+			button_border.graphics.s("#fff").ss(3).f("#333").rr(-90,-8,180,30,5);
+
+			var return_game_text_outline = new createjs.Text("Return to game","bold 16px Arial","#000");
+			return_game_text_outline.textAlign = "center";
+			return_game_text_outline.outline = 5;
+			var return_game_text = return_game_text_outline.clone();
+			return_game_text.outline = false;
+			return_game_text.color = color;
+			var return_game_container = new createjs.Container();
+			return_game_container.x = 320;
+			return_game_container.y = 300;
+			return_game_container.addChild(button_border, return_game_text_outline, return_game_text);
+
+			var restart_text_outline = new createjs.Text("Restart this stage","bold 16px Arial","#000");
+			restart_text_outline.textAlign = "center";
+			restart_text_outline.outline = 5;
+			var restart_text = restart_text_outline.clone();
+			restart_text.outline = false;
+			restart_text.color = color;
+			var restart_container = new createjs.Container();
+			restart_container.x = 320;
+			restart_container.y = 350;
+			restart_container.addChild(button_border.clone(), restart_text_outline, restart_text);
+
+			var return_map_text_outline = new createjs.Text("Return to the map","bold 16px Arial","#000");
+			return_map_text_outline.textAlign = "center";
+			return_map_text_outline.outline = 5;
+			var return_map_text = return_map_text_outline.clone();
+			return_map_text.outline = false;
+			return_map_text.color = color;
+			var return_map_container = new createjs.Container();
+			return_map_container.x = 320;
+			return_map_container.y = 400;
+			return_map_container.addChild(button_border.clone(), return_map_text_outline, return_map_text);
+
+			[return_game_container, restart_container, return_map_container].forEach(function(element){
+				element.cursor = "pointer";
+				element.addEventListener("rollover", function(event){
+					element.children[2].color = "#FF9800";
+				});
+				element.addEventListener("rollout", function(event){
+					element.children[2].color = "#FFF";
+				});
+			});
+
+			return_game_container.addEventListener("mousedown", function(event){
+				pause();
+			});
+
+			restart_container.addEventListener("mousedown", function(event){
+				balance_controller.show();
+			});
+
+			return_map_container.addEventListener("mousedown", function(event){
+				window.location.replace("/");
+			});
+
+			container.addChild(background, return_game_container, restart_container, return_map_container);
+			return container;
 		}
 
 		function renderGameResultPanel(result){
@@ -208,7 +275,6 @@ var Game = (function(data){
 
 				panel_container.addChild(text_outline, text, amount_outline, amount);
 			}, this);
-
 
 			var result_text_outline = new createjs.Text(result_msg,"16px Arial","#000");
 			result_text_outline.textAlign = "center";

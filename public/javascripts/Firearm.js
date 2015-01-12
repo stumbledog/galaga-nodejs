@@ -6,6 +6,7 @@ function Firearm(data, upgrade){
     this.bullets = [];
     this.ticks = 0;
     this.double_shot = User.getInstance().getMultiShot();
+    this.increase_damage = 1 + User.getInstance().getIncreaseDamage() / 10;
 }
 
 Firearm.prototype.removeBullet = function(target){
@@ -21,7 +22,7 @@ Firearm.prototype.fire = function(x, y, degree){
             var offsetX = Math.sin(degree/180*Math.PI)*index;
             var offsetY = Math.cos(degree/180*Math.PI)*index;
             var bullet_degree = degree + 180 * (Math.random()-0.5) * (100 - this.accuracy) / 100;
-            var bullet = new Bullet(this, x + offsetY, y + offsetX, bullet_degree, this.bullet, this.upgrade);
+            var bullet = new Bullet(this, x + offsetY, y + offsetX, bullet_degree, this.bullet, this.upgrade, this.increase_damage);
             this.bullets.push(bullet);
             index+=(this.bullet.radius + 3);
         }
