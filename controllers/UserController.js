@@ -27,8 +27,8 @@ exports.authenticate = function(req, res, callback){
 exports.createUser = function(req, res, callback){
 	var self = this;
 	var user = new UserModel();
-	user.level = 1000;
-	user.gold = 10000;
+	//user.level = 1000;
+	//user.gold = 10000;
 	user.save(function(){
 		var process = new ProcessModel({_user:user._id, _selectable:[1]});
 		process.save(function(){

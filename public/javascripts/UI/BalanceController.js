@@ -87,14 +87,14 @@ function BalanceController(star, difficulty, type){
 			stage.update();
 		});
 
-		createBalaceController("Enemy\nNumber", 0);
-		createBalaceController("Enemy\nHealth", 1);
-		createBalaceController("Enemy\nDamage", 2);
-		createBalaceController("Enemy\nFirerate", 3);
-		createBalaceController("Bullet\nSize", 4);
+		createBalaceController("Enemy\nNumber", 0, 1);
+		createBalaceController("Enemy\nHealth", 1, 1);
+		createBalaceController("Enemy\nDamage", 2, 1);
+		createBalaceController("Enemy\nFirerate", 3, 0.1);
+		createBalaceController("Bullet\nSize", 4, 0.1);
 	}
 
-	function createBalaceController(title, index){
+	function createBalaceController(title, index, unit){
 		var y = -120 + 40 * index;
 		var container = new createjs.Container();
 
@@ -134,11 +134,10 @@ function BalanceController(star, difficulty, type){
 				for(var i=0;i<40;i++){
 					bars[i].graphics.f(i<=bar.index?"#fff":"#666").rr(0, 0, 4, 32, 2);
 				}
-				exp_outline.text = "x" + (bar.index + 1);
-				exp.text = "x" + (bar.index + 1);
+				exp.text = exp_outline.text = "x" + (Math.round(bar.index*unit*10)/10 + 1);
 				difficulty[index] = bar.index + 1;
 				bonus = difficulty.reduce(function(previous, current){
-					return previous * Math.sqrt(current);
+					return previous * Math.sqrt(Math.sqrt(current));
 				},1 );
 				multiplier.text = bonus.toFixed(2);
 				multiplier_outline.text = bonus.toFixed(2);

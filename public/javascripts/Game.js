@@ -101,11 +101,32 @@ var Game = (function(data){
 			}
 		}
 
-		function renderGameResultPanel(title, msg){
+		function renderGameResultPanel(result){
+			var title, color, result_msg;
 			var panel_container = new createjs.Container();
+
+			if(result == 0){
+				title = "Defeat";
+				color = "#B64926";
+				result_msg = "To get your reward you must clear first wave";
+			}else if(result == 1){
+				title = "Defeat";
+				color = "#B64926";
+				result_msg = "";
+			}else{
+				title = "Victory";
+				color = "#3E606F";
+				result_msg = "+50% bonus exp & gold";
+			}
+
 			var panel = new createjs.Shape();
-			var text = new createjs.Text(title,"16px Arial","#fff");
-			text.y = -160;
+			var title_outline = new createjs.Text(title,"bold 32px Arial","#fff");
+			title_outline.textAlign = "center";
+			title_outline.y = -160;
+			title_outline.outline = 5;
+			var title = title_outline.clone();
+			title.outline = false;
+			title.color = color;
 
 			var return_container = new createjs.Container();
 			return_container.x = -100;
@@ -119,7 +140,6 @@ var Game = (function(data){
 			return_text.outline = false;
 			return_text.color = "#468966";
 			return_container.addChild(return_text_outline,return_text);
-
 
 			var restart_container = new createjs.Container();
 			restart_container.x = 100;
@@ -154,7 +174,7 @@ var Game = (function(data){
 				window.location.replace("/");
 			});
 
-			panel_container.addChild(panel, text, restart_container, return_container);
+			panel_container.addChild(panel, title_outline, title, restart_container, return_container);
 
 			getStatistic().forEach(function(item){
 				var text_outline = new createjs.Text(item.name + ": ", "16px Arial","#000");
@@ -175,8 +195,29 @@ var Game = (function(data){
 				amount.outline = false;
 				amount.color = "#fff";
 
+				if((item.index ==5 || item.index ==6) && result == 0){
+					var bonus_text_outline = new createjs.Text(Math.round(-item.value),"16px Arial","#000");
+					bonus_text_outline.x = text_outline.getMeasuredWidth() + amount_outline.getMeasuredWidth() - 200;
+					bonus_text_outline.y = -120 + 30 * item.index;
+					bonus_text_outline.outline = 4;
+					var bonus_text = bonus_text_outline.clone();
+					bonus_text.outline = false;
+					bonus_text.color = color;
+					panel_container.addChild(bonus_text_outline, bonus_text);
+				}
+
 				panel_container.addChild(text_outline, text, amount_outline, amount);
 			}, this);
+
+
+			var result_text_outline = new createjs.Text(result_msg,"16px Arial","#000");
+			result_text_outline.textAlign = "center";
+			result_text_outline.y = 90;
+			result_text_outline.outline = 4;
+			var result_text = result_text_outline.clone();
+			result_text.outline = false;
+			result_text.color = color;
+			panel_container.addChild(result_text_outline, result_text);
 
 			stage.addChild(panel_container);
 			stage.update();
@@ -233,10 +274,12 @@ var Game = (function(data){
         		total_gold_earned += gold;
         	},
         	victory:function(){
+        		user.gainExp(total_exp_gained/2);
+        		user.earnGold(total_gold_earned/2);
         		var value = {level:user.getLevel(), exp:user.getExp(), gold:user.getGold(), star:data.star._id};
 				status = VICTORY;
 				$.post("/victory", value, function(){
-					renderGameResultPanel("Victory");
+					renderGameResultPanel(2);
 				});
         	},
 			defeat:function(){
@@ -245,12 +288,10 @@ var Game = (function(data){
 				var current_wave = wave.getCurrentWave();
 				if(current_wave>0){
 					$.post("/defeat", value, function(){
-						renderGameResultPanel("Defeat");
+						renderGameResultPanel(1);
 					});
 				}else{
-					total_exp_gained = 0;
-					total_gold_earned = 0;
-					renderGameResultPanel("Defeat! You have to clear first wave to get reward!");
+					renderGameResultPanel(0);
 				}
 			}
         }

@@ -110,8 +110,8 @@ Enemy.prototype.fire = function(){
 	shape.x = this.container.x;
 	shape.y = this.container.y;
 	shape.damage = this.data.firearm.damage * this.game.getDifficulty()[2];
-	shape.radius = this.data.firearm.radius * this.game.getDifficulty()[4];
-	shape.scaleX = shape.scaleY = this.game.getDifficulty()[4];
+	shape.radius = this.data.firearm.radius * (1 + (this.game.getDifficulty()[4]-1) / 10);
+	shape.scaleX = shape.scaleY = 1 + (this.game.getDifficulty()[4]-1)/10;
 	shape.speed = this.data.firearm.speed;
 	this.wave.addBullet(shape);
 }
@@ -128,7 +128,7 @@ Enemy.prototype.tick = function(){
 		if(distance > this.data.range || this.container.x < this.data.radius || this.container.x > 640 - this.data.radius || this.container.y < this.data.radius || this.container.y > 640 - this.data.radius){
 			this.container.x += this.data.speed * Math.cos(radian);
 			this.container.y += this.data.speed * Math.sin(radian);
-		}else if(this.ticks > this.data.firearm.firerate / this.game.getDifficulty()[3]){
+		}else if(this.ticks > this.data.firearm.firerate / (1 + (this.game.getDifficulty()[3]-1)/10)){
 			this.fire();
 			this.ticks = 0;
 		}
