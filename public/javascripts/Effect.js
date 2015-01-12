@@ -7,7 +7,7 @@ var Effect = (function(){
 		var stage = game.getStage();
 		var loader = game.getLoader();
 
-		var sprite_sheet = new createjs.SpriteSheet({
+		var sprite_sheet1 = new createjs.SpriteSheet({
 			images:[loader.getResult("items")],
 			frames:[
 				[24,126,17,16,0,8.5,8],
@@ -25,9 +25,31 @@ var Effect = (function(){
 			}
 		});
 
+		var sprite_sheet2 = new createjs.SpriteSheet({
+			images:[loader.getResult("items")],
+			frames:[
+				[24,126-78,17,16,0,8.5,8],
+				[49,120-78,29,29,0,14.5,14.5],
+				[84,117-78,36,36,0,18,18],
+				[129,115-78,39,39,0,19.5,19.5],
+				[175,109-78,51,51,0,25.5,25.5],
+				[234,102-78,65,65,0,32.5,32.5],
+			],
+			animations:{
+				"hit":{
+					frames:[0,1,2,3,4,5],
+					next:false
+				}
+			}
+		});
+
 		return{
-			hit:function(x,y){
-				var animation = new createjs.Sprite(sprite_sheet, "hit");
+			hit:function(x,y,player){
+				if(player){
+					var animation = new createjs.Sprite(sprite_sheet2, "hit");
+				}else{
+					var animation = new createjs.Sprite(sprite_sheet1, "hit");
+				}
 				animation.play();
 				animation.x = x;
 				animation.y = y;
@@ -38,7 +60,7 @@ var Effect = (function(){
 				});
 			},
 			destroy:function(x,y,scale){
-				var animation = new createjs.Sprite(sprite_sheet, "hit");
+				var animation = new createjs.Sprite(sprite_sheet1, "hit");
 				animation.play();
 				animation.x = x;
 				animation.y = y;

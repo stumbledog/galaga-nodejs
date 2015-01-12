@@ -2,7 +2,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var router = express.Router();
 
-EnermyModel = mongoose.model('Enermy');
+EnemyModel = mongoose.model('Enemy');
 ProcessModel = mongoose.model('Process');
 ShipModel = mongoose.model('Ship');
 StarModel = mongoose.model('Star');

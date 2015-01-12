@@ -17,6 +17,7 @@ var Ship = (function(){
 		var effect = Effect.getInstance();
 		var ship_stats = ShipStats.getInstance(health, health_max);
 
+		var user = User.getInstance();
 		var firearm = new Firearm(ship.firearm, ship.upgrade);
 
 		renderShip();
@@ -37,6 +38,10 @@ var Ship = (function(){
 			container.x = container.y = 320;
 			container.width = ship.width;
 			container.height = ship.height;
+
+			ship.shape.radius *= (4-user.getReduceSize())/4;
+			container.scaleX = container.scaleY = (4-user.getReduceSize())/4;
+
 			stage.addChild(container);
 		}
 

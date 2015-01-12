@@ -17,7 +17,7 @@ connection.once("open", function(){
 	var Shape = mongoose.model('Shape');
 	var Ship = mongoose.model('Ship');
 	var Star = mongoose.model('Star');
-	var Enermy = mongoose.model('Enermy');
+	var Enemy = mongoose.model('Enemy');
 	var Wave = mongoose.model('Wave');
 
 	var star1 = new Star({_id:1,name:"Elnath",x:320,y:320,radius:6,_next:[2], _wave:[1,2,3,4]});
@@ -28,7 +28,7 @@ connection.once("open", function(){
 	star2.save();
 	star3.save();
 
-	var enermy1 = new Enermy({
+	var enemy1 = new Enemy({
 		_id:1,
 		name:"MK",
 		health:3,
@@ -60,7 +60,7 @@ connection.once("open", function(){
 		]
 	});
 
-	var enermy2 = new Enermy({
+	var enemy2 = new Enemy({
 		_id:2,
 		name:"MK-II",
 		health:5,
@@ -92,7 +92,7 @@ connection.once("open", function(){
 		]
 	});
 
-	var enermy3 = new Enermy({
+	var enemy3 = new Enemy({
 		_id:3,
 		name:"MK-II",
 		health:100,
@@ -122,7 +122,7 @@ connection.once("open", function(){
 		]
 	});
 
-	var enermy4 = new Enermy({
+	var enemy4 = new Enemy({
 		_id:4,
 		name:"MK-II",
 		health:200,
@@ -152,20 +152,20 @@ connection.once("open", function(){
 		]
 	});
 
-	enermy1.save();
-	enermy2.save();
-	enermy3.save();
-	enermy4.save();
+	enemy1.save();
+	enemy2.save();
+	enemy3.save();
+	enemy4.save();
 
-	var wave1 = new Wave({_id:1,enermies:[{count:8,_enermy:1}]});
-	var wave2 = new Wave({_id:2,enermies:[{count:8,_enermy:2}]});
-	var wave3 = new Wave({_id:3,enermies:[{count:8,_enermy:1},{count:8,_enermy:2}]});
-	var wave4 = new Wave({_id:4,enermies:[{count:1,_enermy:3}]});
+	var wave1 = new Wave({_id:1,enemies:[{count:8,_enemy:1}]});
+	var wave2 = new Wave({_id:2,enemies:[{count:8,_enemy:2}]});
+	var wave3 = new Wave({_id:3,enemies:[{count:8,_enemy:1},{count:8,_enemy:2}]});
+	var wave4 = new Wave({_id:4,enemies:[{count:1,_enemy:3}]});
 
-	var wave5 = new Wave({_id:5,enermies:[{count:10,_enermy:1}]});
-	var wave6 = new Wave({_id:6,enermies:[{count:10,_enermy:2}]});
-	var wave7 = new Wave({_id:7,enermies:[{count:10,_enermy:1},{count:10,_enermy:2}]});
-	var wave8 = new Wave({_id:8,enermies:[{count:1,_enermy:4}]});
+	var wave5 = new Wave({_id:5,enemies:[{count:10,_enemy:1}]});
+	var wave6 = new Wave({_id:6,enemies:[{count:10,_enemy:2}]});
+	var wave7 = new Wave({_id:7,enemies:[{count:10,_enemy:1},{count:10,_enemy:2}]});
+	var wave8 = new Wave({_id:8,enemies:[{count:1,_enemy:4}]});
 	
 
 	wave1.save();

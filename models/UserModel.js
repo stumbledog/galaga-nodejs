@@ -21,10 +21,17 @@ var UserSchema = new Schema({
 		},
 		slow_bullet:{
 			name:{type:String, default:"Slow Bullets"},
-			description:{type:String, default:"Slow the speed of enermy\nbullets by 5 x point%"},
+			description:{type:String, default:"Slow the speed of enemy\nbullets by 5 x point%"},
 			point:{type:Number, default: 0},
 			cost:{type:Number, default: 5},
 			max:{type:Number, default: 19},
+		},
+		reduce_size:{
+			name:{type:String, default:"Reduce Size"},
+			description:{type:String, default:"Reduce player ship size\nby 25 x point%"},
+			point:{type:Number, default: 0},
+			cost:{type:Number, default: 25},
+			max:{type:Number, default: 3},	
 		}
 	},
 	_selected_ship: {type:Schema.Types.ObjectId, ref:'Ship'},

@@ -8,8 +8,12 @@ function Bullet(firearm, x, y, degree, data, upgrade){
 	this.damage = data.damage + upgrade.damage.value;
 	this.critical_rate = data.critical_rate + upgrade.critical_rate.value;
 	this.critical_damage = data.critical_damage + upgrade.critical_damage.value;
-	this.bullets = [];
-	this.isHit = false;
+	
+	this.crop_x = data.shape.crop_x;
+	this.crop_y = data.shape.crop_y;
+	this.width = data.shape.width;
+	this.height = data.shape.height;
+
 	this.game = Game.getInstance();
 	this.stage = this.game.getStage();
 	this.loader = this.game.getLoader();
@@ -20,10 +24,10 @@ function Bullet(firearm, x, y, degree, data, upgrade){
 
 	function init(){
 		this.shape = new createjs.Shape();
-		this.shape.graphics.bf(this.loader.getResult("items")).drawRect(124,231,10,4);
-		this.shape.cache(124,231,10,4);
-		this.shape.regX = 129;
-		this.shape.regY = 233;
+		this.shape.graphics.bf(this.loader.getResult("items")).drawRect(this.crop_x,this.crop_y,this.width,this.height);
+		this.shape.cache(this.crop_x,this.crop_y,this.width,this.height);
+		this.shape.regX = this.crop_x + this.width/2;
+		this.shape.regY = this.crop_y + this.height/2;
 		this.shape.x = x;
 		this.shape.y = y;
 		this.shape.rotation = degree + 90;
@@ -39,7 +43,7 @@ Bullet.prototype.getDamage = function(){
 }
 
 Bullet.prototype.hit = function(){
-	this.effect.hit(this.shape.x, this.shape.y);
+	this.effect.hit(this.shape.x, this.shape.y, true);
 	this.stage.removeChild(this.shape);
 	this.firearm.removeBullet(this);
 }
@@ -49,15 +53,13 @@ Bullet.prototype.tick = function(){
 	this.shape.y -= this.shape.speed * Math.sin(this.shape.rotation/180*Math.PI);
 	if(this.shape.y < -100 || this.shape.y > 740 || this.shape.x < -100 || this.shape.x > 740){
 		this.stage.removeChild(this.shape);
-		delete this;
+		this.firearm.removeBullet(this);
 	}else{
-		this.wave.getEnermies().forEach(function(enermy){
-			if(!this.isHit && enermy.status){
-				if(enermy.isHit(this.shape)){
-					this.hit();
-					enermy.damaged(this);
-					this.isHit = true;
-				}				
+		this.wave.getEnemies().forEach(function(enemy_shape){
+			var enemy = enemy_shape.enemy;
+			if(enemy.isHit(this.shape)){
+				this.hit();
+				enemy.damaged(this);
 			}
 		}, this);
 	}

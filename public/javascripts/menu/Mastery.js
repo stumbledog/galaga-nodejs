@@ -67,7 +67,7 @@ function Mastery(){
 		}
 		available_point = total_point - used_point;
 
-		var available_point_outline = new createjs.Text("Available Point: "+available_point, "bold 20px Arial","#fff");
+		var available_point_outline = new createjs.Text("Available Point: "+available_point, "bold 20px Arial","#000");
 		available_point_outline.x = 20;
 		available_point_outline.y = 490;
 		available_point_outline.textBaseline = "middle";
@@ -93,12 +93,16 @@ function Mastery(){
 		container.y = y;
 		
 		var border = new createjs.Shape();
-		border.graphics.s("#fff").ss(1).f("#ccc").dr(0,0,193,50);
+		border.graphics.s("#000").ss(3).f("#ccc").dr(0,0,193,50);
 		
-		var name_text = new createjs.Text(name, "bold 12px Arial", "#B64926");
-		name_text.x = 4;
-		name_text.y = 4;
-		
+		var name_text_outline = new createjs.Text(name, "bold 12px Arial", "#000");
+		name_text_outline.x = 4;
+		name_text_outline.y = 4;
+		name_text_outline.outline = 4;
+		var name_text = name_text_outline.clone();
+		name_text.outline = false;
+		name_text.color = "#B64926";
+
 		var cost_text = new createjs.Text("Cost:", "11px Arial", "#FFB03B");
 		cost_text.x = name_text.getMeasuredWidth() + 20;
 		cost_text.y = 5;
@@ -106,7 +110,7 @@ function Mastery(){
 		cost_text_outline.color = "#000";
 		cost_text_outline.outline = 4;
 
-		var cost_amount = new createjs.Text(cost, "11px Arial", "#FFB03B");
+		var cost_amount = new createjs.Text(mastery[id].max == point ? "Max" : cost, "11px Arial", "#FFB03B");
 		cost_amount.x = name_text.getMeasuredWidth() + cost_text.getMeasuredWidth() + 24;
 		cost_amount.y = 5;
 
@@ -166,7 +170,13 @@ function Mastery(){
 			}
 		});
 
-		container.addChild(border, name_text, cost_text_outline, cost_text, cost_amount_outline, cost_amount, description_text, up, down, point_outline, point_text);
+		container.addChild(border, name_text_outline, name_text, cost_text_outline, cost_text, cost_amount_outline, cost_amount, description_text, down, point_outline, point_text);
+
+		if(!mastery[id].max){
+			container.addChild(up);
+		}else if(mastery[id].max > point){
+			container.addChild(up);
+		}
 		mastery_container.addChild(container);
 	}
 
@@ -175,7 +185,7 @@ function Mastery(){
 		container.x = x;
 		container.y = y;
 		container.cursor = "pointer";
-		var outline = new createjs.Text(text,"bold 20px Arial","#fff");
+		var outline = new createjs.Text(text,"bold 20px Arial","#000");
 		outline.textAlign = "center";
 		outline.textBaseline = "middle";
 		outline.outline = 5;

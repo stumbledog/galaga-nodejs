@@ -87,6 +87,7 @@ var Home = (function(){
 			renderButton("Hangar", 160, 600, hangar);
 			renderButton("Store", 260, 600, store);
 			renderButton("Mastery", 360, 600, mastery);
+			renderButton("Map", 460, 600);
 		}
 
 		function renderButton(text, x, y, menu){
@@ -116,8 +117,11 @@ var Home = (function(){
 				if(current_menu){
 					current_menu.close();
 				}
-				menu.open();
-				current_menu = menu;
+
+				if(menu){
+					menu.open();
+					current_menu = menu;					
+				}
 			});
 
 			container.addChild(text_outline, text);

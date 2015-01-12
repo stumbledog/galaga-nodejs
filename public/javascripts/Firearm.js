@@ -14,7 +14,7 @@ Firearm.prototype.removeBullet = function(target){
     });
 }
 
-Firearm.prototype.fire = function(x, y, degree){    
+Firearm.prototype.fire = function(x, y, degree){
     if(this.ticks >= this.firerate){
         var index = -this.double_shot*(this.bullet.radius + 3)/2;
         for(var i = 0; i <= this.double_shot;i++){

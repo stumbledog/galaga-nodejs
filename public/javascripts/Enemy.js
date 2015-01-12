@@ -1,4 +1,4 @@
-function Enermy(data){
+function Enemy(data){
 	this.wave = Wave.getInstance();
 	this.data = data;
 	this.user = User.getInstance();
@@ -7,10 +7,10 @@ function Enermy(data){
 	this.loader = this.game.getLoader();
 	this.effect = Effect.getInstance();
 	this.slow = this.user.getSlowBullet();
+	this.ship = Ship.getInstance();
 	init.call(this);
 
 	function init(){
-		this.bullets = [];
 		this.health_max = this.health = this.data.health * this.game.getDifficulty()[1];
 		this.status = true;
 		this.ticks = 0;
@@ -20,11 +20,17 @@ function Enermy(data){
 	}
 }
 
-Enermy.prototype.renderShip = function(){
+Enemy.prototype.getContainer = function(){
+	return this.container;
+}
+
+Enemy.prototype.renderShip = function(){
 	this.container = new createjs.Container();
+	this.container.enemy = this;
 	this.data.components.forEach(function(component){
 		this.shape = new createjs.Shape();
 		this.shape.graphics.bf(this.loader.getResult(this.data.file)).dr(component.crop_x, component.crop_y, component.width, component.height);
+		this.shape.cache(component.crop_x, component.crop_y, component.width, component.height);
 		this.shape.regX = component.crop_x + component.width / 2;
 		this.shape.regY = component.crop_y + component.height / 2;
 		this.shape.x = component.x;
@@ -39,13 +45,13 @@ Enermy.prototype.renderShip = function(){
 	this.stage.addChild(this.container);
 }
 
-Enermy.prototype.renderHealthBar = function(){
+Enemy.prototype.renderHealthBar = function(){
 	this.health_bar = new createjs.Shape();
 	this.health_bar.graphics.beginFill("#CC0000").drawRect( -this.data.width/2, -this.data.height / 2 - 15, this.data.width, this.data.width/10);	
 	this.container.addChild(this.health_bar);
 }
 
-Enermy.prototype.damaged = function(bullet){
+Enemy.prototype.damaged = function(bullet){
 	var damage = bullet.getDamage();
 	this.health -= damage.amount;
 	var font_size = damage.critical?"16":"12";
@@ -67,7 +73,7 @@ Enermy.prototype.damaged = function(bullet){
 	this.game.addDamageDealt(damage.amount);
 }
 
-Enermy.prototype.destroyed = function(bullet){
+Enemy.prototype.destroyed = function(bullet){
 	this.status = false;
 	var text = new createjs.Text((this.data.exp * this.game.getBonus()).toFixed(0)+" exp", "12px Arial", "#fff");
 	text.x = this.container.x;
@@ -82,19 +88,17 @@ Enermy.prototype.destroyed = function(bullet){
 	this.user.gainExp(this.data.exp);
 	this.user.earnGold(this.data.gold);
 	this.effect.destroy(this.container.x,this.container.y,this.data.radius / 20);
-	this.stage.removeChild(this.container);
-	this.stage.removeChild(this.health_bar);
 
-	this.game.enermyDestoryed();
-	this.wave.enermyDestroyed();
+	this.game.enemyDestoryed();
+	this.wave.enemyDestroyed(this.container);
 }
 
-Enermy.prototype.isHit = function(bullet){
+Enemy.prototype.isHit = function(bullet){
 	//return (Math.pow(bullet.x - this.container.x, 2) + Math.pow(bullet.y - this.container.y, 2) < Math.pow(this.data.radius, 2));
 	return Math.abs(bullet.x - this.container.x) < this.data.radius + bullet.radius && Math.abs(bullet.y - this.container.y) < this.data.radius + bullet.radius;
 }
 
-Enermy.prototype.fire = function(){
+Enemy.prototype.fire = function(){
 	var shape = new createjs.Shape();
 	var crop = this.data.firearm.shape;
 	shape.graphics.bf(this.loader.getResult("items")).drawRect(crop.crop_x,crop.crop_y,crop.width,crop.height);
@@ -108,15 +112,14 @@ Enermy.prototype.fire = function(){
 	shape.damage = this.data.firearm.damage * this.game.getDifficulty()[2];
 	shape.radius = this.data.firearm.radius * this.game.getDifficulty()[4];
 	shape.scaleX = shape.scaleY = this.game.getDifficulty()[4];
-	this.bullets.push(shape);
-	this.stage.addChild(shape);
+	shape.speed = this.data.firearm.speed;
+	this.wave.addBullet(shape);
 }
 
-Enermy.prototype.tick = function(){
-	var ship = Ship.getInstance();
+Enemy.prototype.tick = function(){
 	if(this.status){
-		var dx = ship.getContainer().x - this.container.x;
-		var dy = ship.getContainer().y - this.container.y;
+		var dx = this.ship.getContainer().x - this.container.x;
+		var dy = this.ship.getContainer().y - this.container.y;
 		var degree = -Math.atan2(dx,dy) * 180 / Math.PI + 180;
 		var radian = Math.PI*(degree-90)/180;
 		this.container.rotation = degree;
@@ -131,23 +134,4 @@ Enermy.prototype.tick = function(){
 		}
 		this.ticks++;
 	}
-
-	var visible_bullets = [];
-	this.bullets.forEach(function(bullet){
-		if(bullet.x < -100 || bullet.x > 740 || bullet.y < -100 || bullet.y > 740){
-			this.stage.removeChild(bullet);
-		}else{
-			if(ship.isHit(bullet)){
-				ship.damaged(bullet);
-				this.effect.hit(bullet.x, bullet.y);
-				this.stage.removeChild(bullet);
-			}else{
-				bullet.x += this.data.firearm.speed * Math.cos(bullet.radian) * (100 - this.slow * 5)/100;
-				bullet.y += this.data.firearm.speed * Math.sin(bullet.radian) * (100 - this.slow * 5)/100;
-				visible_bullets.push(bullet);
-			}
-		}
-	}, this);
-
-	this.bullets = visible_bullets;
 }

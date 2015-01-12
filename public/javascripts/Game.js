@@ -1,10 +1,10 @@
 var Game = (function(data){
-	
+
 	var instance;
 
 	function init(data){
 		console.log(data);
-		var enermies=[], star, user, ship, wave;
+		var enemies=[], star, user, ship, wave;
 		var data = data;
 
 		var difficulty = data.difficulty.split(",");
@@ -14,7 +14,7 @@ var Game = (function(data){
 		var largest_damage_dealt = 0;
 		var total_damage_taken = 0;
 		var largest_damage_taken = 0;
-		var enermy_destoryed = 0;
+		var enemy_destoryed = 0;
 		var total_exp_gained = 0;
 		var total_gold_earned = 0;
 
@@ -104,67 +104,78 @@ var Game = (function(data){
 		function renderGameResultPanel(title, msg){
 			var panel_container = new createjs.Container();
 			var panel = new createjs.Shape();
-			var restart_button = new createjs.Bitmap(loader.getResult("button"));
-			var map_button = new createjs.Bitmap(loader.getResult("button"));
 			var text = new createjs.Text(title,"16px Arial","#fff");
-			var restart_text = new createjs.Text("Restart this stage","16px Arial","#fff");
-			var map_text = new createjs.Text("Return to the map","16px Arial","#fff");
+			text.y = -160;
+
+			var return_container = new createjs.Container();
+			return_container.x = -100;
+			return_container.y = 160;
+			return_container.cursor = "pointer";
+			var return_text_outline = new createjs.Text("Return to the map","bold 20px Arial", "#000");
+			return_text_outline.outline = 5;
+			return_text_outline.textAlign = "center";
+			return_text_outline.textBaseline = "middle";
+			var return_text = return_text_outline.clone();
+			return_text.outline = false;
+			return_text.color = "#468966";
+			return_container.addChild(return_text_outline,return_text);
+
+
+			var restart_container = new createjs.Container();
+			restart_container.x = 100;
+			restart_container.y = 160;
+			restart_container.cursor = "pointer";
+			var restart_text_outline = new createjs.Text("Restart this stage","bold 20px Arial", "#000");
+			restart_text_outline.textAlign = "center";
+			restart_text_outline.textBaseline = "middle";
+			restart_text_outline.outline = 5;
+			var restart_text = restart_text_outline.clone();
+			restart_text.outline = false;
+			restart_text.color = "#B64926";
+			restart_container.addChild(restart_text_outline,restart_text);
 
 			panel_container.x = panel_container.y = 320;
-			panel.graphics.s("#fff").ss(1).f("#333").rr(-200, -200, 400, 400, 10);
-			restart_button.sourceRect = new createjs.Rectangle(638,1324,64,64);
-			map_button.sourceRect = new createjs.Rectangle(638,1550,64,64);
-
-			restart_button.regX = restart_button.regY = map_button.regX = map_button.regY = 32;
-			restart_button.x = 64;
-			map_button.x = -64;
-			restart_button.y = map_button.y = 140;
-			restart_button.cursor = map_button.cursor = "pointer";
-			text.regX = text.getMeasuredWidth()/2;
-			text.y = -180;
-			restart_text.x = 0;
-			map_text.x = -130;
-			restart_text.y = map_text.y = 180;
-
-			restart_button.addEventListener("rollover", function(event){
-				restart_button.scaleX = restart_button.scaleY = 1.2;
-				panel_container.addChild(restart_text);
-				stage.update();
+			panel.graphics.s("#fff").ss(1).f("#333").rr(-240, -200, 480, 400, 10);
+			
+			[return_container,restart_container].forEach(function(container){
+				container.addEventListener("rollover", function(event){
+					container.scaleX = container.scaleY = 1.2;
+				});
+				container.addEventListener("rollout", function(event){
+					container.scaleX = container.scaleY = 1.0;
+				});
 			});
 
-			restart_button.addEventListener("rollout", function(event){
-				restart_button.scaleX = restart_button.scaleY = 1;
-				panel_container.removeChild(restart_text);
-				stage.update();
-			});
-
-			restart_button.addEventListener("mousedown", function(event){
+			restart_container.addEventListener("mousedown", function(event){
 				balance_controller.show();
 			});
 
-			map_button.addEventListener("rollover", function(event){
-				map_button.scaleX = map_button.scaleY = 1.2;
-				panel_container.addChild(map_text);
-				stage.update();
-			});
-
-			map_button.addEventListener("rollout", function(event){
-				map_button.scaleX = map_button.scaleY = 1;
-				panel_container.removeChild(map_text);
-				stage.update();
-			});
-
-			map_button.addEventListener("mousedown", function(event){
+			return_container.addEventListener("mousedown", function(event){
 				window.location.replace("/");
 			});
 
-			panel_container.addChild(panel, restart_button, map_button, text);
+			panel_container.addChild(panel, text, restart_container, return_container);
 
 			getStatistic().forEach(function(item){
-				var text = new createjs.Text(item.name + ": " + item.value.toFixed(0), "16px Arial","#fff");
-				text.x = -160;
-				text.y = -120 + 30 * item.index;
-				panel_container.addChild(text);
+				var text_outline = new createjs.Text(item.name + ": ", "16px Arial","#000");
+				text_outline.x = -200;
+				text_outline.y = -120 + 30 * item.index;
+				text_outline.outline = 4;
+
+				var text = text_outline.clone();
+				text.outline = false;
+				text.color = "#FFB03B";
+
+				var amount_outline = new createjs.Text(Math.round(item.value),"16px Arial","#000");
+				amount_outline.x = text_outline.getMeasuredWidth() -200;
+				amount_outline.y = -120 + 30 * item.index;
+				amount_outline.outline = 4;
+
+				var amount = amount_outline.clone();
+				amount.outline = false;
+				amount.color = "#fff";
+
+				panel_container.addChild(text_outline, text, amount_outline, amount);
 			}, this);
 
 			stage.addChild(panel_container);
@@ -185,7 +196,7 @@ var Game = (function(data){
 				{index:1, name:"Largest damage dealt", value:largest_damage_dealt},
 				{index:2, name:"Total damage taken", value:total_damage_taken},
 				{index:3, name:"Largest damage dealt", value:largest_damage_taken},
-				{index:4, name:"Number of enermies destroyed", value:enermy_destoryed},
+				{index:4, name:"Number of enemies destroyed", value:enemy_destoryed},
 				{index:5, name:"Total exp gained", value:total_exp_gained},
 				{index:6, name:"Total gold earned", value:total_gold_earned},
 			];
@@ -212,8 +223,8 @@ var Game = (function(data){
         		total_damage_taken += dmg;
         		largest_damage_taken = dmg > largest_damage_taken ? dmg : largest_damage_taken;
         	},
-        	enermyDestoryed:function(){
-        		enermy_destoryed++;
+        	enemyDestoryed:function(){
+        		enemy_destoryed++;
         	},
         	addExp:function(exp){
         		total_exp_gained += exp;

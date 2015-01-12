@@ -21,11 +21,11 @@ exports.create = function(user, callback){
 			bullet:{
 				damage:1,
 				speed:20,
-				radius:1,
+				radius:2,
 				critical_rate:0.1,
 				critical_damage:2,
 				shape:{
-					crop_x:124,
+					crop_x:139,
 					crop_y:231,
 					width:10,
 					height:4
@@ -56,11 +56,11 @@ exports.create = function(user, callback){
 			bullet:{
 				damage:2,
 				speed:20,
-				radius:1,
+				radius:2,
 				critical_rate:0.15,
 				critical_damage:2.5,
 				shape:{
-					crop_x:124,
+					crop_x:139,
 					crop_y:231,
 					width:10,
 					height:4
@@ -89,16 +89,16 @@ exports.create = function(user, callback){
 			firerate:4,
 			accuracy:70,
 			bullet:{
-				damage:3,
+				damage:10,
 				speed:20,
-				radius:1,
-				critical_rate:0.1,
-				critical_damage:2,
+				radius:3,
+				critical_rate:0.2,
+				critical_damage:2.5,
 				shape:{
-					crop_x:124,
-					crop_y:231,
-					width:10,
-					height:4
+					crop_x:134,
+					crop_y:239,
+					width:6,
+					height:6
 				}
 			}
 		},

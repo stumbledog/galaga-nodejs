@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var EnermySchema = new Schema({
+var EnemySchema = new Schema({
 	_id:Number,
 	name:String,
 	health:Number,
@@ -36,4 +36,4 @@ var EnermySchema = new Schema({
 	}]
 });
 
-mongoose.model('Enermy', EnermySchema);
+mongoose.model('Enemy', EnemySchema);

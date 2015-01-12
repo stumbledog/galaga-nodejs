@@ -4,37 +4,44 @@ var Wave = (function(){
 	function init(waves){
 
 		var waves = waves;
-		var enermies = [], enermy_queue = [];
+		var enemies = [], enemy_queue = [];
 
 		var game = Game.getInstance();
 		var stage = game.getStage();
+		var ship = Ship.getInstance();
+		var enemy_container = new createjs.Container();
+		var bullet_container = new createjs.Container();
+		var effect = Effect.getInstance();
+		var user = User.getInstance();
+		var slow = user.getSlowBullet();
 
 		var current_wave = ticks = 0;
 		var interval = 30 / game.getDifficulty()[0];
 		var wave_count = waves.length;
-		console.log(wave_count);
 
-		var wavetext, destoryed_enermy_count, wave_enermy_count;
+		var wavetext, destoryed_enemy_count, wave_enemy_count;
+
+		stage.addChild(enemy_container, bullet_container);
 
 		renderStatus();
-		queueEnermies();
+		queueEnemies();
 
 		function renderStatus(){
-			wavetext = new createjs.Text("Wave " + (current_wave + 1) + "   " + destoryed_enermy_count + " / " + wave_enermy_count, "16px Arial", "#fff");
+			wavetext = new createjs.Text("Wave " + (current_wave + 1) + "   " + destoryed_enemy_count + " / " + wave_enemy_count, "16px Arial", "#fff");
 			wavetext.y = 10;
 			wavetext.x = 620;
 			wavetext.textAlign = "right";
 			stage.addChild(wavetext);
 		}
 
-		function queueEnermies(){
-			destoryed_enermy_count = 0;
-			wave_enermy_count = 0;
+		function queueEnemies(){
+			destoryed_enemy_count = 0;
+			wave_enemy_count = 0;
 			Renderer.slideText("Wave " + (current_wave + 1), "fff", stage);
-			waves[current_wave].enermies.forEach(function(enermy_property){
-				wave_enermy_count += enermy_property.count * game.getDifficulty()[0];
-				for(var i=0;i<enermy_property.count * game.getDifficulty()[0];i++){
-					enermy_queue.push(enermy_property._enermy);
+			waves[current_wave].enemies.forEach(function(enemy_property){
+				wave_enemy_count += enemy_property.count * game.getDifficulty()[0];
+				for(var i=0;i<enemy_property.count * game.getDifficulty()[0];i++){
+					enemy_queue.push(enemy_property._enemy);
 				}
 			});
 
@@ -42,13 +49,13 @@ var Wave = (function(){
 		}
 
 		function update(){
-			wavetext.text = "Wave " + (current_wave + 1) + "   " + destoryed_enermy_count + " / " + wave_enermy_count;
+			wavetext.text = "Wave " + (current_wave + 1) + "   " + destoryed_enemy_count + " / " + wave_enemy_count;
 		}
 
-		function spawnEnermy(){
-			if(enermy_queue.length > 0){
-				var enermy = new Enermy(enermy_queue.shift());
-				enermies.push(enermy);
+		function spawnEnemy(){
+			if(enemy_queue.length > 0){
+				var enemy = new Enemy(enemy_queue.shift());
+				enemy_container.addChild(enemy.getContainer());
 			}
 		}
 
@@ -57,33 +64,54 @@ var Wave = (function(){
 			if(current_wave === wave_count){
 				game.victory();
 			}else{
-				queueEnermies();
+				queueEnemies();
 			}
 		}
 
 		return {
-			getEnermies:function(){
-				return enermies;
+			getEnemies:function(){
+				return enemy_container.children;
 			},
-			enermyDestroyed:function(){
-				destoryed_enermy_count++;
+			enemyDestroyed:function(enemy){
+				enemy_container.removeChild(enemy);
+				destoryed_enemy_count++;
 				update();
-				if(enermies.filter(function(enermy){return enermy.status;}).length == 0 && enermy_queue.length == 0){
+				if(wave_enemy_count == destoryed_enemy_count){
 					nextWave();
 				}
 			},
 			tick:function(){
 				if(ticks > interval){
-					spawnEnermy();
+					spawnEnemy();
 					ticks = 0;
 				}
-				enermies.forEach(function(enermy){
-					enermy.tick();
+
+				enemy_container.children.forEach(function(enemy_shape){
+					enemy_shape.enemy.tick();
 				});
+
+				bullet_container.children.forEach(function(bullet){
+					if(bullet.x < -100 || bullet.x > 740 || bullet.y < -100 || bullet.y > 740){
+						bullet_container.removeChild(bullet);
+					}else{
+						if(ship.isHit(bullet)){
+							ship.damaged(bullet);
+							effect.hit(bullet.x, bullet.y);
+							bullet_container.removeChild(bullet);
+						}else{
+							bullet.x += bullet.speed * Math.cos(bullet.radian) * (100 - slow * 5)/100;
+							bullet.y += bullet.speed * Math.sin(bullet.radian) * (100 - slow * 5)/100;
+						}
+					}
+				});
+
 				ticks++;
 			},
 			getCurrentWave:function(){
 				return current_wave;
+			},
+			addBullet:function(bullet){
+				bullet_container.addChild(bullet);
 			}
 		}
 	}
