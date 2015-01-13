@@ -1,4 +1,81 @@
 exports.create = function(user, callback){
+
+	var bullet_shapes = [
+		{crop_x:139,crop_y:231,width:10,height: 4,file:"items"},
+		{crop_x:134,crop_y:239,width: 6,height: 6,file:"items"},
+		{crop_x: 39,crop_y:229,width:21,height:11,file:"items"},
+	];
+
+	var ship_shapes = [
+		{crop_x: 74,crop_y:  4,width: 51,height: 54,file:"ships"},
+		{crop_x:129,crop_y: 13,width: 56,height: 47,file:"ships"},
+		{crop_x:  7,crop_y: 77,width: 54,height: 47,file:"ships"},
+		{crop_x: 64,crop_y: 75,width: 58,height: 49,file:"ships"},
+		{crop_x:124,crop_y: 66,width: 57,height: 57,file:"ships"},
+		{crop_x:150,crop_y:143,width: 77,height: 53,file:"ships"},
+		{crop_x:  2,crop_y:211,width: 70,height: 51,file:"ships"},
+		{crop_x:235,crop_y:213,width: 74,height: 47,file:"ships"},
+		{crop_x: 81,crop_y:286,width: 70,height: 54,file:"ships"},
+		{crop_x:109,crop_y:356,width:124,height: 68,file:"ships"},
+		{crop_x:170,crop_y:440,width:143,height:108,file:"ships"},
+	];
+
+	var ships = [];
+
+	ships.push(initShip(      "Aries",0,100,10,10, true, ship_shapes[0],10,50,10,10,0.1,2,bullet_shapes[0]));
+	ships.push(initShip(     "Taurus",0,100,10,10,false, ship_shapes[1],10,50,10,10,0.1,2,bullet_shapes[0]));
+	ships.push(initShip(     "Gemini",0,100,10,10,false, ship_shapes[2],10,50,10,10,0.1,2,bullet_shapes[0]));
+	ships.push(initShip(        "Leo",0,100,10,10,false, ship_shapes[3],10,50,10,10,0.1,2,bullet_shapes[0]));
+	ships.push(initShip(      "Virgo",0,100,10,10,false, ship_shapes[4],10,50,10,10,0.1,2,bullet_shapes[0]));
+	ships.push(initShip(      "Libra",0,100,10,10,false, ship_shapes[5],10,50,10,10,0.1,2,bullet_shapes[0]));
+	ships.push(initShip(    "Scorpio",0,100,10,10,false, ship_shapes[6],10,50,10,10,0.1,2,bullet_shapes[0]));
+	ships.push(initShip("Sagittarius",0,100,10,10,false, ship_shapes[7],10,50,10,10,0.1,2,bullet_shapes[0]));
+	ships.push(initShip(  "Capricorn",0,100,10,10,false, ship_shapes[8],10,50,10,10,0.1,2,bullet_shapes[0]));
+	ships.push(initShip(   "Aquarius",0,100,10,10,false, ship_shapes[9],10,50,10,10,0.1,2,bullet_shapes[0]));
+	ships.push(initShip(     "Pisces",0,100,10,10,false,ship_shapes[10],10,50,10,10,0.1,2,bullet_shapes[0]));
+
+	function initShip(name, price, health, armor, speed, purchased, shape, firerate, accuracy, damage, bullet_speed, critical_rate, critical_damage, bullet_shape){
+		var ship = new ShipModel({
+			name:name,
+			price:price,
+			health:health,
+			armor:armor,
+			speed:speed,
+			purchased:purchased,
+			_user:user._id,
+			shape:shape,
+			firearm:{
+				firerate:5,
+				accuracy:80,
+				bullet:{
+					damage:1,
+					speed:20,
+					critical_rate:0.1,
+					critical_damage:2,
+					shape:bullet_shape,
+				}
+			},
+		});
+		return ship;
+	}
+
+	var count = 0;
+	ships.forEach(function(ship){
+		ship.save(function(){
+			count++;
+			if(count == ships.length){
+				ShipModel.findOne({_user:user._id, purchased:true}, function(err, selected_ship){
+					user._selected_ship = selected_ship._id;
+					user.save(function(){
+						console.log("Complete seed data");
+						callback(selected_ship);
+					});
+				});
+			}
+		});
+	});
+
+	/*
 	var ship1 = new ShipModel({
 		name:"Aries",
 		price:50,
@@ -114,7 +191,7 @@ exports.create = function(user, callback){
 	});
 	ship2.save();
 	ship3.save();
-
+	*/
 }
 
 exports.upgrade = function(req, callback){

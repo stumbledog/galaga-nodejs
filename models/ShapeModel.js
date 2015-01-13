@@ -8,6 +8,7 @@ var ShapeSchema = new Schema({
 	radius:Number,
 	file:String,
 	components:[{
+		_id:false,
 		x:{type:Number,default:0},
 		y:{type:Number,default:0},
 		crop_x:Number,

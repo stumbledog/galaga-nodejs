@@ -7,37 +7,44 @@ var UserSchema = new Schema({
 	exp:{type:Number, default: 0},
 	gold:{type:Number, default: 0},
 	mastery:{
+		_id:false,
 		increase_damage:{
+			_id:false,
 			name:{type:String, default:"Increase Damage"},
 			description:{type:String, default:"Increase damage by\n10 x point%"},
 			point:{type:Number, default: 0},
 			cost:{type:Number, default: 1},
 		},
 		increase_health:{
+			_id:false,
 			name:{type:String, default:"Increase Health"},
 			description:{type:String, default:"Increase health by\n10 x point%"},
 			point:{type:Number, default: 0},
 			cost:{type:Number, default: 1},
 		},
 		increase_speed:{
+			_id:false,
 			name:{type:String, default:"Increase Speed"},
 			description:{type:String, default:"Increase speed by\n10 x point%"},
 			point:{type:Number, default: 0},
 			cost:{type:Number, default: 1},
 		},
 		multi_shot:{
+			_id:false,
 			name:{type:String, default:"Multi Shot"},
 			description:{type:String, default:"Fires multiple bullets at\nonce"},
 			point:{type:Number, default: 10},
 			cost:{type:Number, default: 5},
 		},
 		sniper:{
+			_id:false,
 			name:{type:String, default:"Sniper"},
 			description:{type:String, default:"Dealt multiple damage to\nenemy 400 pixels away"},
 			point:{type:Number, default: 0},
 			cost:{type:Number, default: 5},
 		},
 		slow_bullet:{
+			_id:false,
 			name:{type:String, default:"Slow Bullets"},
 			description:{type:String, default:"Slow the speed of enemy\nbullets by 5 x point%"},
 			point:{type:Number, default: 0},
@@ -45,6 +52,7 @@ var UserSchema = new Schema({
 			max:{type:Number, default: 19},
 		},
 		reduce_size:{
+			_id:false,
 			name:{type:String, default:"Reduce Size"},
 			description:{type:String, default:"Reduce player ship size\nby 25 x point%"},
 			point:{type:Number, default: 0},

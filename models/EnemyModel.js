@@ -8,33 +8,31 @@ var EnemySchema = new Schema({
 	gold:Number,
 	speed:Number,
 	range:Number,
-	width:Number,
-	height:Number,
-	radius:Number,
-	file:String,
 	scale:Number,
 	firearm:{
+		_id:false,
 		accuracy:Number,
 		damage:Number,
 		firerate:Number,
 		speed:Number,
-		radius:Number,
 		shots:Number,
 		shape:{
+			_id:false,
 			crop_x:Number,
 			crop_y:Number,
 			width:Number,
 			height:Number,
+			file:String,
 		}
 	},
-	components:[{
-		x:{type:Number,default:0},
-		y:{type:Number,default:0},
+	shape:{
+		_id:false,
 		crop_x:Number,
 		crop_y:Number,
 		width:Number,
-		height:Number
-	}]
+		height:Number,
+		file:String,
+	}
 });
 
 mongoose.model('Enemy', EnemySchema);

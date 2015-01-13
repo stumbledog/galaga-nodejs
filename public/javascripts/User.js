@@ -63,6 +63,9 @@ var User = (function(){
 
 		function renderShip(){
 			shape_container.removeAllChildren();
+			shape_container.addChild(Renderer.renderShip(ship.shape, loader));
+			stage.update();
+/*
 			ship.shape.components.forEach(function(component){
 				var shape = new createjs.Shape();
 				shape.graphics.bf(loader.getResult(ship.shape.file)).drawRect(component.crop_x,component.crop_y,component.width,component.height);
@@ -72,7 +75,7 @@ var User = (function(){
 				shape.y = component.y;
 				shape_container.addChild(shape);
 				stage.update();
-			});
+			});*/
 		}
 
 		function levelUp(){

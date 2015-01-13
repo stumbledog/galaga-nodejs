@@ -9,33 +9,30 @@ var ShipSchema = new Schema({
 	speed:Number,
 	purchased:Boolean,
 	shape:{
+		_id:false,
+		crop_x:Number,
+		crop_y:Number,
 		width:Number,
 		height:Number,
-		radius:Number,
 		file:String,
-		components:[{
-			x:{type:Number,default:0},
-			y:{type:Number,default:0},
-			crop_x:Number,
-			crop_y:Number,
-			width:Number,
-			height:Number
-		}]
 	},
 	firearm:{
+		_id:false,
 		firerate: Number,
 		accuracy: Number,
 		bullet: {
+			_id:false,
 			damage: Number,
 			speed: Number,
 			critical_rate: Number,
 			critical_damage: Number,
-			radius:Number,
 			shape:{
+				_id:false,
 				crop_x:Number,
 				crop_y:Number,
 				width:Number,
-				height:Number
+				height:Number,
+				file:String,
 			}
 		},
 	},
@@ -50,7 +47,6 @@ var ShipSchema = new Schema({
 		critical_damage:{count:{type:Number,default:0},value:{type:Number,default:0}},
 	},
 	_user:{type:Schema.Types.ObjectId,ref:'User'},
-	created_at:{type:Date,default:Date.now},
 });
 
 mongoose.model('Ship', ShipSchema);
