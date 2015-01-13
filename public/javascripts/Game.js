@@ -75,7 +75,7 @@ var Game = (function(data){
 			user = User.getInstance(data.user, data.ship, "game");
 			ship = Ship.getInstance(data.ship);
 			
-			wave = Wave.getInstance(data.star._wave);
+			wave = Wave.getInstance(data.star.waves);
 			
 			balance_controller = new BalanceController(1, difficulty,"game");			
 			pause_menu = initPauseMenu();

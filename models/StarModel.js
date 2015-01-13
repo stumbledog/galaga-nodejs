@@ -7,8 +7,13 @@ var StarSchema = new Schema({
 	x:Number,
 	y:Number,
 	radius:Number,
+	waves:[{enemies:
+		[{
+			_enemy:{type:Number, ref:'Enemy'},
+			count:Number,
+		}]
+	}],
 	_next:[{type:Number, ref: 'Star'}],
-	_wave:[{type:Number, ref:'Wave'}]
 });
 
 mongoose.model('Star', StarSchema);

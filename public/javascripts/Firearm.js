@@ -17,14 +17,14 @@ Firearm.prototype.removeBullet = function(target){
 
 Firearm.prototype.fire = function(x, y, degree){
     if(this.ticks >= this.firerate){
-        var index = -this.double_shot*(this.bullet.radius + 3)/2;
+        var index = -this.double_shot*(this.bullet.radius + 1)/2;
         for(var i = 0; i <= this.double_shot;i++){
             var offsetX = Math.sin(degree/180*Math.PI)*index;
             var offsetY = Math.cos(degree/180*Math.PI)*index;
             var bullet_degree = degree + 180 * (Math.random()-0.5) * (100 - this.accuracy) / 100;
             var bullet = new Bullet(this, x + offsetY, y + offsetX, bullet_degree, this.bullet, this.upgrade, this.increase_damage);
             this.bullets.push(bullet);
-            index+=(this.bullet.radius + 3);
+            index+=(this.bullet.radius + 1);
         }
         this.ticks = 0;
     }

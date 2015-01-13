@@ -3,7 +3,6 @@ var Schema = mongoose.Schema;
 
 var EnemySchema = new Schema({
 	_id:Number,
-	name:String,
 	health:Number,
 	exp:Number,
 	gold:Number,
@@ -13,6 +12,7 @@ var EnemySchema = new Schema({
 	height:Number,
 	radius:Number,
 	file:String,
+	scale:Number,
 	firearm:{
 		accuracy:Number,
 		damage:Number,

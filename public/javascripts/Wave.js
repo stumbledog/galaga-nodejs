@@ -16,7 +16,7 @@ var Wave = (function(){
 		var slow = user.getSlowBullet();
 
 		var current_wave = ticks = 0;
-		var interval = 30 / game.getDifficulty()[0];
+		var interval = 20 / game.getDifficulty()[0];
 		var wave_count = waves.length;
 
 		var wavetext, destoryed_enemy_count, wave_enemy_count;

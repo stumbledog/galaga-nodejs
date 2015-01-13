@@ -8,7 +8,6 @@ ShipModel = mongoose.model('Ship');
 StarModel = mongoose.model('Star');
 ShapeModel = mongoose.model('Shape');
 UserModel = mongoose.model('User');
-WaveModel = mongoose.model('Wave');
 
 UserController = require('../controllers/UserController');
 ShipController = require('../controllers/ShipController');

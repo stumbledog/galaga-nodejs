@@ -34,7 +34,8 @@ var Home = (function(){
 
 		function renderGalaxy(){
 			process._selectable.forEach(function(star){
-				var wave_count = star._wave.length;
+				console.log(star);
+				var wave_count = star.waves.length;
 				var container = new createjs.Container();
 				container.x = star.x;
 				container.y = star.y;

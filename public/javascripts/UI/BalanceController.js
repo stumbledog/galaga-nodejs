@@ -4,7 +4,7 @@ function BalanceController(star, difficulty, type){
 	var difficulty = difficulty || [1,1,1,1,1];
 	var main_container;
 	var bonus = difficulty.reduce(function(previous, current){
-		return previous * Math.sqrt(current);
+		return previous * Math.pow(current, 1/4);
 	},1 );
 
 	if(type === "home"){
@@ -137,7 +137,7 @@ function BalanceController(star, difficulty, type){
 				exp.text = exp_outline.text = "x" + (Math.round(bar.index*unit*10)/10 + 1);
 				difficulty[index] = bar.index + 1;
 				bonus = difficulty.reduce(function(previous, current){
-					return previous * Math.sqrt(Math.sqrt(current));
+					return previous * Math.pow(current,1/4);
 				},1 );
 				multiplier.text = bonus.toFixed(2);
 				multiplier_outline.text = bonus.toFixed(2);

@@ -27,6 +27,7 @@ Enemy.prototype.getContainer = function(){
 Enemy.prototype.renderShip = function(){
 	this.container = new createjs.Container();
 	this.container.enemy = this;
+	this.container.scaleX = this.container.scaleY = this.data.scale;
 	this.data.components.forEach(function(component){
 		this.shape = new createjs.Shape();
 		this.shape.graphics.bf(this.loader.getResult(this.data.file)).dr(component.crop_x, component.crop_y, component.width, component.height);
@@ -87,7 +88,7 @@ Enemy.prototype.destroyed = function(bullet){
 	});	
 	this.user.gainExp(this.data.exp);
 	this.user.earnGold(this.data.gold);
-	this.effect.destroy(this.container.x,this.container.y,this.data.radius / 20);
+	this.effect.destroy(this.container.x,this.container.y,this.data.radius * this.data.scale / 20);
 
 	this.game.enemyDestoryed();
 	this.wave.enemyDestroyed(this.container);
@@ -95,7 +96,7 @@ Enemy.prototype.destroyed = function(bullet){
 
 Enemy.prototype.isHit = function(bullet){
 	//return (Math.pow(bullet.x - this.container.x, 2) + Math.pow(bullet.y - this.container.y, 2) < Math.pow(this.data.radius, 2));
-	return Math.abs(bullet.x - this.container.x) < this.data.radius + bullet.radius && Math.abs(bullet.y - this.container.y) < this.data.radius + bullet.radius;
+	return Math.abs(bullet.x - this.container.x) < this.data.radius * this.data.scale + bullet.radius && Math.abs(bullet.y - this.container.y) < this.data.radius * this.data.scale + bullet.radius;
 }
 
 Enemy.prototype.fire = function(){

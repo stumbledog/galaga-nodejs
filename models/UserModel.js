@@ -9,20 +9,26 @@ var UserSchema = new Schema({
 	mastery:{
 		increase_damage:{
 			name:{type:String, default:"Increase Damage"},
-			description:{type:String, default:"Increase damage by\npoint%"},
+			description:{type:String, default:"Increase damage by\n10 x point%"},
 			point:{type:Number, default: 0},
 			cost:{type:Number, default: 1},
 		},
 		increase_health:{
 			name:{type:String, default:"Increase Health"},
-			description:{type:String, default:"Increase health by\npoint%"},
+			description:{type:String, default:"Increase health by\n10 x point%"},
+			point:{type:Number, default: 0},
+			cost:{type:Number, default: 1},
+		},
+		increase_speed:{
+			name:{type:String, default:"Increase Speed"},
+			description:{type:String, default:"Increase speed by\n10 x point%"},
 			point:{type:Number, default: 0},
 			cost:{type:Number, default: 1},
 		},
 		multi_shot:{
 			name:{type:String, default:"Multi Shot"},
 			description:{type:String, default:"Fires multiple bullets at\nonce"},
-			point:{type:Number, default: 0},
+			point:{type:Number, default: 10},
 			cost:{type:Number, default: 5},
 		},
 		sniper:{

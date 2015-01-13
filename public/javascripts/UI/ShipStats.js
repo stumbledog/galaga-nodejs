@@ -29,7 +29,7 @@ var ShipStats = (function(){
 			health_bar.graphics.lf(["#61BF23","#39B52F"], [0, 1],320,613,320,626).dr(170, 613, 300 * (health / health_max), 12);
 			damage_bar = new createjs.Shape();
 			damage_bar.graphics.lf(["#D92525","#73121A"], [0, 1],320,613,320,626).dr(170, 613, 300, 12);
-			health_text = new createjs.Text(health + " / " + health_max,"10px Arial","#fff");
+			health_text = new createjs.Text(Math.round(health) + " / " + Math.round(health_max),"10px Arial","#fff");
 			health_text.y = 614;
 			health_text.x = 320 - health_text.getMeasuredWidth()/2;
 			stage.addChild(health_bar_border, damage_bar, health_bar, health_text);
@@ -70,7 +70,7 @@ var ShipStats = (function(){
 				var health = Math.round(health);
 				var max = Math.round(max);
 				health_bar.graphics.c().lf(["#61BF23","#39B52F"], [0, 1],320,613,320,626).dr(170, 613, 300 * (health / max), 12);
-				health_text.text = health + " / " + max;
+				health_text.text = Math.round(health) + " / " + Math.round(max);
 			},
 			renderExpBar:function(level, exp, cap){
 				var exp = Math.round(exp);
