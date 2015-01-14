@@ -1,18 +1,18 @@
-function Enemy(data){
+function Enemy(ship){
 	this.wave = Wave.getInstance();
-	this.data = data;
+	this.ship = ship;
 	this.user = User.getInstance();
 	this.game = Game.getInstance();
 	this.stage = this.game.getStage();
 	this.loader = this.game.getLoader();
 	this.effect = Effect.getInstance();
 	this.slow = this.user.getSlowBullet();
-	this.ship = Ship.getInstance();
+	this.user_ship = Ship.getInstance();
+
 	init.call(this);
 
 	function init(){
-		this.health_max = this.health = this.data.health * this.game.getDifficulty()[1];
-		this.status = true;
+		this.health_max = this.health = this.ship.health * this.game.getDifficulty()[1];
 		this.ticks = 0;
 
 		this.renderShip();
@@ -27,10 +27,13 @@ Enemy.prototype.getContainer = function(){
 Enemy.prototype.renderShip = function(){
 	this.container = new createjs.Container();
 	this.container.enemy = this;
-	this.container.scaleX = this.container.scaleY = this.data.scale;
-	this.data.components.forEach(function(component){
+	this.container.scaleX = this.container.scaleY = this.ship.scale;
+	this.container.addChild(Renderer.renderShip(this.ship.shape, this.loader));
+	this.ship.radius = this.ship.shape.width * this.ship.scale / 2;
+	/*
+	this.ship.components.forEach(function(component){
 		this.shape = new createjs.Shape();
-		this.shape.graphics.bf(this.loader.getResult(this.data.file)).dr(component.crop_x, component.crop_y, component.width, component.height);
+		this.shape.graphics.bf(this.loader.getResult(this.ship.file)).dr(component.crop_x, component.crop_y, component.width, component.height);
 		this.shape.cache(component.crop_x, component.crop_y, component.width, component.height);
 		this.shape.regX = component.crop_x + component.width / 2;
 		this.shape.regY = component.crop_y + component.height / 2;
@@ -38,7 +41,7 @@ Enemy.prototype.renderShip = function(){
 		this.shape.y = component.y;
 		this.container.addChild(this.shape);
 	}, this);
-
+*/
 	var radian = Math.PI * Math.random() * 2;
 	this.container.x = Math.cos(radian) * 500 + 320;
 	this.container.y = Math.sin(radian) * 500 + 320;
@@ -48,7 +51,7 @@ Enemy.prototype.renderShip = function(){
 
 Enemy.prototype.renderHealthBar = function(){
 	this.health_bar = new createjs.Shape();
-	this.health_bar.graphics.beginFill("#CC0000").drawRect( -this.data.width/2, -this.data.height / 2 - 15, this.data.width, this.data.width/10);	
+	this.health_bar.graphics.beginFill("#CC0000").drawRect( -this.ship.radius, -this.ship.radius - 15, this.ship.radius * 2, this.ship.radius/5);
 	this.container.addChild(this.health_bar);
 }
 
@@ -66,7 +69,7 @@ Enemy.prototype.damaged = function(bullet){
 	.to({x:text.x-20, y:text.y-20, alpha:0}, 2000).call(function(item){
 		stage.removeChild(item.target);
 	});
-	this.health_bar.graphics.beginFill("#666666").drawRect(this.data.width / this.health_max * this.health - this.data.width/2, -this.data.height/2 - 15, this.data.width * (this.health_max - this.health) / this.health_max, this.data.width/10);
+	this.health_bar.graphics.beginFill("#666666").drawRect(this.ship.radius * 2 / this.health_max * this.health - this.ship.radius, -this.ship.radius - 15, this.ship.radius * 2 * (this.health_max - this.health) / this.health_max, this.ship.radius/5);
 	if(this.health <= 0){
 		this.destroyed(bullet);
 	}
@@ -75,8 +78,7 @@ Enemy.prototype.damaged = function(bullet){
 }
 
 Enemy.prototype.destroyed = function(bullet){
-	this.status = false;
-	var text = new createjs.Text((this.data.exp * this.game.getBonus()).toFixed(0)+" exp", "12px Arial", "#fff");
+	var text = new createjs.Text((this.ship.exp * this.game.getBonus()).toFixed(0)+" exp", "12px Arial", "#fff");
 	text.x = this.container.x;
 	text.y = this.container.y;
 	text.textBaseline = "alphabetic";
@@ -86,55 +88,53 @@ Enemy.prototype.destroyed = function(bullet){
 	.to({x:text.x+20, y:text.y-20, alpha:0}, 2000).call(function(item){
 		stage.removeChild(item.target);
 	});	
-	this.user.gainExp(this.data.exp);
-	this.user.earnGold(this.data.gold);
-	this.effect.destroy(this.container.x,this.container.y,this.data.radius * this.data.scale / 20);
+	this.user.gainExp(this.ship.exp);
+	this.user.earnGold(this.ship.gold);
+	this.effect.destroy(this.container.x,this.container.y,this.ship.radius / 20);
 
 	this.game.enemyDestoryed();
 	this.wave.enemyDestroyed(this.container);
 }
 
 Enemy.prototype.isHit = function(bullet){
-	//return (Math.pow(bullet.x - this.container.x, 2) + Math.pow(bullet.y - this.container.y, 2) < Math.pow(this.data.radius, 2));
-	return Math.abs(bullet.x - this.container.x) < this.data.radius * this.data.scale + bullet.radius && Math.abs(bullet.y - this.container.y) < this.data.radius * this.data.scale + bullet.radius;
+	//return (Math.pow(bullet.x - this.container.x, 2) + Math.pow(bullet.y - this.container.y, 2) < Math.pow(this.ship.radius, 2));
+	return Math.abs(bullet.x - this.container.x) < this.ship.radius + bullet.radius && Math.abs(bullet.y - this.container.y) < this.ship.radius + bullet.radius;
 }
 
 Enemy.prototype.fire = function(){
-	for(var i=0;i<this.data.firearm.shots;i++){
+	for(var i=0;i<this.ship.firearm.shots;i++){
 		var shape = new createjs.Shape();
-		var crop = this.data.firearm.shape;
-		shape.graphics.bf(this.loader.getResult("items")).drawRect(crop.crop_x,crop.crop_y,crop.width,crop.height);
+		var crop = this.ship.firearm.shape;
+		shape.graphics.bf(this.loader.getResult(this.ship.firearm.shape.file)).drawRect(crop.crop_x,crop.crop_y,crop.width,crop.height);
 		shape.cache(crop.crop_x,crop.crop_y,crop.width,crop.height);
 		shape.regX = crop.crop_x + crop.width/2;
 		shape.regY = crop.crop_y + crop.height/2;
-		shape.rotation = this.container.rotation - 90 + 180 * (Math.random()-0.5) * (100 - this.data.firearm.accuracy) / 100;
+		shape.rotation = this.container.rotation - 90 + 180 * (Math.random()-0.5) * (100 - this.ship.firearm.accuracy) / 100;
 		shape.radian = Math.PI * (shape.rotation) / 180;
 		shape.x = this.container.x;
 		shape.y = this.container.y;
-		shape.damage = this.data.firearm.damage * this.game.getDifficulty()[2];
-		shape.radius = this.data.firearm.radius * (1 + (this.game.getDifficulty()[4]-1) / 10);
+		shape.damage = this.ship.firearm.damage * this.game.getDifficulty()[2];
+		shape.radius = this.ship.firearm.shape.height / 2 * (1 + (this.game.getDifficulty()[4]-1) / 10);
 		shape.scaleX = shape.scaleY = 1 + (this.game.getDifficulty()[4]-1)/10;
-		shape.speed = this.data.firearm.speed;
+		shape.speed = this.ship.firearm.speed;
 		this.wave.addBullet(shape);		
 	}
 }
 
 Enemy.prototype.tick = function(){
-	if(this.status){
-		var dx = this.ship.getContainer().x - this.container.x;
-		var dy = this.ship.getContainer().y - this.container.y;
-		var degree = -Math.atan2(dx,dy) * 180 / Math.PI + 180;
-		var radian = Math.PI*(degree-90)/180;
-		this.container.rotation = degree;
-		this.health_bar.rotation = -degree;
-		var distance = Math.sqrt(Math.pow(dx,2)+Math.pow(dy,2));
-		if(distance > this.data.range || this.container.x < this.data.radius || this.container.x > 640 - this.data.radius || this.container.y < this.data.radius || this.container.y > 640 - this.data.radius){
-			this.container.x += this.data.speed * Math.cos(radian);
-			this.container.y += this.data.speed * Math.sin(radian);
-		}else if(this.ticks > this.data.firearm.firerate / (1 + (this.game.getDifficulty()[3]-1)/10)){
-			this.fire();
-			this.ticks = 0;
-		}
-		this.ticks++;
+	var dx = this.user_ship.getContainer().x - this.container.x;
+	var dy = this.user_ship.getContainer().y - this.container.y;
+	var degree = -Math.atan2(dx,dy) * 180 / Math.PI + 180;
+	var radian = Math.PI*(degree-90)/180;
+	this.container.rotation = degree;
+	this.health_bar.rotation = -degree;
+	var distance = Math.sqrt(Math.pow(dx,2)+Math.pow(dy,2));
+	if(distance > this.ship.range || this.container.x < 0 || this.container.x > 640 || this.container.y < 0 || this.container.y > 640){
+		this.container.x += this.ship.speed * Math.cos(radian);
+		this.container.y += this.ship.speed * Math.sin(radian);
+	}else if(this.ticks > this.ship.firearm.firerate / (1 + (this.game.getDifficulty()[3]-1)/10)){
+		this.fire();
+		this.ticks = 0;
 	}
+	this.ticks++;
 }

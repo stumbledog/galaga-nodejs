@@ -21,20 +21,19 @@ exports.create = function(user, callback){
 	];
 
 	var ships = [];
+	ships.push(initShip(      "Aries",     0, 100, 0,5, true, ship_shapes[0],15,90,2, 1,10,0.1,2,bullet_shapes[0]));
+	ships.push(initShip(     "Taurus",   400, 200, 4,4,false, ship_shapes[1],30,90,4, 2,10,0.1,3,bullet_shapes[0]));
+	ships.push(initShip(     "Gemini",   800, 400, 4,3,false, ship_shapes[2],20,70,4, 4,20,0.2,2,bullet_shapes[1]));
+	ships.push(initShip(        "Leo",  1600, 400,10,4,false, ship_shapes[3],15,90,2,10,10,0.2,3,bullet_shapes[1]));
+	ships.push(initShip(      "Virgo",  3200, 500,10,6,false, ship_shapes[4],15,90,2,15,10,0.1,3,bullet_shapes[1]));
+	ships.push(initShip(      "Libra",  6400,1500,10,2,false, ship_shapes[5],15,70,2,20,10,0.1,3,bullet_shapes[1]));
+	ships.push(initShip(    "Scorpio", 12800, 900,12,3,false, ship_shapes[6],15,70,2,30,10,0.2,3,bullet_shapes[0]));
+	ships.push(initShip("Sagittarius", 25600, 700,15,4,false, ship_shapes[7],20,70,3,30,10,0.2,3,bullet_shapes[0]));
+	ships.push(initShip(  "Capricorn", 51200,1600,20,5,false, ship_shapes[8],30,80,4,30,20,0.3,4,bullet_shapes[3]));
+	ships.push(initShip(   "Aquarius",102400,2400,32,6,false, ship_shapes[9],25,70,4,40,10,0.2,3,bullet_shapes[3]));
+	ships.push(initShip(     "Pisces",204800,5000,64,2,false,ship_shapes[10],30,70,5,40,10,0.5,3,bullet_shapes[3]));
 
-	ships.push(initShip(      "Aries",0,100,10,10, true, ship_shapes[0],10,50,10,10,0.1,2,bullet_shapes[0]));
-	ships.push(initShip(     "Taurus",0,100,10,10,false, ship_shapes[1],10,50,10,10,0.1,2,bullet_shapes[0]));
-	ships.push(initShip(     "Gemini",0,100,10,10,false, ship_shapes[2],10,50,10,10,0.1,2,bullet_shapes[0]));
-	ships.push(initShip(        "Leo",0,100,10,10,false, ship_shapes[3],10,50,10,10,0.1,2,bullet_shapes[0]));
-	ships.push(initShip(      "Virgo",0,100,10,10,false, ship_shapes[4],10,50,10,10,0.1,2,bullet_shapes[0]));
-	ships.push(initShip(      "Libra",0,100,10,10,false, ship_shapes[5],10,50,10,10,0.1,2,bullet_shapes[0]));
-	ships.push(initShip(    "Scorpio",0,100,10,10,false, ship_shapes[6],10,50,10,10,0.1,2,bullet_shapes[0]));
-	ships.push(initShip("Sagittarius",0,100,10,10,false, ship_shapes[7],10,50,10,10,0.1,2,bullet_shapes[0]));
-	ships.push(initShip(  "Capricorn",0,100,10,10,false, ship_shapes[8],10,50,10,10,0.1,2,bullet_shapes[0]));
-	ships.push(initShip(   "Aquarius",0,100,10,10,false, ship_shapes[9],10,50,10,10,0.1,2,bullet_shapes[0]));
-	ships.push(initShip(     "Pisces",0,100,10,10,false,ship_shapes[10],10,50,10,10,0.1,2,bullet_shapes[0]));
-
-	function initShip(name, price, health, armor, speed, purchased, shape, firerate, accuracy, damage, bullet_speed, critical_rate, critical_damage, bullet_shape){
+	function initShip(name, price, health, armor, speed, purchased, shape, firerate, accuracy, shots, damage, bullet_speed, critical_rate, critical_damage, bullet_shape){
 		var ship = new ShipModel({
 			name:name,
 			price:price,
@@ -45,13 +44,14 @@ exports.create = function(user, callback){
 			_user:user._id,
 			shape:shape,
 			firearm:{
-				firerate:5,
-				accuracy:80,
+				firerate:firerate,
+				accuracy:accuracy,
+				shots:shots,
 				bullet:{
-					damage:1,
-					speed:20,
-					critical_rate:0.1,
-					critical_damage:2,
+					damage:damage,
+					speed:bullet_speed,
+					critical_rate:critical_rate,
+					critical_damage:critical_damage,
 					shape:bullet_shape,
 				}
 			},

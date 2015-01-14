@@ -10,7 +10,6 @@ var Ship = (function(){
 		var user = User.getInstance();
 
 		var health_max = health = (ship.health + ship.upgrade.health.value)*(1+user.getIncreaseHealth()/10);
-		var psychic_max = psychic = ship.psychic;
 
 		var game = Game.getInstance();
 		var stage = game.getStage();
@@ -27,6 +26,8 @@ var Ship = (function(){
 
 		function renderShip(){
 			container = new createjs.Container();
+			container.addChild(Renderer.renderShip(ship.shape, loader));
+/*
 			ship.shape.components.forEach(function(component){
 				var shape = new createjs.Shape();
 				shape.graphics.bf(loader.getResult(ship.shape.file)).drawRect(component.crop_x,component.crop_y,component.width,component.height);
@@ -36,11 +37,12 @@ var Ship = (function(){
 				shape.y = component.y;
 				container.addChild(shape);
 			});
+*/
 			container.x = container.y = 320;
-			container.width = ship.width;
-			container.height = ship.height;
+//			container.width = ship.width;
+//			container.height = ship.height;
 
-			ship.shape.radius *= (4-user.getReduceSize())/4;
+			ship.shape.radius = ship.shape.width / 2 * (4-user.getReduceSize())/4;
 			container.scaleX = container.scaleY = (4-user.getReduceSize())/4;
 
 			stage.addChild(container);
@@ -177,7 +179,6 @@ var Ship = (function(){
 			levelUp:function(){
 				level_up_text.visible = true;
 				health = health_max;	
-				psychic = psychic_max;
 				createjs.Tween.get(level_up_text)
 				.to({scaleX:-1}, 500).to({scaleX:1}, 500).wait(1000).call(function(){
 					level_up_text.visible = false;

@@ -20,6 +20,7 @@ var ShipSchema = new Schema({
 		_id:false,
 		firerate: Number,
 		accuracy: Number,
+		shots:Number,
 		bullet: {
 			_id:false,
 			damage: Number,

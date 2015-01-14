@@ -33,8 +33,19 @@ var Home = (function(){
 		}
 
 		function renderGalaxy(){
+			var path;
 			process._selectable.forEach(function(star){
-				console.log(star);
+				var clear = false;
+				process._cleared.forEach(function(item){
+					if(item._id == star._id) clear = true;
+				});
+
+				if(!path){
+					path = new createjs.Shape();
+					path.graphics.ss(2).s("#FFF0A5").mt(star.x,star.y);
+				}else{
+					path.graphics.lt(star.x,star.y);
+				}
 				var wave_count = star.waves.length;
 				var container = new createjs.Container();
 				container.x = star.x;
@@ -47,31 +58,24 @@ var Home = (function(){
 				.dc(0, 0 , radius);
 				star_shape.cursor = "pointer";
 
+				var outline = new createjs.Shape();
+				outline.graphics.f(clear?"#468966":"#FFF0A5").dc(0, 0 , radius + 3);
+
 				var text = new createjs.Text(star.name, "12px Arial", "#ffffff");
 				text.x = radius + 5;
 
-				container.addChild(star_shape, text);
+				container.addChild(outline, star_shape, text);
 				stage.addChild(container);
-
-				var tooltip_container = new createjs.Container();
-				var tooltip_text = new createjs.Text(wave_count+" waves", "16px Arial", "#ffffff");
-
-				tooltip_container.x = star.x + radius + 5;
-				tooltip_container.y = star.y - radius - 10;
-
-				tooltip_container.addChild(tooltip_text);
 
 				container.addEventListener("rollover", function(event){
 					if(!current_menu || !current_menu.isOpen()){
 						container.scaleX = container.scaleY = 1.2;
-						//stage.addChild(tooltip_container);
 					}
 				});
 
 				container.addEventListener("rollout", function(event){
 					if(!current_menu || !current_menu.isOpen()){
 						container.scaleX = container.scaleY = 1;
-						//stage.removeChild(tooltip_container);
 					}
 				});
 
@@ -81,6 +85,8 @@ var Home = (function(){
 						balance_controller.selectStar(selected_star);
 					}
 				});
+			stage.addChild(path);
+			stage.swapChildren(stage.children[0],stage.children[stage.children.length-1]);
 			});
 		}
 

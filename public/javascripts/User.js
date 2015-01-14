@@ -64,6 +64,8 @@ var User = (function(){
 		function renderShip(){
 			shape_container.removeAllChildren();
 			shape_container.addChild(Renderer.renderShip(ship.shape, loader));
+			shape_container.scaleX = shape_container.scaleY = Math.sqrt(ship.shape.height*ship.shape.width) < 64? 1 : 64/Math.sqrt(ship.shape.height*ship.shape.width);
+
 			stage.update();
 /*
 			ship.shape.components.forEach(function(component){
@@ -144,6 +146,9 @@ var User = (function(){
 			},
 			getIncreaseHealth:function(){
 				return user.mastery.increase_health.point;
+			},
+			getIncreaseSpeed:function(){
+				return user.mastery.increase_speed.point;
 			}
 		}
 	};

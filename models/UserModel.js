@@ -29,11 +29,25 @@ var UserSchema = new Schema({
 			point:{type:Number, default: 0},
 			cost:{type:Number, default: 1},
 		},
+		increase_accuracy:{
+			_id:false,
+			name:{type:String, default:"Increase Accuracy"},
+			description:{type:String, default:"Increase accuracy by\n10 x point%"},
+			point:{type:Number, default: 0},
+			cost:{type:Number, default: 1},
+		},
+		decrease_accuracy:{
+			_id:false,
+			name:{type:String, default:"Decrease Accuracy"},
+			description:{type:String, default:"Decrease accuracy by\n10 x point%"},
+			point:{type:Number, default: 0},
+			cost:{type:Number, default: 1},
+		},
 		multi_shot:{
 			_id:false,
 			name:{type:String, default:"Multi Shot"},
 			description:{type:String, default:"Fires multiple bullets at\nonce"},
-			point:{type:Number, default: 10},
+			point:{type:Number, default: 0},
 			cost:{type:Number, default: 5},
 		},
 		sniper:{

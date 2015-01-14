@@ -43,40 +43,47 @@ function Store(){
 		ships.forEach(function(ship){
 			var item_container = new createjs.Container();
 			var border = new createjs.Shape();
-			border.graphics.s("#fff").ss(2).f("#000").rr(0,0,100,160,5);
+			border.graphics.s("#fff").ss(2).f("#000").rr(0,0,112,158,5);
 
-			var shape_container = Renderer.renderShip(ship, loader);
-			
-			shape_container.x = 50;
+			var shape_container = Renderer.renderShip(ship.shape, loader);
+			shape_container.scaleX = shape_container.scaleY = Math.sqrt(ship.shape.height*ship.shape.width) < 64? 1 : 64/Math.sqrt(ship.shape.height*ship.shape.width);
+
+			shape_container.x = 56;
 			shape_container.y = 80;
 
-			var health_text = new createjs.Text("Health: ","12px Arial","#FFB03B");
-			var health_amount_text = new createjs.Text(ship.health,"12px Arial","#fff");
+			var health_text = new createjs.Text("Health: ","11px Arial","#FFB03B");
+			var health_amount_text = new createjs.Text(ship.health,"11px Arial","#fff");
 			health_text.x = 5;
 			health_amount_text.x = health_text.getMeasuredWidth() + 5;
 			health_text.y = health_amount_text.y = 5;
 
-			var speed_text = new createjs.Text("Speed: ","12px Arial","#FFB03B");
-			var speed_amount_text = new createjs.Text(ship.speed,"12px Arial","#fff");
+			var speed_text = new createjs.Text("Speed: ","11px Arial","#FFB03B");
+			var speed_amount_text = new createjs.Text(ship.speed,"11px Arial","#fff");
 			speed_text.x = 5;
 			speed_amount_text.x = speed_text.getMeasuredWidth() + 5;
-			speed_text.y = speed_amount_text.y = 18;
+			speed_text.y = speed_amount_text.y = 16;
+
+			var accuracy_text = new createjs.Text("Accuracy: ","11px Arial","#FFB03B");
+			accuracy_amount_text = new createjs.Text(ship.firearm.accuracy+"%","11px Arial","#fff");
+			accuracy_text.x = 5;
+			accuracy_amount_text.x = accuracy_text.getMeasuredWidth() + 5;
+			accuracy_text.y = accuracy_amount_text.y = 27;
 
 			var firearm = ship.firearm;
 			var bullet = firearm.bullet;
 			
-			var dps = 30 / firearm.firerate * firearm.accuracy / 100 * bullet.damage * ((1 - bullet.critical_rate * (1 - bullet.critical_damage)));
+			var dps = 30 / firearm.firerate* firearm.shots * firearm.accuracy / 100 * bullet.damage * ((1 - bullet.critical_rate * (1 - bullet.critical_damage)));
 
-			var dps_text = new createjs.Text("DPS: ","12px Arial","#FFB03B");
-			var dps_amount_text = new createjs.Text(dps.toFixed(2),"12px Arial","#fff");
+			var dps_text = new createjs.Text("DPS: ","11px Arial","#FFB03B");
+			var dps_amount_text = new createjs.Text(dps.toFixed(2),"11px Arial","#fff");
 
 			dps_text.x = 5;
 			dps_amount_text.x = dps_text.getMeasuredWidth() + 5;
-			dps_text.y = dps_amount_text.y = 31;
+			dps_text.y = dps_amount_text.y = 38;
 
 			var button_container = new createjs.Container();
 			var button_border = new createjs.Shape();
-			button_border.graphics.s("#fff").ss(2).f("#333").rr(0,0,80,20,5);
+			button_border.graphics.s("#fff").ss(2).f("#333").rr(0,0,92,20,5);
 			if(ship.purchased){
 				var button_text = new createjs.Text("Owned","12px Arial","#FFBE2C");
 			}else{
@@ -102,28 +109,25 @@ function Store(){
 				button_container.addEventListener("mousedown", handler);
 			}
 			button_text.textAlign = "center";
-			button_text.x = 40;
+			button_text.x = 46;
 			button_text.y = 4;
 
 			var name = new createjs.Text(ship.name,"12px Arial","#fff");
 			name.textAlign = "center";
-			name.x = 50;
+			name.x = 56;
 			name.y = 110;
 
 			button_container.x = 10;
 			button_container.y = 130;
 			button_container.addChild(button_border, button_text);
 
-			item_container.x = index % 5 * 110;
-			item_container.y = parseInt(index / 5) * 170;
-			item_container.addChild(border, shape_container, health_text, health_amount_text, speed_text, speed_amount_text, dps_text, dps_amount_text, button_container, name);
+			item_container.x = index % 5 * 122;
+			item_container.y = parseInt(index / 5) * 162;
+
+			item_container.addChild(border, shape_container, health_text, health_amount_text, speed_text, speed_amount_text, accuracy_text, accuracy_amount_text, dps_text, dps_amount_text, button_container, name);
 			items_container.addChild(item_container);
 			index++;
 		});
-	}
-
-	function purchaseButton(){
-
 	}
 
 	function confirm(event, msg, callback){

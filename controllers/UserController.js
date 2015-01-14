@@ -27,8 +27,8 @@ exports.authenticate = function(req, res, callback){
 exports.createUser = function(req, res, callback){
 	var self = this;
 	var user = new UserModel();
-	//user.level = 1000;
-	//user.gold = 10000;
+	user.level = 50;
+	user.gold = 100000;
 	user.save(function(){
 		var process = new ProcessModel({_user:user._id, _selectable:[1]});
 		process.save(function(){
@@ -80,17 +80,15 @@ exports.victory = function(req, res){
 		user.save(function(){
 			ProcessModel.findOne({_user:user._id}, function(err, process){
 				StarModel.findById(req.body.star, function(err, star){
-					star._next.forEach(function(next){
-						if(process._selectable.indexOf(next) === -1){
-							process._selectable.push(next);
-						}
-						if(process._cleared.indexOf(req.body.star) === -1){
-							process._cleared.push(req.body.star);
-						}
-						process.save(function(){
-							res.contentType('json');
-							res.send({ save:true });
-						});
+					if(process._selectable.indexOf(star.next) === -1){
+						process._selectable.push(star.next);
+					}
+					if(process._cleared.indexOf(req.body.star) === -1){
+						process._cleared.push(req.body.star);
+					}
+					process.save(function(){
+						res.contentType('json');
+						res.send({ save:true });
 					});
 				});
 			});

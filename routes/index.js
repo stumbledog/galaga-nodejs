@@ -6,7 +6,6 @@ EnemyModel = mongoose.model('Enemy');
 ProcessModel = mongoose.model('Process');
 ShipModel = mongoose.model('Ship');
 StarModel = mongoose.model('Star');
-ShapeModel = mongoose.model('Shape');
 UserModel = mongoose.model('User');
 
 UserController = require('../controllers/UserController');

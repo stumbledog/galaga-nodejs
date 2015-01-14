@@ -59,7 +59,6 @@ function Hangar(){
 		select_button_container.cursor = "pointer";
 		select_button_container.addEventListener("mousedown", function(event){
 			$.post("/selectShip", {ship:selectedShip._id}, function(res){
-				console.log(res);
 				if(res.code > 0){
 					Renderer.slideText(selectedShip.name + " is ready for takeoff!","#468966", stage);
 					user.setShip(selectedShip);
@@ -84,30 +83,35 @@ function Hangar(){
 	function renderShip(ship, index){
 		var ship_container = new createjs.Container();
 		var mask = new createjs.Shape();
-		mask.graphics.beginFill("#f00").drawRect(index * 60,0,60,60);
+		mask.graphics.beginFill("#f00").drawRect(index * 56,0,58,60);
 		ship_container.mask = mask;
 		var max = ship.shape.width > ship.shape.height ? ship.shape.width : ship.shape.height;
-		var shape_container = Renderer.renderShip(ship, loader);
-		shape_container.x = shape_container.y = 30;
+		var shape_container = Renderer.renderShip(ship.shape, loader);
+		shape_container.scaleX = shape_container.scaleY = Math.sqrt(ship.shape.height*ship.shape.width) < 64? 1 : 64/Math.sqrt(ship.shape.height*ship.shape.width);
+		shape_container.x = 28,
+		shape_container.y = 30;
 		var background = new createjs.Shape();
-		background.graphics.s("#FFB03B").ss(2).f("#FFF0A5").dr(0,0,60,60);
-		ship_container.x = index * 60;
+		background.graphics.f("#fff").dr(0,0,56,60);
+		var border = new createjs.Shape();
+		border.graphics.s("#000").ss(4).dr(0,0,56,60);
+		ship_container.x = index * 56;
 		ship_container.cursor = "pointer";
 		ship_container.addEventListener("mousedown", function(event){
 			selectShip(ship);
 		});
-		ship_container.addChild(background, shape_container);
+		ship_container.addChild(background, shape_container, border);
 		ships_container.addChild(ship_container);
 	}
 
 	function renderStats(ship){
 		stats_container.removeAllChildren();
-		var health = ship.health + ship.upgrade.health.value;
+		var health = (ship.health + ship.upgrade.health.value) * (1 + user.getIncreaseDamage()/10);
 		var armor = ship.armor + ship.upgrade.armor.value;
-		var speed = ship.speed + ship.upgrade.speed.value;
+		var speed = ship.speed * (1 + user.getIncreaseSpeed()/10);
 		var firerate = ship.firearm.firerate + ship.upgrade.firerate.value;
-		var accuracy = ship.firearm.accuracy + ship.upgrade.accuracy.value;
-		var damage = ship.firearm.bullet.damage + ship.upgrade.damage.value;
+		var shots = ship.firearm.shots * (1 + user.getMultiShot());
+		var accuracy = (ship.firearm.accuracy + ship.upgrade.accuracy.value);
+		var damage = (ship.firearm.bullet.damage + ship.upgrade.damage.value) * (1 + user.getIncreaseDamage()/10);
 		var critical_damage = ship.firearm.bullet.critical_damage + ship.upgrade.critical_damage.value;
 		var critical_rate = ship.firearm.bullet.critical_rate + ship.upgrade.critical_rate.value;
 		var dps = 30 / firerate * accuracy / 100 * damage * (1 - critical_rate * (1 - critical_damage));
@@ -116,11 +120,12 @@ function Hangar(){
 		renderStat("Armor", Math.round((armor)*10)/10 + " ("+(armor / (armor + 25) * 100).toFixed(2)+"% damage reduction)", 25);
 		renderStat("Speed", Math.round((speed)*10)/10, 50);
 		renderStat("Firerate", Math.round(30 / firerate * 100)/100  +" shoots per second", 75);
-		renderStat("Accuracy", Math.round((accuracy)*10)/10+"%", 100);
-		renderStat("Damage", Math.round((damage)*10)/10, 125);
-		renderStat("Critical Damage", Math.round((critical_damage)*100)+"%", 150);
-		renderStat("Critical Rate", Math.round((critical_rate)*1000)/10+"%", 175);
-		renderStat("DPS", Math.round(dps*100)/100, 200);
+		renderStat("Shots", "x " + shots + " shoots at once", 100);
+		renderStat("Accuracy", Math.round((accuracy)*10)/10+"%", 125);
+		renderStat("Damage", Math.round((damage)*10)/10, 150);
+		renderStat("Critical Damage", Math.round((critical_damage)*100)+"%", 175);
+		renderStat("Critical Rate", Math.round((critical_rate)*1000)/10+"%", 200);
+		renderStat("DPS", Math.round(dps*100)/100, 225);
 	}
 
 	function renderStat(type, amount, y){
@@ -149,12 +154,12 @@ function Hangar(){
 
 		renderUpgradeButton("Health", ship.upgrade.health, 25, 0);
 		renderUpgradeButton("Armor", ship.upgrade.armor, 50, 1);
-		renderUpgradeButton("Speed", ship.upgrade.speed, 75, 1);
-		renderUpgradeButton("Firerate", ship.upgrade.firerate, 100, 2);
-		renderUpgradeButton("Accuracy", ship.upgrade.accuracy, 125, 2);
-		renderUpgradeButton("Damage", ship.upgrade.damage, 150, 2);
-		renderUpgradeButton("Crit Damage", ship.upgrade.critical_damage, 175, 2);
-		renderUpgradeButton("Crit Rate", ship.upgrade.critical_rate, 200, 3);
+		//renderUpgradeButton("Speed", ship.upgrade.speed, 75, 1);
+		renderUpgradeButton("Firerate", ship.upgrade.firerate, 75, 2);
+		//renderUpgradeButton("Accuracy", ship.upgrade.accuracy, 125, 2);
+		renderUpgradeButton("Damage", ship.upgrade.damage, 100, 2);
+		renderUpgradeButton("Crit Damage", ship.upgrade.critical_damage, 125, 2);
+		renderUpgradeButton("Crit Rate", ship.upgrade.critical_rate, 150, 3);
 
 		upgrade_container.addChild(upgrade_text, upgrade_x1, upgrade_x10, upgrade_x100);
 	}
@@ -192,7 +197,6 @@ function Hangar(){
 
 		upgrade_button.addEventListener("mousedown", function(event){
 			$.post("/upgrade",{ship:selectedShip._id, type:type, multiple:n},function(res){
-				console.log(res);
 				if(res.code>0){
 					selectedShip.upgrade = res.ship.upgrade;
 					user.setGold(res.gold);
@@ -209,7 +213,7 @@ function Hangar(){
 		selectedShip = ship;
 		name_text.text = ship.name;
 		selected_ship_container.removeAllChildren();
-		selected_ship_container.addChild(Renderer.renderShip(selectedShip, loader));
+		selected_ship_container.addChild(Renderer.renderShip(selectedShip.shape, loader));
 		renderUpgrade(selectedShip);
 		renderStats(selectedShip);
 	}
