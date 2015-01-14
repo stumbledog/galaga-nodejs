@@ -30,18 +30,6 @@ Enemy.prototype.renderShip = function(){
 	this.container.scaleX = this.container.scaleY = this.ship.scale;
 	this.container.addChild(Renderer.renderShip(this.ship.shape, this.loader));
 	this.ship.radius = this.ship.shape.width * this.ship.scale / 2;
-	/*
-	this.ship.components.forEach(function(component){
-		this.shape = new createjs.Shape();
-		this.shape.graphics.bf(this.loader.getResult(this.ship.file)).dr(component.crop_x, component.crop_y, component.width, component.height);
-		this.shape.cache(component.crop_x, component.crop_y, component.width, component.height);
-		this.shape.regX = component.crop_x + component.width / 2;
-		this.shape.regY = component.crop_y + component.height / 2;
-		this.shape.x = component.x;
-		this.shape.y = component.y;
-		this.container.addChild(this.shape);
-	}, this);
-*/
 	var radian = Math.PI * Math.random() * 2;
 	this.container.x = Math.cos(radian) * 500 + 320;
 	this.container.y = Math.sin(radian) * 500 + 320;
@@ -97,8 +85,8 @@ Enemy.prototype.destroyed = function(bullet){
 }
 
 Enemy.prototype.isHit = function(bullet){
-	//return (Math.pow(bullet.x - this.container.x, 2) + Math.pow(bullet.y - this.container.y, 2) < Math.pow(this.ship.radius, 2));
-	return Math.abs(bullet.x - this.container.x) < this.ship.radius + bullet.radius && Math.abs(bullet.y - this.container.y) < this.ship.radius + bullet.radius;
+	return (Math.pow(bullet.x - this.container.x, 2) + Math.pow(bullet.y - this.container.y, 2) < Math.pow(this.ship.radius + bullet.radius, 2));
+	//return Math.abs(bullet.x - this.container.x) < this.ship.radius + bullet.radius && Math.abs(bullet.y - this.container.y) < this.ship.radius + bullet.radius;
 }
 
 Enemy.prototype.fire = function(){

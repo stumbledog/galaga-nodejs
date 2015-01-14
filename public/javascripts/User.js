@@ -65,19 +65,7 @@ var User = (function(){
 			shape_container.removeAllChildren();
 			shape_container.addChild(Renderer.renderShip(ship.shape, loader));
 			shape_container.scaleX = shape_container.scaleY = Math.sqrt(ship.shape.height*ship.shape.width) < 64? 1 : 64/Math.sqrt(ship.shape.height*ship.shape.width);
-
 			stage.update();
-/*
-			ship.shape.components.forEach(function(component){
-				var shape = new createjs.Shape();
-				shape.graphics.bf(loader.getResult(ship.shape.file)).drawRect(component.crop_x,component.crop_y,component.width,component.height);
-				shape.regX = component.crop_x + component.width / 2;
-				shape.regY = component.crop_y + component.height / 2;
-				shape.x = component.x;
-				shape.y = component.y;
-				shape_container.addChild(shape);
-				stage.update();
-			});*/
 		}
 
 		function levelUp(){
@@ -149,6 +137,14 @@ var User = (function(){
 			},
 			getIncreaseSpeed:function(){
 				return user.mastery.increase_speed.point;
+			},
+			getIncreaseAccuracy:function(){
+				return user.mastery.increase_accuracy.point;
+			},
+			getDecreaseAccuracy:function(){
+				return user.mastery.decrease_accuracy.point;
+			},setMastery:function(mastery){
+				user.mastery = mastery;
 			}
 		}
 	};

@@ -30,13 +30,8 @@ function Mastery(){
 		main_container.addChild(background, mastery_container, close_button);
 
 		createButton("Save", "#B64926", 430, 490, function(event){
-			var save = [];
-			for(key in mastery){
-				save[key] = mastery[key].point;
-			}
-			console.log(save);
 			$.post("/saveMastery",{mastery:JSON.stringify(mastery)}, function(res){
-				console.log(res);
+				user.setMastery(mastery);
 				Renderer.slideText("Your mastery is saved!", "#A7A37E", stage);
 			});
 		});

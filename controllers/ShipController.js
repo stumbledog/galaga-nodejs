@@ -74,124 +74,6 @@ exports.create = function(user, callback){
 			}
 		});
 	});
-
-	/*
-	var ship1 = new ShipModel({
-		name:"Aries",
-		price:50,
-		health:10,
-		armor:0,
-		psychic:10,
-		speed:3,
-		purchased:true,
-		_user:user._id,
-		shape:{
-			width:14,
-			height:28,
-			radius:7,
-			file:"components",
-			components:[{crop_x:58,crop_y:113,width:14,height:28}]
-		},
-		firearm:{
-			firerate:5,
-			accuracy:80,
-			bullet:{
-				damage:1,
-				speed:20,
-				radius:2,
-				critical_rate:0.1,
-				critical_damage:2,
-				shape:{
-					crop_x:139,
-					crop_y:231,
-					width:10,
-					height:4
-				}
-			}
-		},
-	});
-
-	var ship2 = new ShipModel({
-		name:"Aries",
-		price:100,
-		health:20,
-		armor:0,
-		psychic:10,
-		speed:4,
-		purchased:false,
-		_user:user._id,
-		shape:{
-			width:12,
-			height:26,
-			radius:6,
-			file:"components",
-			components:[{crop_x:75,crop_y:345,width:12,height:26}]
-		},
-		firearm:{
-			firerate:7,
-			accuracy:90,
-			bullet:{
-				damage:2,
-				speed:20,
-				radius:2,
-				critical_rate:0.15,
-				critical_damage:2.5,
-				shape:{
-					crop_x:139,
-					crop_y:231,
-					width:10,
-					height:4
-				}
-			}
-		},
-	});
-
-	var ship3 = new ShipModel({
-		name:"Aries",
-		price:1000,
-		health:100,
-		armor:0,
-		psychic:10,
-		speed:2,
-		purchased:false,
-		_user:user._id,
-		shape:{
-			width:56,
-			height:46,
-			radius:23,
-			file:"ships",
-			components:[{crop_x:129,crop_y:13,width:56,height:46}]
-		},
-		firearm:{			
-			firerate:4,
-			accuracy:70,
-			bullet:{
-				damage:10,
-				speed:20,
-				radius:3,
-				critical_rate:0.2,
-				critical_damage:2.5,
-				shape:{
-					crop_x:134,
-					crop_y:239,
-					width:6,
-					height:6
-				}
-			}
-		},
-	});
-
-
-	ship1.save(function(err, ship){
-		ship._user = user._id;
-		user._selected_ship = ship._id;
-		user.save(function(){
-			callback(ship);
-		});
-	});
-	ship2.save();
-	ship3.save();
-	*/
 }
 
 exports.upgrade = function(req, callback){
@@ -263,8 +145,30 @@ exports.upgrade = function(req, callback){
 	});
 }
 
-exports.purchase = function(ship_id){
-	//check balance
+exports.buyShip = function(req, callback){
+	var ship_id = req.body.ship_id;
+	UserModel.findById(req.session.user, function(err, user){
+		if(err){
+			callback({code:-2,msg:"Unauthficated user"});
+		}
+		ShipModel.findById(ship_id, function(err, ship){
+			if(err){
+				callback({code:-3,msg:"Unauthficated ship"});
+			}
+			if(user.gold >= ship.price){
+				user.gold -= ship.price;
+				user._selected_ship = ship._id;
+				user.save(function(err, user){
+					ship.purchased = true;
+					ship.save(function(err, ship){
+						callback({code:1,msg:"Successfully purchased",gold:user.gold,user:user, ship:ship});
+					});
+				});
+			}else{
+				callback({code:-1,msg:"Not enough gold"});
+			}
+		});
+	});
 }
 
 exports.getShips = function(user_id, callback){

@@ -27,21 +27,7 @@ var Ship = (function(){
 		function renderShip(){
 			container = new createjs.Container();
 			container.addChild(Renderer.renderShip(ship.shape, loader));
-/*
-			ship.shape.components.forEach(function(component){
-				var shape = new createjs.Shape();
-				shape.graphics.bf(loader.getResult(ship.shape.file)).drawRect(component.crop_x,component.crop_y,component.width,component.height);
-				shape.regX = component.crop_x + component.width / 2;
-				shape.regY = component.crop_y + component.height / 2;
-				shape.x = component.x;
-				shape.y = component.y;
-				container.addChild(shape);
-			});
-*/
 			container.x = container.y = 320;
-//			container.width = ship.width;
-//			container.height = ship.height;
-
 			ship.shape.radius = ship.shape.width / 2 * (4-user.getReduceSize())/4;
 			container.scaleX = container.scaleY = (4-user.getReduceSize())/4;
 
@@ -123,15 +109,15 @@ var Ship = (function(){
 				level_up_text.rotation = -degree;
 
 		        if(move_up && container.y > 0){
-		            container.y -= ship.speed + ship.upgrade.speed.value;
+		            container.y -= ship.speed * (1 + user.getIncreaseSpeed()/10);
 		        }else if(move_down && container.y < 640){
-		            container.y += ship.speed + ship.upgrade.speed.value;
+		            container.y += ship.speed * (1 + user.getIncreaseSpeed()/10);
 		        }
 
 		        if(move_right && container.x < 640){
-		            container.x += ship.speed + ship.upgrade.speed.value;
+		            container.x += ship.speed * (1 + user.getIncreaseSpeed()/10);
 		        }else if(move_left && container.x > 0){
-		            container.x -= ship.speed + ship.upgrade.speed.value;
+		            container.x -= ship.speed * (1 + user.getIncreaseSpeed()/10);
 		        }
 				
 				firearm.fire(container.x, container.y, degree);
@@ -139,16 +125,8 @@ var Ship = (function(){
 			    firearm.tick();
 		    },
 		    isHit:function(bullet){
-		    	/*
-		    	var hit = false;		    	
-		    	container.children.forEach(function(child){
-		    		if(child.hitTest(bullet.x - container.x,bullet.y - container.y)){
-		    			hit = true;
-		    		}
-		    	});
-		    	return hit;*/
-				//return (Math.pow(bullet.x - container.x, 2) + Math.pow(bullet.y - container.y, 2) < Math.pow(ship.shape.radius + bullet.radius, 2));
-				return Math.abs(bullet.x - container.x) < ship.shape.radius + bullet.radius && Math.abs(bullet.y - container.y) < ship.shape.radius + bullet.radius;
+				return (Math.pow(bullet.x - container.x, 2) + Math.pow(bullet.y - container.y, 2) < Math.pow(ship.shape.radius + bullet.radius, 2));
+				//return Math.abs(bullet.x - container.x) < ship.shape.radius + bullet.radius && Math.abs(bullet.y - container.y) < ship.shape.radius + bullet.radius;
 			},
 			damaged:function(bullet){
 				var armor = ship.armor + ship.upgrade.armor.value;

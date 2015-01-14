@@ -110,11 +110,11 @@ function Hangar(){
 		var speed = ship.speed * (1 + user.getIncreaseSpeed()/10);
 		var firerate = ship.firearm.firerate + ship.upgrade.firerate.value;
 		var shots = ship.firearm.shots * (1 + user.getMultiShot());
-		var accuracy = (ship.firearm.accuracy + ship.upgrade.accuracy.value);
+		var accuracy = (ship.firearm.accuracy + ship.upgrade.accuracy.value)*(1 + user.getIncreaseAccuracy()/10)*(1 - user.getDecreaseAccuracy()/10);
 		var damage = (ship.firearm.bullet.damage + ship.upgrade.damage.value) * (1 + user.getIncreaseDamage()/10);
 		var critical_damage = ship.firearm.bullet.critical_damage + ship.upgrade.critical_damage.value;
 		var critical_rate = ship.firearm.bullet.critical_rate + ship.upgrade.critical_rate.value;
-		var dps = 30 / firerate * accuracy / 100 * damage * (1 - critical_rate * (1 - critical_damage));
+		var dps = shots * 30 / firerate * accuracy / 100 * damage * (1 - critical_rate * (1 - critical_damage));
 
 		renderStat("Health", health, 0);
 		renderStat("Armor", Math.round((armor)*10)/10 + " ("+(armor / (armor + 25) * 100).toFixed(2)+"% damage reduction)", 25);
@@ -224,10 +224,11 @@ function Hangar(){
 			$.get("/getUserShips", function(res){
 				ships = res.ships;
 				ships.forEach(function(ship){
-					if(ship._id === user.getShip()._id){
+					user = User.getInstance();
+					//if(ship._id === user.getShip()._id){
 						selectShip(ship);
 						return;
-					}
+					//}
 				});
 				renderShipList(ships);
 			});

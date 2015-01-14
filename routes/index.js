@@ -10,15 +10,13 @@ UserModel = mongoose.model('User');
 
 UserController = require('../controllers/UserController');
 ShipController = require('../controllers/ShipController');
-StarController = require('../controllers/StarController');
 GameController = require('../controllers/GameController');
-ItemController = require('../controllers/ItemController');
 
 var title = "Galaga JS";
 
 router.get('/', function(req, res) {
 	UserController.authenticate(req, res, function(user, ship){
-		StarController.getGalaxy(req, function(process){
+		GameController.getGalaxy(req, function(process){
 			var difficulty = req.session.difficulty? req.session.difficulty : "1,1,1,1,1";
 			var data = { title:title, user:user, process:process, ship:ship, difficulty:difficulty};
 			res.render('home', {data:data});
@@ -55,7 +53,7 @@ router.post('/saveMastery', function(req, res){
 })
 
 router.post('/buyShip', function(req, res){
-	ItemController.buyShip(req, function(result){
+	ShipController.buyShip(req, function(result){
 		res.contentType('json');
 		res.send(result);
 	});

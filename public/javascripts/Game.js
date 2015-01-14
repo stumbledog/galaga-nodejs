@@ -43,10 +43,10 @@ var Game = (function(data){
 		        case 27:
 		        case 80:
 		            pause();
-		            return false;
+		            return false;/*
 		        case 86:
 		        	public.victory();
-		        	return false;
+		        	return false;*/
 		        default:
 		            ship.keyDown(event.keyCode);
 		    }

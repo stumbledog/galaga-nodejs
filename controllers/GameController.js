@@ -7,3 +7,12 @@ exports.init = function(req, res, callback){
 		});
 	});
 }
+
+exports.getGalaxy = function(req, callback){
+	var user_id = req.session.user;
+	ProcessModel.findOne({_user:user_id}).populate('_selectable _cleared').exec(function(err, process){
+		StarModel.populate(process, {path:'_selectable._next'}, function(err, process){
+			callback(process);
+		});
+	});
+}
