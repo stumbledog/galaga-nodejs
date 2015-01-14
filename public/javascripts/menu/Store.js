@@ -92,6 +92,7 @@ function Store(){
 				var handler = function(event){
 					confirm(event, "Do you want to pay " + ship.price + " for "+ship.name+"?", function(callback){
 						$.post("/buyShip",{ship_id:ship._id},function(res){
+							console.log(res);
 							if(res.code > 0){
 								user.setGold(res.user.gold);
 								user.setShip(res.ship);
@@ -100,7 +101,7 @@ function Store(){
 								button_container.cursor = "null";
 								Renderer.slideText("You purchased " + res.ship.name, "#DB9E36", stage);
 							}else{
-
+								Renderer.slideText(res.msg,"#8E2800",stage);
 							}
 							callback();
 						});
