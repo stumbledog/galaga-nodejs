@@ -32,7 +32,7 @@ function Bullet(firearm, x, y, degree, data, upgrade, increase_damage){
 		this.shape.regY = this.crop_y + this.height/2;
 		this.shape.x = x;
 		this.shape.y = y;
-		this.shape.rotation = degree + 90;
+		this.shape.rotation = degree - 90;
 		this.shape.speed = this.speed;
 		this.shape.radius = this.height / 2;
 		this.stage.addChild(this.shape);
@@ -51,8 +51,8 @@ Bullet.prototype.hit = function(){
 }
 
 Bullet.prototype.tick = function(){
-	this.shape.x -= this.shape.speed * Math.cos(this.shape.rotation/180*Math.PI);
-	this.shape.y -= this.shape.speed * Math.sin(this.shape.rotation/180*Math.PI);
+	this.shape.x += this.shape.speed * Math.cos(-this.shape.rotation/180*Math.PI);
+	this.shape.y -= this.shape.speed * Math.sin(-this.shape.rotation/180*Math.PI);
 	if(this.shape.y < -100 || this.shape.y > 740 || this.shape.x < -100 || this.shape.x > 740){
 		this.stage.removeChild(this.shape);
 		this.firearm.removeBullet(this);

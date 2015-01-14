@@ -112,6 +112,9 @@ var Wave = (function(){
 			},
 			addBullet:function(bullet){
 				bullet_container.addChild(bullet);
+			},
+			getCurrentBullets:function(){
+				return bullet_container.children;
 			}
 		}
 	}

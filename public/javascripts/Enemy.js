@@ -106,7 +106,7 @@ Enemy.prototype.fire = function(){
 		var shape = new createjs.Shape();
 		var crop = this.ship.firearm.shape;
 		shape.graphics.bf(this.loader.getResult(this.ship.firearm.shape.file)).drawRect(crop.crop_x,crop.crop_y,crop.width,crop.height);
-		shape.cache(crop.crop_x,crop.crop_y,crop.width,crop.height);
+		//shape.cache(crop.crop_x,crop.crop_y,crop.width,crop.height);
 		shape.regX = crop.crop_x + crop.width/2;
 		shape.regY = crop.crop_y + crop.height/2;
 		shape.rotation = this.container.rotation - 90 + 180 * (Math.random()-0.5) * (100 - this.ship.firearm.accuracy) / 100;
@@ -133,7 +133,13 @@ Enemy.prototype.tick = function(){
 		this.container.x += this.ship.speed * Math.cos(radian);
 		this.container.y += this.ship.speed * Math.sin(radian);
 	}else if(this.ticks > this.ship.firearm.firerate / (1 + (this.game.getDifficulty()[3]-1)/10)){
-		this.fire();
+		if(createjs.Ticker.getMeasuredFPS()>25){
+			this.fire();
+		}else{
+			this.wave.getCurrentBullets().forEach(function(bullet){
+				bullet.speed = 10;
+			});
+		}
 		this.ticks = 0;
 	}
 	this.ticks++;

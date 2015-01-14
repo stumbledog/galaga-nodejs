@@ -133,9 +133,10 @@ var Ship = (function(){
 		        }else if(move_left && container.x > 0){
 		            container.x -= ship.speed + ship.upgrade.speed.value;
 		        }
-
-		        firearm.fire(container.x, container.y, degree);
-		        firearm.tick();
+				
+				firearm.fire(container.x, container.y, degree);
+			    
+			    firearm.tick();
 		    },
 		    isHit:function(bullet){
 		    	/*

@@ -56,7 +56,6 @@ var Game = (function(data){
 		    ship.keyUp(event.keyCode);
 		}
 
-
 		function initEventHandler(){
 			document.onkeydown = handleKeyDown;
 			document.onkeyup = handleKeyUp;
@@ -77,7 +76,7 @@ var Game = (function(data){
 			
 			wave = Wave.getInstance(data.star.waves);
 			
-			balance_controller = new BalanceController(1, difficulty,"game");			
+			balance_controller = new BalanceController(data.star._id, difficulty,"game");			
 			pause_menu = initPauseMenu();
 
 			createjs.Ticker.addEventListener("tick", tick);

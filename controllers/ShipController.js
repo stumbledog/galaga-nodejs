@@ -29,9 +29,9 @@ exports.create = function(user, callback){
 	ships.push(initShip(      "Libra",  6400,1500,10,2,false, ship_shapes[5],15,70,2,20,10,0.1,3,bullet_shapes[1]));
 	ships.push(initShip(    "Scorpio", 12800, 900,12,3,false, ship_shapes[6],15,70,2,30,10,0.2,3,bullet_shapes[0]));
 	ships.push(initShip("Sagittarius", 25600, 700,15,4,false, ship_shapes[7],20,70,3,30,10,0.2,3,bullet_shapes[0]));
-	ships.push(initShip(  "Capricorn", 51200,1600,20,5,false, ship_shapes[8],30,80,4,30,20,0.3,4,bullet_shapes[3]));
-	ships.push(initShip(   "Aquarius",102400,2400,32,6,false, ship_shapes[9],25,70,4,40,10,0.2,3,bullet_shapes[3]));
-	ships.push(initShip(     "Pisces",204800,5000,64,2,false,ship_shapes[10],30,70,5,40,10,0.5,3,bullet_shapes[3]));
+	ships.push(initShip(  "Capricorn", 51200,1600,20,5,false, ship_shapes[8],30,80,4,30,20,0.3,4,bullet_shapes[2]));
+	ships.push(initShip(   "Aquarius",102400,2400,32,6,false, ship_shapes[9],25,70,4,40,10,0.2,3,bullet_shapes[2]));
+	ships.push(initShip(     "Pisces",204800,5000,64,2,false,ship_shapes[10],30,70,5,40,10,0.5,3,bullet_shapes[2]));
 
 	function initShip(name, price, health, armor, speed, purchased, shape, firerate, accuracy, shots, damage, bullet_speed, critical_rate, critical_damage, bullet_shape){
 		var ship = new ShipModel({
